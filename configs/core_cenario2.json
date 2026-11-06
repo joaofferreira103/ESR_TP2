@@ -1,0 +1,10 @@
+{
+  "nodes": {
+    "O1": {"ip": "<IP_O1>", "neighbors": ["O2"]},
+    "O2": {"ip": "<IP_O2>", "neighbors": ["O1", "O3", "O4"]},
+    "O3": {"ip": "<IP_O3>", "neighbors": ["O2", "O4", "O5"]},
+    "O4": {"ip": "<IP_O4>", "neighbors": ["O2", "O3", "O6"]},
+    "O5": {"ip": "<IP_O5>", "neighbors": ["O3"]},
+    "O6": {"ip": "<IP_O6>", "neighbors": ["O4"]}
+  }
+}

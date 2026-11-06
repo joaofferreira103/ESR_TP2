@@ -80,3 +80,6 @@ venv.bak/
 *.swp
 *.swo
 *~
+
+# Logs dos nós
+logs/

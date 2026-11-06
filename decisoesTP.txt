@@ -8,133 +8,135 @@ O servidor e o cliente RTP do livro já estão implementados em Python, os conte
 
 Transporte: TCP para controlo, UDP para dados e UDP para probes (métricas)
 
-Controlo (TCP): no vídeo, perder um pacote é aceitável: perde-se uma imagem e passa-se à seguinte. Nas mensagens de controlo, perder uma pode deixar a rede num estado errado. Por exemplo, um ACTIVATE perdido deixa um cliente sem vídeo. O TCP garante entrega, ordem e ausência de duplicados; com UDP teríamos de implementar isso nós próprios, com ACKs, timeouts e retransmissões. Bónus: a queda da ligação TCP sinaliza a falha de um vizinho. Contrapartida: o TCP demora a detetar um vizinho que desaparece sem fechar a ligação, por isso continuam a ser necessários heartbeats.
+Controlo (TCP): no vídeo, perder um pacote é aceitável pq perde-se uma imagem e passa-se à seguinte. Nas mensagens de controlo, perder uma pode deixar a rede num estado errado. Por exemplo, um ACTIVATE perdido deixa um cliente sem vídeo. O TCP garante entrega, ordem e ausência de duplicados; com UDP teríamos de implementar isso nós próprios, com ACKs, timeouts e retransmissões. Bónus: a queda da ligação TCP sinaliza a falha de um vizinho. Contrapartida: o TCP demora a detetar um vizinho que desaparece sem fechar a ligação, por isso continuam a ser necessários heartbeats.
 Dados (UDP): é tempo real, e um quadro que chega atrasado é inútil. Não há bloqueio no início da fila (head-of-line blocking) e a replicação tem baixo custo.
 Probes (UDP): medem o atraso e a perda tal como os dados (que também viajam em UDP) os sentem. Por TCP, a perda ficaria escondida pelas retransmissões.
+Nota do docente: UDP para tudo é a opção mais valorizada. Mantemos TCP no controlo para poupar tempo para extras, mas toda a comunicação de controlo passa por uma camada de transporte abstrata (ott/transport/). No fim, se houver tempo, pode trocar-se por UDP com fiabilidade própria (ACKs e retransmissões) escrevendo apenas uma nova implementação dessa camada, sem mexer no resto do código.
 
 Construção do overlay: bootstrapper com ficheiro de configuração, seguido de funcionamento distribuído
 O bootstrapper é o ponto de encontro inicial: um nó novo não sabe onde estão os outros e precisa de alguém que lhe diga a quem se ligar. O bootstrapper arranca primeiro, num endereço e porta bem conhecidos, e lê um ficheiro de configuração escrito à mão.
 
-Um nó novo arranca com ott <ip_bootstrapper>.
-O nó envia REGISTER {id/ip}.
-O bootstrapper responde com NEIGHBORS [ip_a, ip_b, ip_c].
+Um nó novo arranca com ott <ID> <ip_bootstrapper>.
+O nó envia REGISTER {id}.
+O bootstrapper responde com NEIGHBORS [{id, ip}, ...].
 O nó liga-se diretamente a esses vizinhos (HELLO) e, a partir daí, nunca mais fala com o bootstrapper.
 O bootstrapper não calcula rotas, não deteta falhas nem reconstrói a rede. Tudo isso é distribuído entre os nós.
+O bootstrapper corre num host dedicado, afastado do overlay na topologia do CORE, e não é um nó overlay.
 
 Rotas: flooding periódico iniciado pelo servidor, com ativação por estado temporário (soft state)[duvida nas perguntas]
 Não é enviado o caminho (path) nas mensagens de flooding
 
-Anúncios. Cada servidor faz periodicamente flooding da mensagem ANNOUNCE {server, streams[], seq, cost}. O seq é incrementado pelo servidor a cada anúncio.
-Receção de um anúncio. Ao receber um ANNOUNCE do vizinho V, o nó soma ao custo o custo do link por onde a mensagem chegou: custo_novo = cost + custo_link(V). Por cada servidor, o nó guarda dois números, o último seq visto e o melhor custo para esse seq, além da Origem (o vizinho de onde veio a melhor cópia). Aplica estas regras:
-Se seq > seq_guardado (informação mais recente): aceita mesmo que o custo seja pior. Atualiza a Origem para V, guarda seq e custo, e reenvia a todos os vizinhos exceto V. Aceitar custo pior é necessário para as rotas se adaptarem quando um link piora ou um nó falha.
-Se seq == seq_guardado e custo_novo < custo_guardado (mesmo anúncio, mas chegou por um caminho melhor): atualiza a Origem para V e reenvia.
+Anúncios. Cada servidor faz periodicamente flooding da mensagem ANNOUNCE {server, epoch, seq, streams: {stream: {cost, active, via}}}. O seq é incrementado pelo servidor a cada anúncio. O epoch é o instante de arranque do servidor: compara-se o par (epoch, seq), para que um servidor que reinicia (e volta ao seq 0) não veja os seus anúncios descartados como antigos. O campo via é o upstream de quem envia o anúncio (só um salto, não o caminho completo).
+Receção de um anúncio. Ao receber um ANNOUNCE do vizinho V, o nó soma ao custo o custo do link por onde a mensagem chegou: custo_novo = cost + custo_link(V). O nó guarda o que cada vizinho anunciou numa tabela de candidatos (por servidor e por vizinho: epoch, seq, custo por stream, active, via), separada do estado de cada fluxo (upstream, Destinos, Estado). Candidatos cujo via é o próprio nó são ignorados (o caminho desse vizinho passa por ele). Por cada servidor, o nó guarda dois números, o último seq visto e o melhor custo para esse seq. Aplica estas regras:
+Se seq > seq_guardado (informação mais recente): aceita mesmo que o custo seja pior. Atualiza o candidato V, guarda seq e custo, e reenvia a todos os vizinhos exceto V. Aceitar custo pior é necessário para as rotas se adaptarem quando um link piora ou um nó falha.
+Se seq == seq_guardado e custo_novo < custo_guardado (mesmo anúncio, mas chegou por um caminho melhor): atualiza o candidato V e reenvia.
 Caso contrário (cópia repetida ou pior): descarta.
+O anúncio que o nó reenvia é construído por ele: para cada stream leva o custo do caminho que o nó REALMENTE usa (upstream do fluxo, se ativo; melhor candidato, se inativo).
+Expiração: candidatos que não são atualizados durante 3 períodos de anúncio são removidos, e os candidatos de um vizinho que morre são removidos de imediato. Um servidor sem candidatos desaparece da tabela.
 Escolha “best cost wins”, foi preferida á “first copy wins”. A primeira cópia aproxima o caminho mais rápido, mas é distorcida pelo tempo de processamento em cada nó e não serve para outras métricas, como a perda. A contrapartida é algum tráfego extra, porque um nó pode reenviar o mesmo anúncio mais do que uma vez.
 
 Prevenção de loops (sem path).
 O flooding termina, porque para cada seq um nó só reenvia quando o custo melhora estritamente. Como os custos dos links são positivos, uma cópia que dá a volta a um ciclo chega sempre com custo maior e é descartada.
-As rotas não formam ciclos, porque a Origem de cada nó tem sempre custo estritamente menor. Seguindo as Origens, o custo desce até ao servidor, e o resultado é uma árvore de caminhos mais curtos.
+As rotas não formam ciclos, porque a Origem de cada nó tem sempre custo estritamente menor. Isto só é verdade porque cada nó anuncia o custo do caminho que realmente usa (nunca o de um caminho que não usa), nunca escolhe como upstream um vizinho que esteja nos Destinos desse fluxo, e ignora candidatos cujo via é ele próprio. Seguindo as Origens, o custo desce até ao servidor, e o resultado é uma árvore.
 Não há count-to-infinity, porque só o servidor gera números de sequência novos e a informação antiga é sempre descartada.
-Limitação: durante a transição entre dois seq podem existir ciclos momentâneos. São mitigados com um TTL nos pacotes de dados e no ACTIVATE.
+Limitação: durante a transição entre dois seq podem existir ciclos momentâneos. São mitigados com verificação RPF (um nó só aceita dados de um fluxo vindos do seu upstream, identificado pelo ID do emissor no cabeçalho) e com um TTL nos pacotes de dados e no ACTIVATE.
 
 Ativação: As rotas começam inativas. Um cliente envia ACTIVATE {fluxo} na direção da origem, seguindo a Origem definida em cada nó. Cada nó acrescenta o pedinte à lista de Destinos desse fluxo. O nó só encaminha o ACTIVATE para cima se ainda não estivesse a receber esse fluxo; é assim que a árvore de distribuição se forma.
-Estado temporário (soft state). As ativações são renovadas periodicamente e os destinos expiram se não houver renovação. Isto dispensa um procedimento rigoroso de encerramento (teardown) e lida automaticamente com falhas (crashes). Um DEACTIVATE explícito pode ser usado como otimização.
+Estado temporário (soft state). As ativações são renovadas periodicamente e os destinos expiram se não houver renovação. Cada nó renova o seu próprio upstream de forma independente enquanto tiver Destinos (não propaga as renovações que recebe). Isto dispensa um procedimento rigoroso de encerramento (teardown) e lida automaticamente com falhas (crashes). Um DEACTIVATE explícito pode ser usado como otimização.
 
 Mudanças de rota:
 Quando o melhor upstream de um fluxo ativo muda, o nó ativa o novo caminho antes de encerrar o antigo (make-before-break).
-Para evitar trocas desnecessárias, as rotas inativas atualizam-se de imediato. As rotas ativas só mudam após uma pequena janela de estabilização depois de um seq novo (por exemplo, 200 ms), para dar tempo à chegada da melhor cópia, e se a melhoria ultrapassar uma histerese (por exemplo, 20%).
-Tabela de rotas (uma entrada por fluxo):
-{ Fluxo: S1/filmeA, Servidor: S1, Seq: 42, Custo: 18.5 ms, Origem: O2, Destinos: [O3, O7], Estado: ativa }
+Para evitar trocas desnecessárias, as rotas inativas atualizam-se de imediato. As rotas ativas só mudam após uma pequena janela de estabilização depois de um seq novo (por exemplo, 200 ms), para dar tempo à chegada da melhor cópia, e se a melhoria ultrapassar uma histerese (por exemplo, 20%) e também um limiar absoluto (por exemplo, 2 ms). O limiar absoluto é necessário porque no CORE, sem atraso configurado, o RTT é quase zero e dominado por ruído: uma histerese só relativa provocaria trocas constantes.
+Quando o upstream de um fluxo morre, o nó troca de imediato para o melhor candidato válido.
+Tabela de rotas (uma entrada por fluxo, separada da tabela de candidatos):
+{ Fluxo: S1/filmeA, Servidor: S1, Epoch/Seq: 1730563200/42, Custo: 18.5 ms, Origem: O2, Destinos: [O3, O7], Estado: ativa }
+Candidatos para S1: { O2: custo 18.5 ms, active: sim, via: O1 ; O6: custo 24 ms, active: não, via: O7 }
 
 Teste de percursos (PING, Etapa 3)
 O servidor gera um PING que segue as rotas ativas. Cada nó regista no seu log local o id e o seq do PING, de quem o recebeu e para quem o reenviou, e o caminho é reconstruído a partir desses logs. Se o stor permitir, o PING pode também acumular o caminho na própria mensagem, já que serve para diagnóstico e não para construir rotas.
 
-Métricas: custo medido por link
-Os vizinhos trocam probes UDP e mantêm uma EWMA (média móvel exponencialmente ponderada) do RTT e outra da taxa de perda, por link:
-
-média_nova = α × medição + (1 − α) × média_anterior, com α ≈ 0,125 (o mesmo valor que o TCP usa no SRTT).
-
-O custo do link é RTT_ewma / 2 × (1 + k × perda_ewma). Usar o RTT por link evita a necessidade de relógios sincronizados para medir o atraso num só sentido. O número de saltos fica como critério de desempate e para comparação no relatório.
+Métricas: custo medido por link, com várias métricas
+A latência é uma métrica forte, mas não chega sozinha. O custo de cada link combina atraso, jitter, perda e largura de banda.
+Os vizinhos trocam probes UDP a cada 200 ms. O RTT é sempre medido no próprio nó que envia o probe (envio e receção com o mesmo relógio), o que evita a necessidade de relógios sincronizados; o atraso num só sentido é aproximado por RTT/2 (assume-se que o link é simétrico).
+- Atraso: EWMA do RTT (SRTT), média_nova = α × medição + (1 − α) × média_anterior, com α = 0,125 (o mesmo valor que o TCP usa).
+- Jitter: EWMA do desvio do RTT em relação à média (RTTVAR, como no TCP), com β = 0,25.
+- Perda: fração de probes sem resposta nos últimos 50 probes (janela deslizante de ~10 s).
+- Largura de banda: capacidade estimada por packet pair (ver secção seguinte).
+Custo do link = SRTT/2 + K_JITTER × RTTVAR + K_LOSS_MS × perda + W_BW_MS × BW_REQUIRED / capacidade + HOP_COST (termo de largura de banda = 0 se a capacidade for desconhecida).
+Cada métrica é convertida numa penalização em ms ("atraso equivalente") e soma-se, para a perda e a falta de capacidade contarem mesmo quando o atraso é quase nulo; o jitter já é tempo, o atraso extra que o cliente tem de absorver no buffer. O custo fixo por salto desempata naturalmente pelo número de saltos.
+Enquanto um link novo ainda não tem amostras suficientes, usa-se um custo por omissão conservador, para não preferir links desconhecidos.
+A função de custo vive num módulo próprio (ott/cost.py) e tem modos de comparação (completo, só latência, só saltos), para medir nos testes o ganho de usar métricas completas.
 
 Largura de banda
 O enunciado pede o menor atraso e a largura de banda necessária, o que tem duas leituras, ambas cobertas:
 
 Não desperdiçar largura de banda: cada fluxo atravessa cada ligação no máximo uma vez, garantido pela árvore de distribuição com replicação nos nós.
-Escolher caminhos com capacidade suficiente: cada nó mede passivamente o débito recebido de cada vizinho. Como o MJPEG tem débito constante e conhecido, um débito inferior ao esperado indica saturação e o custo do link é penalizado. Alternativa: estimativa ativa por packet pair. A largura de banda é usada como restrição (links sem capacidade são penalizados ou excluídos) e o atraso como critério de otimização.
+Escolher caminhos com capacidade suficiente: cada nó envia periodicamente a cada vizinho um par de probes grandes seguidos (packet pair). O link mais lento do caminho espaça os dois pacotes; o recetor mede o intervalo entre as chegadas e estima a capacidade = tamanho / intervalo, usando a mediana das últimas estimativas porque o método é ruidoso. Quem mede é o recetor, que é exatamente quem precisa do valor: o custo que um nó soma a um anúncio é o do link do vizinho para ele, que é o sentido em que os dados viajam. Funciona em todos os links, ativos ou não. Nos links ativos complementa-se com a medição passiva do débito recebido: como o MJPEG tem débito conhecido, um débito inferior ao esperado indica saturação. Limitação: o packet pair mede a capacidade do link, não a largura de banda disponível (ignora o outro tráfego); a medição passiva cobre essa lacuna nos links ativos.
 
 Fluxos e múltiplos servidores:
 Cada servidor disponibiliza streams distintas, pelo que um fluxo é identificado pelo par (servidor, stream), por exemplo S1/streamA, S1/streamB, S2/streamC e S2/streamD.
 
-Cada servidor faz um único flooding com a lista das suas streams. O caminho até um servidor é partilhado pelas suas streams, mas os Destinos e o Estado são independentes por fluxo.
+Cada servidor faz um único flooding com a lista das suas streams, mas o anúncio leva o custo, o active e o via de cada stream em separado, como gancho mantido para a otimização da árvore (adiada), em que streams do mesmo servidor poderiam seguir upstreams diferentes. Os Destinos e o Estado são independentes por fluxo.
 A ausência de clientes implica ausência de tráfego: um servidor só envia um fluxo quando a lista de Destinos desse fluxo não está vazia.
 
 Codificação das mensagens
 
 Controlo: JSON com um prefixo de 4 bytes que indica o tamanho. É legível no Wireshark e nos logs e fácil de estender. A contrapartida é o tamanho, irrelevante para mensagens de controlo.
-Dados: cabeçalho binário [versão | tipo | ID do fluxo | sequência | timestamp | TTL] seguido do payload RTP. É compacto, e cada nó usa o ID do fluxo para encontrar os destinos na tabela.
-Todas as mensagens incluem os campos tipo e versão, o que permite acrescentar novos tipos mais tarde sem quebrar o sistema.
+Dados: cabeçalho binário [versão | tipo | TTL | sequência | timestamp | ID do emissor | nome do fluxo] seguido do payload RTP. O ID do emissor (o vizinho imediato, reescrito em cada salto) é necessário para a verificação RPF, porque no CORE o IP de origem pode ser o de outra interface. O nome do fluxo (ex.: "S1/filmeA") vai com um prefixo de tamanho; é menos compacto que um número, mas dispensa um mapeamento partilhado entre nós. Cada nó usa o nome do fluxo para encontrar os destinos na tabela.
+Todas as mensagens incluem os campos tipo e versão e o ID do emissor, o que permite acrescentar novos tipos mais tarde sem quebrar o sistema.
 
 Perguntas poh stor
 O PING pode acumular o caminho na própria mensagem, já que é só diagnóstico?
-O bootstrapper pode correr no mesmo host que um servidor? É possível ter um nó de monitorização separado?
 A ativação por soft state é aceitável em vez de um encerramento explícito (teardown)?
+Voltar ao bootstrapper quando um nó isolado não consegue ligar-se a nenhum candidato (equivale a um novo arranque) é aceitável?
+
 
 Extras:
-1. Autorreparação do overlay
-Quando um nó fica com menos vizinhos do que o mínimo (X_min = 2), seja porque um vizinho morreu ou saiu, repara a sua vizinhança sem recorrer ao bootstrapper:
-
-Envia NEIGHBOR_REQ aos vizinhos que lhe restam.
-Estes respondem com NEIGHBOR_LIST [ids e IPs dos seus vizinhos].
-O nó junta os candidatos e exclui ele próprio e os vizinhos que já tem.
-Mede o RTT a cada candidato com um probe e liga-se ao de menor RTT (HELLO). Repete até voltar a ter X_min vizinhos.
-
-Cada nó guarda também uma cache dos nós que foi conhecendo através destas listas. Se ficar completamente isolado, sem nenhum vizinho a quem perguntar, tenta os nós da cache. Só se todos falharem volta ao bootstrapper, o que equivale a um novo arranque.
-
-Porquê: o enunciado exige que o overlay se mantenha com a entrada e saída de nós, e o bootstrapper não pode intervir depois do arranque. Pedir vizinhos aos vizinhos (gossip) é a forma distribuída de descobrir nós novos.
+1. Autorreparação do overlay (com monitorização prévia)
+Indicação do docente: só se cria uma aresta nova quando o nó fica sem nenhuma ligação. Exemplo: n1 ligado a n2 e n3; n2 ligado a n1 e n4. Se n1 perder n3, não se liga a n4 — continua só com n2. Só quando perder também n2 (ficando isolado) cria uma aresta nova.
+Monitorização: cada nó envia periodicamente (a cada 5 s) aos vizinhos a lista dos seus vizinhos (NEIGHBOR_LIST, com IDs e IPs). Cada nó mantém assim uma lista de candidatos (vizinhos dos vizinhos), que guarda mesmo depois de o vizinho que os indicou morrer — é precisamente essa informação que vai precisar quando ficar isolado, e nessa altura já não tem a quem perguntar.
+Reparação: quando um nó que tinha vizinhos fica com 0, mede o RTT a cada candidato com alguns probes, ordena-os e envia HELLO ao melhor; se for rejeitado (HELLO_REJECT), tenta o seguinte. Liga-se a um só, porque depois disso já não está isolado. As novas tentativas para os vizinhos originais do ficheiro continuam (voltar a ligar a um vizinho original não é uma aresta nova). Se nenhum candidato responder, volta ao bootstrapper, o que equivale a um novo arranque.
+Ligações overlay são ligações de transporte sobre o underlay: qualquer nó se pode ligar a qualquer outro de que conheça o IP, e o tráfego da nova ligação não passa pelo vizinho que o indicou.
+Porquê: o enunciado exige que o overlay se mantenha com a entrada e saída de nós, e o bootstrapper não pode intervir depois do arranque. Conhecer os candidatos antes de precisar deles permite reparar sem perguntar a ninguém.
 
 
-2. Otimização da árvore de distribuição
-Cada ANNOUNCE que um nó reenvia inclui o campo ativos: [streams que este nó já recebe].
+2. Failover rápido
+Quando o upstream de um fluxo ativo morre, o nó troca de imediato para o melhor candidato válido da tabela de candidatos (excluindo candidatos com via igual a si próprio e vizinhos que estão nos Destinos), sem esperar pelo próximo anúncio periódico. Mede-se nos testes o tempo de recuperação do vídeo com e sem failover rápido.
+Porquê: reutiliza a tabela de candidatos que já existe, tem baixo risco e reduz a interrupção do vídeo de até um período de anúncio para o tempo de deteção da falha.
 
-Quando um nó que ainda não recebe um fluxo o quer ativar, escolhe como upstream um vizinho que já transporta esse fluxo, desde que o custo por esse vizinho não ultrapasse em mais de 30% o custo do melhor caminho. Assim junta-se a um ramo já existente da árvore em vez de abrir um caminho novo até ao servidor.
-
-O custo que o nó anuncia aos outros continua a ser o custo real do melhor caminho, ou seja, a preferência é local e não se propaga.
-
-Porquê: o caminho mais curto para cada cliente não é o que minimiza o tráfego total. Se dois clientes estão perto um do outro mas têm caminhos mais curtos diferentes, o fluxo atravessa a rede duas vezes. Juntar-se a um ramo existente troca um pouco de atraso por menos largura de banda total. É uma heurística conhecida para aproximar uma árvore de Steiner, cujo cálculo exato é NP-difícil.
-Sem ciclos: a preferência só se aplica quando o nó ainda não recebe o fluxo. Nessa altura ninguém o recebe através dele, por isso o vizinho escolhido não pode estar a jusante.
-Contrapartida: os clientes que se juntam a um ramo existente podem ter até 30% mais atraso. O limite de 30% é um parâmetro a avaliar nos testes.
-
-Impacto no desenho base: a tabela guarda, por servidor, todos os vizinhos candidatos com o respetivo custo e o campo ativos, e não apenas o melhor. Este mesmo mecanismo permite, quando um upstream morre, escolher de imediato o candidato seguinte sem esperar pelo próximo anúncio.
+3. Otimização da árvore (adiado, opcional se sobrar tempo)
+O docente avisou que é complexo e pode causar problemas. Fica adiado. Os ganchos mantêm-se, porque não custam nada: custo por stream e campo active nos anúncios.
 
 
 Gestão de vizinhos
-Número de vizinhos: o ficheiro de configuração dá a cada nó 2 a 3 vizinhos. X_min = 2 e X_max = 4.
+Número de vizinhos: o ficheiro de configuração dá a cada nó 2 a 3 vizinhos. X_max = 4 (já não há mínimo: a reparação só acontece quando o nó fica isolado).
 Com 1 vizinho a rede é uma árvore: não há rotas alternativas e qualquer falha isola nós.
 Com 2 sobrevive-se a uma falha, e com 3 a duas.
 Acima de 4, o tráfego de controlo cresce sem ganho relevante numa rede com cerca de 10 nós
-Deteção de falhas: os probes UDP servem também de heartbeat. É enviado um probe por segundo, e um vizinho é declarado morto ao fim de 3 probes sem resposta (cerca de 3 s), ou de imediato se a ligação TCP fechar.
+Deteção de falhas: os probes UDP servem também de heartbeat. É enviado um probe a cada 200 ms, e um vizinho é declarado morto se não houver nenhuma resposta durante 3 s, ou de imediato se a ligação TCP fechar.
 Usar o mesmo mecanismo para métricas e para deteção evita tráfego duplicado.
-Esperar 3 falhas seguidas tolera perdas pontuais quando os testes configuram perda nos links.
+Esperar 3 s sem resposta tolera perdas pontuais quando os testes configuram perda nos links.
 Contrapartida: até 3 s de vídeo afetado num crash.
 Nó que entra a meio da execução: ao estabelecer a ligação (HELLO), cada vizinho envia-lhe logo o último ANNOUNCE de cada servidor. Assim o nó fica com rotas em milissegundos, sem esperar até ao próximo anúncio periódico (até 2 s).
-Vizinho do ficheiro que ainda não arrancou: o nó tenta ligar-se de novo de 5 em 5 segundos. Quando esse vizinho arrancar também se liga a ele, e a primeira ligação a ficar estabelecida é a que se mantém.
+Vizinho do ficheiro que ainda não arrancou: o nó tenta ligar-se de novo de 5 em 5 segundos. Quando esse vizinho arrancar também se liga a ele. Se os dois se ligarem ao mesmo tempo, mantém-se a ligação iniciada pelo nó com o ID menor: é determinístico, e os dois lados chegam à mesma conclusão sem mensagens extra ("a primeira a ficar estabelecida" era ambíguo, porque cada lado podia achar que tinha sido a sua).
 Nó que sai: numa saída normal, envia LEAVE aos vizinhos, que reagem de imediato. Num crash, a falha é detetada pelos heartbeats. Os dois mecanismos combinam-se.
 Aceitar novos vizinhos: um nó aceita pedidos HELLO enquanto tiver menos de X_max vizinhos. Acima disso responde HELLO_REJECT, e quem pediu tenta outro candidato. Isto evita que os nós mais centrais fiquem sobrecarregados durante as reparações.
 
 Identidade dos nós:
-Cada nó é identificado por um nome (no1, no2...) passado na linha de comando: ott O5 <ip_bootstrapper>. O ficheiro de configuração do bootstrapper associa cada nome a um IP. Todas as mensagens e tabelas usam o nome.
+Cada nó é identificado por um nome (O1, O2...) passado na linha de comando: ott O5 <ip_bootstrapper>. O ficheiro de configuração do bootstrapper associa cada nome a um IP. Todas as mensagens e tabelas usam o nome.
 Porquê: no CORE um host tem frequentemente várias interfaces, e portanto vários IPs. Identificar os nós por IP faria o mesmo nó parecer dois nós diferentes.
 O nome também torna os logs e os diagramas legíveis.
 
 Descoberta de streams pelo cliente:
-O cliente aprende as streams disponíveis através do campo streams[] dos ANNOUNCE que chegam ao seu nó e mostra essa lista ao utilizador para escolher. Não é necessário nenhum servidor de diretório adicional, e a lista mantém-se atualizada automaticamente: um servidor que deixa de anunciar desaparece da lista.
+O cliente aprende as streams disponíveis através do campo streams dos ANNOUNCE que chegam ao seu nó e mostra essa lista ao utilizador para escolher. Não é necessário nenhum servidor de diretório adicional, e a lista mantém-se atualizada automaticamente: um servidor que deixa de anunciar desaparece da lista.
 
-Parâmetros evalores iniciais (a afinar nos testes): nao tenho knowledge para ja, ha uma tabela no claude com a recomendação deles todos, se que pergunta se ao stor
+Parâmetros evalores iniciais (a afinar nos testes): nao tenho knowledge para ja, ha uma tabela no claude com a recomendação deles todos, se que pergunta se ao stor. Valores iniciais usados no código: ver secção técnica no fim.
 
 Modelo de concorrência: threads com locks
 Cada nó tem as seguintes threads:
 Uma thread aceita ligações TCP de controlo.
 Uma thread lê de cada vizinho.
+Uma thread escreve para cada vizinho, a partir de uma fila de envio própria: só essa thread escreve no socket, por isso um vizinho lento não bloqueia o resto do nó. Se a fila encher, o vizinho é considerado lento/avariado e a ligação é fechada.
 Uma thread recebe e reencaminha os dados UDP.
 Uma thread trata dos probes.
 Uma thread de temporizadores trata dos anúncios, renovações, expirações e heartbeats.
@@ -143,6 +145,7 @@ O lock é mantido apenas durante a leitura ou alteração das tabelas.
 Nunca se faz I/O de rede com o lock adquirido: copia-se a lista de destinos, liberta-se o lock e só depois se envia.
 
 Cliente
+Integração com o nó: o servidor e o cliente de media correm dentro do mesmo processo do nó ott. Um nó servidor (--server) gera os fluxos numa thread própria; um nó cliente (--client) recebe os quadros do plano de dados através de uma fila interna e reproduz-os (Tkinter na thread principal), continuando a encaminhar para outros nós. Alternativa considerada: processos separados a falar com o nó local por UDP em localhost, que reaproveita melhor o código do livro mas acrescenta um salto e comunicação entre processos.
 Buffer de reprodução: um pequeno buffer de 5 quadros, cerca de 250 ms (o vídeo de teste tem um quadro a cada 50 ms). Absorve o jitter e as pequenas interrupções durante as mudanças de rota, à custa de 250 ms de atraso inicial.
 Alternativa: reprodução imediata, com menor atraso mas vídeo aos solavancos.
 Pacotes atrasados ou fora de ordem: um quadro que chega depois de o seguinte já ter sido mostrado é descartado. Os quadros MJPEG são independentes, por isso perder um não afeta os seguintes, e em tempo real não vale a pena mostrar um quadro antigo.
@@ -151,3 +154,33 @@ percentagem de pacotes perdidos;
 jitter;
 tempo até ao primeiro quadro;
 duração das interrupções durante falhas e mudanças de rota.
+
+
+Informação técnica para o Claude Code
+
+Regras de trabalho:
+Python 3, só biblioteca padrão (exceto o cliente de vídeo, que pode usar Tkinter e Pillow como o código do livro).
+Implementar só o que cada tarefa pede; não antecipar fases futuras, exceto os ganchos pedidos.
+Código simples e legível; identificadores em inglês, comentários e logs em português. O grupo tem de saber explicar cada linha na defesa.
+Todos os parâmetros em ott/config.py, sem números mágicos. Testes com unittest, em tests/.
+No fim de cada tarefa: resumir o que foi feito, decisões, alternativas e como testar.
+
+Portas: bootstrapper TCP 4999; controlo TCP 5000; dados UDP 5001; probes UDP 5002.
+Linha de comando: python3 -m ott.node <ID> <ip_bootstrapper> [--bind <ip>] [--server --streams nome=ficheiro,...] [--client]. --bind (por omissão 0.0.0.0) permite testar localmente com vários nós em 127.0.0.x.
+Ficheiro do bootstrapper: {"nodes": {"O1": {"ip": "...", "neighbors": ["O2", ...]}}}.
+
+Mensagens de controlo (TCP, 4 bytes big-endian com o tamanho + JSON UTF-8, máx. 1 MB). Campos comuns: {"v": 1, "type": ..., "src": <ID>}
+REGISTER {} -> NEIGHBORS {"neighbors": [{"id", "ip"}]} | ERROR {"reason"}   (Fase 1)
+HELLO {} -> HELLO_ACK {} | HELLO_REJECT {"reason": "full" | "duplicate"}   (Fase 1)
+LEAVE {}   (Fase 1)
+ANNOUNCE {"server", "epoch", "seq", "streams": {"<stream>": {"cost", "hops", "active", "via"}}}   (Fase 3)
+PING {"server", "flow", "ping_id"}   (Fase 3)
+ACTIVATE {"flow"} / DEACTIVATE {"flow"}   (Fase 4)
+NEIGHBOR_LIST {"neighbors": [{"id", "ip"}]}, enviada periodicamente a cada vizinho (Fase 2)
+Probes (UDP 5002, um JSON por datagrama, com os campos comuns): PROBE {"seq", "ts"} / PROBE_REPLY {"seq", "ts"}   (Fase 2); PROBE_PAIR {"pair_id", "idx" (0 ou 1), "pad"} — dois seguidos, com tamanho total PAIR_SIZE, para estimar a capacidade (Fase 2). Um nó responde a PROBE de qualquer nó, mesmo que não seja vizinho (necessário para medir candidatos na reparação)
+
+Cabeçalho de dados (UDP 5001, big-endian): versão (u8) | tipo (u8, 1 = DATA) | TTL (u8) | seq (u32) | timestamp_ms (u64) | src_len (u8) | src (UTF-8) | flow_len (u8) | flow (UTF-8) | payload.
+
+Parâmetros iniciais: ANNOUNCE_INTERVAL 2 s; SERVER_EXPIRY 6 s; REFRESH_INTERVAL 2 s; DEST_EXPIRY 6 s; PROBE_INTERVAL 0,2 s; LOSS_WINDOW 50; DEAD_TIMEOUT 3 s; RTT_ALPHA 0,125; K_LOSS 10; HOP_COST 1 ms; HYSTERESIS 0,2; HYSTERESIS_ABS 2 ms; STABILIZATION_WINDOW 0,2 s; TREE_MARGIN 0,3 (Extra adiado); TTL 16; BW_THRESHOLD 0,8; BW_WINDOW 3 s; X_MAX 4; RECONNECT_INTERVAL 5 s; SEND_QUEUE_MAX 1000; CLIENT_BUFFER_FRAMES 5; RTTVAR_BETA 0,25; K_JITTER 1; W_BW 1; BW_REQUIRED_MBPS 2; PAIR_INTERVAL 5 s; PAIR_SIZE 1200 bytes; PAIR_HISTORY 9; MIN_SAMPLES 5; DEFAULT_LINK_COST 50 ms; COST_MODE "full"; GOSSIP_INTERVAL 5 s; CANDIDATE_EXPIRY 60 s; REPAIR_PROBES 3.
+
+Fases: 1 fundações (config, log, protocolo, estado, scheduler, bootstrapper, HELLO/LEAVE); 2 probes, métricas completas (RTT, jitter, perda, packet pair), função de custo, gossip de vizinhos e autorreparação; 3 ANNOUNCE, candidatos, PING; 4 ativação e plano de dados com RPF (texto numerado primeiro); 5 streaming MJPEG, 2 servidores × 2 streams, cliente; 6 failover rápido, make-before-break, largura de banda passiva; opcionais: otimização da árvore, controlo em UDP; 7 testes nos cenários 1, 2 e 3.
