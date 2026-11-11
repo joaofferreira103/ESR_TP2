@@ -2,6 +2,7 @@
 
 import ast
 import logging
+import os
 import queue
 import threading
 import time
@@ -17,6 +18,8 @@ from ott.transport.tcp import TcpTransport
 
 WAIT_TIMEOUT = 3.0
 _STOP = object()
+# Raiz do projeto, calculada a partir deste ficheiro: os testes passam seja qual for a pasta de onde se corram
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def wait_until(condition, timeout=WAIT_TIMEOUT):
@@ -241,7 +244,7 @@ class NeighborManagerOverFakeTransportTest(unittest.TestCase):
 
 class TransportIsolationTest(unittest.TestCase):
     def imported_modules(self, path):
-        with open(path, encoding="utf-8") as f:
+        with open(os.path.join(PROJECT_ROOT, path), encoding="utf-8") as f:
             tree = ast.parse(f.read())
         names = set()
         for node in ast.walk(tree):
