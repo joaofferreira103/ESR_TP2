@@ -1,0 +1,15 @@
+{
+  "bootstrapper": {"core_node": "n25", "ip": "10.0.24.11"},
+  "nodes": {
+    "O1":  {"core_node": "n16", "ip": "10.0.24.10", "neighbors": ["O2", "O3"]},
+    "O2":  {"core_node": "n10", "ip": "10.0.24.1",  "neighbors": ["O1", "O3", "O4"]},
+    "O3":  {"core_node": "n9",  "ip": "10.0.15.1",  "neighbors": ["O1", "O2", "O5"]},
+    "O4":  {"core_node": "n7",  "ip": "10.0.22.1",  "neighbors": ["O2", "O5", "O6", "O8"]},
+    "O5":  {"core_node": "n5",  "ip": "10.0.23.1",  "neighbors": ["O3", "O4", "O6", "O9"]},
+    "O6":  {"core_node": "n2",  "ip": "10.0.20.1",  "neighbors": ["O4", "O5", "O7", "O10"]},
+    "O7":  {"core_node": "n17", "ip": "10.0.20.10", "neighbors": ["O6"]},
+    "O8":  {"core_node": "n22", "ip": "10.0.22.11", "neighbors": ["O4"]},
+    "O9":  {"core_node": "n23", "ip": "10.0.23.11", "neighbors": ["O5"]},
+    "O10": {"core_node": "n19", "ip": "10.0.21.10", "neighbors": ["O6"]}
+  }
+}
