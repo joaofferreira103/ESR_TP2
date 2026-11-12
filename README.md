@@ -61,6 +61,19 @@ Em `logs/`: `<ID>.log` é o log do nó; `<ID>.out` é a saída do processo (incl
    No CORE não é preciso `--bind` (cada host tem os seus IPs). No terminal do nó: `vizinhos` mostra o estado, `metricas` mostra SRTT, RTTVAR, perda, amostras, capacidade e custo por vizinho, `candidatos` mostra os candidatos de reparação, `sair` (ou Ctrl+C) termina.
 7. Os logs ficam em `logs/<ID>.log` na pasta do projeto.
 
+### Arranque automático no CORE (`scripts/core.sh`)
+
+Com a sessão do CORE já arrancada (botão verde), num terminal **normal da VM** (não é preciso abrir o terminal de cada nó). Topologia: `topologias/topologia_ott.xml`; overlay: `configs/core_ott.json` (cada nó tem `core_node`, o nó do CORE onde corre, e opcionalmente `args`, ex.: `["--server"]`).
+
+```bash
+sudo scripts/core.sh start              # espera pelo OSPF, arranca o bootstrapper (n25) e todos os nós
+sudo scripts/core.sh status
+sudo scripts/core.sh cmd O3 vizinhos    # também: metricas, candidatos, sair
+sudo scripts/core.sh freeze O6          # kill -STOP (falha silenciosa); unfreeze O6 para retomar
+sudo scripts/core.sh crash O6           # kill -9; sudo scripts/core.sh start O6 para voltar a arrancar
+sudo scripts/core.sh stop               # termina tudo (ou: stop O3 O4)
+```
+
 ## Testes à mão no CORE
 
 Configurar um link de cada vez (duplo clique no link) e ler o resultado com `metricas` no nó da ponta do link. Os valores "Medido" vêm de um *network namespace* com `tc` em `lo`, onde cada pacote passa pelo limite nos dois sentidos; ainda não foram confirmados no CORE. Contexto em `docs/fase2.md`.
