@@ -1,0 +1,12 @@
+--- 2026-11-17 16:30:20 arranque de bootstrapper no n25
+16:30:20.433 [bootstrapper] INFO bootstrapper à escuta em 0.0.0.0:4999, 10 nós na topologia
+16:30:20.468 [bootstrapper] INFO REGISTER de O1 (10.0.24.10) -> NEIGHBORS [O2, O3]
+16:30:20.593 [bootstrapper] INFO REGISTER de O2 (10.0.24.1) -> NEIGHBORS [O1, O3, O4]
+16:30:20.626 [bootstrapper] INFO REGISTER de O3 (10.0.15.1) -> NEIGHBORS [O1, O2, O5]
+16:30:20.793 [bootstrapper] INFO REGISTER de O4 (10.0.13.1) -> NEIGHBORS [O2, O5, O6, O8]
+16:30:20.835 [bootstrapper] INFO REGISTER de O5 (10.0.9.1) -> NEIGHBORS [O3, O4, O6, O9]
+16:30:20.866 [bootstrapper] INFO REGISTER de O6 (10.0.4.1) -> NEIGHBORS [O4, O5, O7, O10]
+16:30:21.189 [bootstrapper] INFO REGISTER de O7 (10.0.20.10) -> NEIGHBORS [O6]
+16:30:21.293 [bootstrapper] INFO REGISTER de O8 (10.0.22.11) -> NEIGHBORS [O4]
+16:30:21.350 [bootstrapper] INFO REGISTER de O9 (10.0.23.11) -> NEIGHBORS [O5]
+16:30:21.417 [bootstrapper] INFO REGISTER de O10 (10.0.21.10) -> NEIGHBORS [O6]

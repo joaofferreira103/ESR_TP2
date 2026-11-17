@@ -116,14 +116,97 @@ No primeiro segundo depois do `unfreeze`, o log do O6 mostra **35 ligações ace
 
 ---
 
-## Testes ainda por fazer (sem resultados nestes logs)
+# Erros detetados na segunda ronda (2026-11-16 e 2026-11-17)
 
-| Teste | Comando ou configuração |
-|---|---|
-| Jitter | 5 ms de jitter no link n13–n22, ver `cmd O8 metricas` |
-| Perda | 10% de perda no link n12–n19, ver `cmd O10 metricas` |
-| Largura de banda | 1 Mbps no link n12–n19, esperar até 45 s |
-| Crash com fecho de TCP | `sudo scripts/core.sh crash O6` |
-| Saída limpa | `sudo scripts/core.sh stop O3` |
+Testes T1 a T10 de `resultados_testes_core.md`. Logs em `logs_T<n>/` (os erros 3 e 4 estão em `logs_T7a10/`).
 
-Antes de os repetir: retirar o atraso de 200 ms que ficou no link n13–n22 e fazer `sudo scripts/core.sh stop` seguido de `start`, para os logs ficarem limpos.
+**Confirmação dos erros 1 e 2:**
+- **Erro 1:** no T8 (crash do O6), o O10 escolheu outra vez o O7 pelo RTT mais baixo. A ilha só não se formou porque o O7 detetou a falha 2 ms antes e se ligou ao O4. A causa continua no código.
+- **Erro 2:** no T10, ao fazer `unfreeze`, o O6 teve 30 ligações perdidas e 4 HELLO rejeitados como `duplicate` em cerca de 1 s.
+
+---
+
+## Erro 3: as arestas dinâmicas ocupam o lugar dos vizinhos estáticos
+
+**Gravidade:** alta. A topologia do ficheiro deixa de se repor. A cada falha acumulam-se arestas dinâmicas, e algumas arestas estáticas ficam bloqueadas sem limite de tempo.
+
+### Condição de teste
+Uma reparação liga um nó isolado a um candidato que fica com `X_MAX` (4) vizinhos. Depois volta um vizinho estático desse candidato:
+```bash
+sudo scripts/core.sh crash O4      # O8 isolado liga-se ao O5: O5 = O3, O6, O9, O8 (dinâmica)
+sudo scripts/core.sh start O4      # o O4 quer voltar a ligar-se ao O5, que está cheio
+```
+
+### O que se observou
+| Teste | Cheio | Por causa de | Bloqueou | Durante |
+|---|---|---|---|---|
+| T8 | O4 (O2, O5, O8, **O7 dinâmica**) | reparação do O7 | O6 → O4 | 61 s, até o O4 ir abaixo |
+| T9 | O5 (O3, O6, O9, **O8 dinâmica**) | reparação do O8 | O4 → O5 | 62 s, até o O6 congelar |
+| T10 | O5 (O3, O4, O9, **O8 dinâmica**) | a mesma | O6 → O5 | até ao fim dos logs |
+
+```
+16:45:00.351 [O5] INFO HELLO de O4 rejeitado (full)
+16:45:05.360 [O5] INFO HELLO de O4 rejeitado (full)
+... (a cada 5 s)
+16:47:12.035 [O6] INFO Estado de O6: 3 vizinhos (3 up), 4 estáticos
+```
+Nas duas primeiras vezes, o bloqueio só acabou porque outra falha libertou uma vaga. No fim, falta a aresta estática O5–O6, e existem duas arestas que não estão no ficheiro: O7–O10 e O8–O5.
+
+### Causa
+- `X_MAX` conta todos os vizinhos por igual. Uma aresta dinâmica criada pela reparação fica com uma vaga que pertence a um vizinho do ficheiro.
+- As arestas dinâmicas nunca são fechadas, nem quando os vizinhos estáticos voltam. É a questão em aberto do erro 1.
+
+### Correção proposta
+1. **Os vizinhos estáticos têm prioridade.** Quando chega um HELLO de um vizinho estático e o nó está cheio, fecha-se uma aresta dinâmica para lhe dar lugar, desde que o outro lado dessa aresta tenha mais vizinhos (para não o isolar).
+2. **Fechar as arestas dinâmicas quando deixam de ser precisas:** um nó com uma aresta dinâmica fecha-a quando um vizinho estático seu volta a estar `up`.
+3. Em alternativa, dar `X_MAX` só aos estáticos e um limite à parte para as dinâmicas (por exemplo +1). É mais simples, mas o grau dos nós cresce.
+
+---
+
+## Erro 4: reparação falsa durante a tempestade, abandonada sem nada no log
+
+**Gravidade:** baixa. É uma consequência do erro 2 e fica resolvido quando este for corrigido.
+
+### O que se observou (T10)
+No `unfreeze`, a contagem de vizinhos do O6 chegou a 0 a meio da tempestade. O O6 julgou-se isolado e começou uma reparação com 7 candidatos. Os vizinhos voltaram e a reparação parou sem escrever nada:
+```
+16:46:51.986 [O6] WARNING nó isolado: a iniciar a reparação
+16:46:52.007 [O6] INFO reparação: 7 candidatos a medir (O10, O2, O3, O5, O7, O8, O9)
+(sem mais nenhuma linha da reparação)
+```
+
+### Causa e correção
+- Os `up` e `down` falsos do erro 2 levam a contagem de vizinhos a 0.
+- `repair()` em `ott/repair.py` faz `return` em silêncio quando `_no_longer_needed()` é verdadeiro. Deve escrever, por exemplo, "reparação cancelada: vizinho X voltou".
+
+---
+
+## Erro 5: com jitter, o packet pair mede capacidade falsa
+
+**Gravidade:** média. Põe custo a mais num link e faz o mesmo link ter custos diferentes em cada ponta.
+
+- **Condição (T4):** 20 ms de atraso + 5 ms de jitter no link n13–n22, num link **sem** limite de largura de banda.
+- **Observado:** O8→O4 com 2,9 a 4,3 Mbit/s; O4→O8 a descer de 58 para 7,7 Mbit/s. Cerca de +6,7 ms de custo vêm só da capacidade falsa.
+- **Causa:** o netem atrasa e troca a ordem dos pacotes de forma aleatória. O intervalo entre os dois pacotes do par passa a ser ruído de alguns ms, e 1200 B em cerca de 3 ms dão cerca de 3 Mbit/s.
+- **Correção:** descartar as estimativas em que o intervalo entre os pacotes do par é comparável ao RTTVAR, ou ignorar o termo de capacidade quando o RTTVAR é alto.
+
+---
+
+## Erro 6: a estimativa da perda oscila muito
+
+**Gravidade:** média para a Fase 3, porque faz as rotas mudar sem razão.
+
+- **Condição (T5):** 10% de perda no link n12–n19. O CORE aplica-a nos dois sentidos, o que dá cerca de 19%.
+- **Observado:** a perda real ficou em cerca de 20%: chegaram 36 a 45 respostas por cada 50 probes. Mas a perda mostrada variou entre **6,4% e 21,7%**, e o custo entre 9 e 24 ms.
+- **Causa:** a janela tem 50 probes, mas os dos últimos 3 s (`DEAD_TIMEOUT`) não contam, o que deixa cerca de 35. Isso dá um desvio padrão de cerca de ±7 pontos.
+- **Correção:** uma janela maior (por exemplo 150 probes, cerca de 30 s) ou uma média móvel da perda, como no SRTT. Na Fase 3, usar histerese na troca de rota.
+
+---
+
+## Erro 7: o custo reage muito ao RTTVAR quando a VM para
+
+**Gravidade:** média para a Fase 3.
+
+- **Observado (T1 às 19:46, T4 às 20:00:06):** picos em vários links ao mesmo tempo, sem perda e com cerca de 6 amostras em falta, sinal de que a VM parou cerca de 1 s. Um link com SRTT de 0,5 ms chegou a um custo de **91 ms**, com RTTVAR de 72 ms.
+- **Causa:** `K_JITTER = 1` soma o RTTVAR inteiro ao custo, e um único RTT muito alto faz o RTTVAR disparar.
+- **Correção:** limitar o termo do jitter (por exemplo, no máximo igual ao SRTT), suavizar o custo e usar histerese na troca de rota.

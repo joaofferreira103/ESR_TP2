@@ -91,7 +91,23 @@ Para ver a reparação no log: `grep -E "isolado|reparação|sem aresta nova" lo
 
 ## Estado da Fase 2
 
-Funciona (testado com `python3 -m unittest discover -s tests` e com o cenário 2 em local; ainda não testado no CORE). Explicação completa em `docs/fase2.md`.
+Testada com `python3 -m unittest discover -s tests`, com o cenário 2 em local e no CORE (T1 a T10, 2026-11-16/17). Explicação completa em `docs/fase2.md`; resultados em `docs/resultados_testes_core.md`; erros em `docs/erros_testes.md`.
+
+**Resultados no CORE:** o arranque, as métricas de atraso e de largura de banda, a deteção de falhas (LEAVE cerca de 2 ms, crash cerca de 1 ms, falha silenciosa cerca de 3 s) e a reparação de um nó isolado (cerca de 6 ms) funcionam.
+
+**Por corrigir** (detalhes em `docs/erros_testes.md`):
+
+| Erro | Problema | Gravidade |
+|---|---|---|
+| 1 | A reparação pode criar uma ilha desligada (dois nós isolados ligam-se um ao outro) | alta |
+| 3 | As arestas dinâmicas ocupam vagas de `X_MAX` e impedem os vizinhos estáticos de voltar; a topologia não se repõe | alta |
+| 2 | Tempestade de ligações quando um nó parado volta | média |
+| 5 | Com jitter, o packet pair mede capacidade falsa | média |
+| 6 | A estimativa da perda oscila muito (6 a 22% com 19% reais) | média (Fase 3) |
+| 7 | O custo reage muito ao RTTVAR quando a VM para (até 91 ms) | média (Fase 3) |
+| 4 | Reparação falsa durante a tempestade, cancelada sem nada no log | baixa |
+
+O que foi feito antes destes testes:
 - Probes UDP com SRTT, RTTVAR e perda por link; capacidade por packet pair; função de custo com os modos `full`, `latency` e `hops`.
 - Deteção de falhas também sem fecho da ligação TCP (3 s sem resposta aos probes).
 - Gossip de vizinhos e autorreparação: só se cria uma aresta nova quando um nó fica isolado.
