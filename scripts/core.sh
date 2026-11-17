@@ -68,10 +68,18 @@ launch() {
     [ -S "$SESSION/$cn" ] || { echo "o nó $cn não existe na sessão $SESSION"; exit 1; }
     rm -f "$RUN_DIR/$name.cmd"; mkfifo "$RUN_DIR/$name.cmd"
     rm -f "$RUN_DIR/$name.pid"
+    # Criado já aqui: se o arranque falhar dentro do nó, o erro fica neste ficheiro.
+    echo "--- $(date '+%F %T') arranque de $name no $cn" >>"logs/$name.out"
     # "<>" abre o FIFO para leitura e escrita: não bloqueia e o processo nunca recebe EOF.
+    # setsid: o processo fica numa sessão própria, separado do vcmd. Sem isto, quando o sh lançado
+    # pelo vcmd termina (logo, por causa do "&"), o filho pode receber SIGHUP / ser morto com o grupo
+    # antes de chegar ao python (sintoma: nem .out nem .pid, de forma intermitente).
     # O sh interior escreve o seu PID e faz exec do python, por isso o PID guardado é o do python.
-    in_node "$cn" sh -c "cd '$PROJECT' && { sh -c 'echo \$\$ > $RUN_DIR/$name.pid; exec python3 -u $*' <>'$RUN_DIR/$name.cmd' >>'logs/$name.out' 2>&1 & }"
-    sleep 0.5
+    in_node "$cn" sh -c "cd '$PROJECT' || exit 1; setsid sh -c 'echo \$\$ > $RUN_DIR/$name.pid; exec python3 -u $*' <>'$RUN_DIR/$name.cmd' >>'logs/$name.out' 2>&1 &" \
+        </dev/null >>"logs/$name.out" 2>&1 \
+        || echo "AVISO: o vcmd devolveu erro ao lançar $name (ver logs/$name.out)"
+    # Esperar até 3 s pelo PID (com muitos nós a arrancar, 0,5 s fixos podiam não chegar)
+    for _ in $(seq 30); do running "$name" && break; sleep 0.1; done
     if running "$name"; then
         echo "$name arrancado no $cn (PID $(pid_of "$name"))"
     else
