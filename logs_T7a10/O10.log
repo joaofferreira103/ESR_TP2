@@ -1,0 +1,445 @@
+16:40:22.780 [O10] INFO vizinhos estáticos: O6 (10.0.20.1)
+16:40:22.781 [O10] INFO probes à escuta em 0.0.0.0:5002
+16:40:22.781 [O10] INFO controlo à escuta em 0.0.0.0:5000
+16:40:22.782 [O10] INFO a ligar a O6 (10.0.20.1)
+16:40:22.783 [O10] INFO ligação a O6 (10.0.20.1) estabelecida, iniciada por mim
+16:40:22.784 [O10] DEBUG evento: vizinho O6 up
+16:40:32.784 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 10s fila=0
+16:40:32.785 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=0.96 ms rttvar=0.38 ms perda=0.0% amostras=50 capacidade=38.4 Mbit/s custo=2.38 ms
+16:40:32.786 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:40:42.784 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 20s fila=1
+16:40:42.790 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=0.99 ms rttvar=0.42 ms perda=0.0% amostras=100 capacidade=61.5 Mbit/s custo=2.24 ms
+16:40:42.790 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:40:52.797 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 30s fila=1
+16:40:52.808 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=1.02 ms rttvar=0.83 ms perda=0.0% amostras=150 capacidade=61.5 Mbit/s custo=2.67 ms
+16:40:52.808 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:41:02.784 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 40s fila=1
+16:41:02.786 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=1.25 ms rttvar=0.93 ms perda=0.0% amostras=200 capacidade=82.3 Mbit/s custo=2.79 ms
+16:41:02.787 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:41:12.783 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 50s fila=0
+16:41:12.784 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=0.82 ms rttvar=0.18 ms perda=0.0% amostras=250 capacidade=95.9 Mbit/s custo=1.80 ms
+16:41:12.784 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:41:22.782 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 60s fila=1
+16:41:22.783 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=0.85 ms rttvar=0.13 ms perda=0.0% amostras=300 capacidade=159.4 Mbit/s custo=1.68 ms
+16:41:22.784 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:41:32.784 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 70s fila=1
+16:41:32.787 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=1.37 ms rttvar=0.97 ms perda=0.0% amostras=350 capacidade=159.4 Mbit/s custo=2.77 ms
+16:41:32.787 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:41:42.784 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 80s fila=1
+16:41:42.787 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=1.15 ms rttvar=0.92 ms perda=0.0% amostras=400 capacidade=159.4 Mbit/s custo=2.62 ms
+16:41:42.787 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:41:52.783 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 90s fila=1
+16:41:52.785 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=1.13 ms rttvar=0.58 ms perda=0.0% amostras=450 capacidade=139.6 Mbit/s custo=2.29 ms
+16:41:52.786 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:42:02.782 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 100s fila=1
+16:42:02.784 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=0.88 ms rttvar=0.32 ms perda=0.0% amostras=500 capacidade=139.6 Mbit/s custo=1.91 ms
+16:42:02.784 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:42:12.783 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 110s fila=1
+16:42:12.784 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=0.70 ms rttvar=0.21 ms perda=0.0% amostras=550 capacidade=139.6 Mbit/s custo=1.70 ms
+16:42:12.785 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:42:22.784 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 120s fila=1
+16:42:22.787 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=1.00 ms rttvar=0.86 ms perda=0.0% amostras=600 capacidade=155.5 Mbit/s custo=2.49 ms
+16:42:22.788 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:42:32.782 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 130s fila=0
+16:42:32.784 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=0.83 ms rttvar=0.23 ms perda=0.0% amostras=650 capacidade=174.4 Mbit/s custo=1.76 ms
+16:42:32.784 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:42:42.783 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 140s fila=0
+16:42:42.784 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=0.82 ms rttvar=0.23 ms perda=0.0% amostras=700 capacidade=168.4 Mbit/s custo=1.76 ms
+16:42:42.784 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:42:52.783 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 150s fila=0
+16:42:52.786 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=0.60 ms rttvar=0.12 ms perda=0.0% amostras=750 capacidade=73.6 Mbit/s custo=1.68 ms
+16:42:52.787 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:43:02.783 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 160s fila=0
+16:43:02.784 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=1.34 ms rttvar=0.99 ms perda=0.0% amostras=800 capacidade=168.4 Mbit/s custo=2.78 ms
+16:43:02.785 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:43:04.200 [O10] WARNING ligação a O6 perdida (ligação fechada)
+16:43:04.203 [O10] DEBUG evento: vizinho O6 down (ligação fechada)
+16:43:04.205 [O10] WARNING nó isolado: a iniciar a reparação
+16:43:04.206 [O10] INFO reparação: 3 candidatos a medir (O4, O5, O7)
+16:43:04.209 [O10] INFO reparação: HELLO a O7 (10.0.20.10), RTT 0.18 ms
+16:43:04.211 [O10] INFO ligação a O7 (10.0.20.10) estabelecida, iniciada por mim
+16:43:04.212 [O10] DEBUG evento: vizinho O7 up
+16:43:04.212 [O10] INFO reparação concluída: ligado a O7
+16:43:07.784 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:43:07.789 [O10] WARNING ligação a O6 (10.0.20.1) falhou: [Errno 111] Connection refused
+16:43:12.782 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:43:12.784 [O10] INFO Estado de O10: 2 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 connecting estático iniciada por mim há - fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 9s fila=0
+16:43:12.785 [O10] INFO Métricas de O10: 1 vizinhos
+  O7 srtt=0.73 ms rttvar=0.24 ms perda=0.0% amostras=43 capacidade=132.8 Mbit/s custo=1.75 ms
+16:43:12.785 [O10] WARNING ligação a O6 (10.0.20.1) falhou: [Errno 111] Connection refused
+16:43:12.786 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O7 há 0s
+  O5 10.0.23.1 indicado por O6 há 10s
+  O7 10.0.20.10 indicado por O6 há 10s
+16:43:17.784 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:43:17.789 [O10] WARNING ligação a O6 (10.0.20.1) falhou: [Errno 111] Connection refused
+16:43:22.782 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:43:22.783 [O10] WARNING ligação a O6 (10.0.20.1) falhou: [Errno 111] Connection refused
+16:43:22.783 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O7 10.0.20.10 up dinâmico iniciada por mim há 19s fila=0
+  estáticos sem ligação: O6
+16:43:22.784 [O10] INFO Métricas de O10: 1 vizinhos
+  O7 srtt=1.00 ms rttvar=1.01 ms perda=0.0% amostras=93 capacidade=132.8 Mbit/s custo=2.66 ms
+16:43:22.784 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O7 há 0s
+  O5 10.0.23.1 indicado por O6 há 20s
+  O7 10.0.20.10 indicado por O6 há 20s
+16:43:27.783 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:43:27.785 [O10] WARNING ligação a O6 (10.0.20.1) falhou: [Errno 111] Connection refused
+16:43:32.782 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:43:32.785 [O10] INFO Estado de O10: 2 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 connecting estático iniciada por mim há - fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 29s fila=0
+16:43:32.786 [O10] INFO Métricas de O10: 1 vizinhos
+  O7 srtt=0.98 ms rttvar=0.38 ms perda=0.0% amostras=143 capacidade=158.4 Mbit/s custo=2.00 ms
+16:43:32.787 [O10] WARNING ligação a O6 (10.0.20.1) falhou: [Errno 111] Connection refused
+16:43:32.787 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O7 há 0s
+  O5 10.0.23.1 indicado por O6 há 30s
+  O7 10.0.20.10 indicado por O6 há 30s
+16:43:37.783 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:43:37.785 [O10] WARNING ligação a O6 (10.0.20.1) falhou: [Errno 111] Connection refused
+16:43:38.978 [O10] INFO ligação a O6 (10.0.20.1) estabelecida, iniciada por O6
+16:43:38.979 [O10] DEBUG evento: vizinho O6 up
+16:43:42.785 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 4s fila=1
+  O7 10.0.20.10 up dinâmico iniciada por mim há 39s fila=1
+16:43:42.792 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=1.39 ms rttvar=1.40 ms perda=0.0% amostras=20 capacidade=- custo=3.09 ms
+  O7 srtt=1.97 ms rttvar=1.78 ms perda=0.0% amostras=193 capacidade=79.7 Mbit/s custo=4.01 ms
+16:43:42.793 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O7 há 0s
+  O5 10.0.23.1 indicado por O6 há 4s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 4s
+16:43:52.783 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 14s fila=1
+  O7 10.0.20.10 up dinâmico iniciada por mim há 49s fila=0
+16:43:52.785 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=0.69 ms rttvar=0.26 ms perda=0.0% amostras=70 capacidade=123.0 Mbit/s custo=1.77 ms
+  O7 srtt=0.91 ms rttvar=0.21 ms perda=0.0% amostras=243 capacidade=63.0 Mbit/s custo=1.98 ms
+16:43:52.785 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O7 há 0s
+  O5 10.0.23.1 indicado por O6 há 4s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 4s
+16:44:02.782 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 24s fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 59s fila=0
+16:44:02.783 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=0.51 ms rttvar=0.13 ms perda=0.0% amostras=120 capacidade=105.0 Mbit/s custo=1.58 ms
+  O7 srtt=0.66 ms rttvar=0.19 ms perda=0.0% amostras=293 capacidade=105.2 Mbit/s custo=1.70 ms
+16:44:02.784 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O7 há 0s
+  O5 10.0.23.1 indicado por O6 há 4s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 4s
+16:44:12.782 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 34s fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 69s fila=0
+16:44:12.783 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=0.52 ms rttvar=0.15 ms perda=0.0% amostras=170 capacidade=164.8 Mbit/s custo=1.53 ms
+  O7 srtt=0.75 ms rttvar=0.22 ms perda=0.0% amostras=343 capacidade=105.2 Mbit/s custo=1.79 ms
+16:44:12.784 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O7 há 0s
+  O5 10.0.23.1 indicado por O6 há 4s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 4s
+16:44:22.783 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 44s fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 79s fila=0
+16:44:22.784 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=0.43 ms rttvar=0.09 ms perda=0.0% amostras=220 capacidade=159.7 Mbit/s custo=1.43 ms
+  O7 srtt=0.63 ms rttvar=0.18 ms perda=0.0% amostras=393 capacidade=150.8 Mbit/s custo=1.63 ms
+16:44:22.784 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O7 há 0s
+  O5 10.0.23.1 indicado por O6 há 4s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 4s
+16:44:32.782 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 54s fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 89s fila=0
+16:44:32.783 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=0.51 ms rttvar=0.16 ms perda=0.0% amostras=270 capacidade=150.0 Mbit/s custo=1.55 ms
+  O7 srtt=0.66 ms rttvar=0.21 ms perda=0.0% amostras=443 capacidade=150.8 Mbit/s custo=1.67 ms
+16:44:32.784 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O7 há 0s
+  O5 10.0.23.1 indicado por O6 há 4s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 4s
+16:44:42.785 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 64s fila=1
+  O7 10.0.20.10 up dinâmico iniciada por mim há 99s fila=1
+16:44:42.788 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=1.13 ms rttvar=1.31 ms perda=0.0% amostras=320 capacidade=150.0 Mbit/s custo=3.00 ms
+  O7 srtt=1.26 ms rttvar=1.40 ms perda=0.0% amostras=493 capacidade=149.5 Mbit/s custo=3.16 ms
+16:44:42.789 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O7 há 5s
+  O5 10.0.23.1 indicado por O6 há 4s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 4s
+16:44:52.783 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 74s fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 109s fila=0
+16:44:52.786 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=0.52 ms rttvar=0.28 ms perda=0.0% amostras=370 capacidade=169.5 Mbit/s custo=1.66 ms
+  O7 srtt=0.73 ms rttvar=0.26 ms perda=0.0% amostras=543 capacidade=91.4 Mbit/s custo=1.84 ms
+16:44:52.786 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O7 há 15s
+  O5 10.0.23.1 indicado por O6 há 4s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 4s
+16:45:02.785 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 84s fila=1
+  O7 10.0.20.10 up dinâmico iniciada por mim há 119s fila=1
+16:45:02.789 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=1.39 ms rttvar=1.71 ms perda=0.0% amostras=420 capacidade=91.8 Mbit/s custo=3.62 ms
+  O7 srtt=1.56 ms rttvar=1.64 ms perda=0.0% amostras=593 capacidade=51.6 Mbit/s custo=3.81 ms
+16:45:02.790 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O6 há 2s
+  O5 10.0.23.1 indicado por O6 há 2s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 2s
+16:45:12.783 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 94s fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 129s fila=0
+16:45:12.786 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=0.41 ms rttvar=0.16 ms perda=0.0% amostras=470 capacidade=111.3 Mbit/s custo=1.54 ms
+  O7 srtt=0.56 ms rttvar=0.19 ms perda=0.0% amostras=643 capacidade=46.8 Mbit/s custo=1.90 ms
+16:45:12.787 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O6 há 4s
+  O5 10.0.23.1 indicado por O6 há 4s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 4s
+16:45:22.782 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 104s fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 139s fila=0
+16:45:22.783 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=0.43 ms rttvar=0.11 ms perda=0.0% amostras=520 capacidade=131.1 Mbit/s custo=1.48 ms
+  O7 srtt=0.63 ms rttvar=0.14 ms perda=0.0% amostras=693 capacidade=26.8 Mbit/s custo=2.20 ms
+16:45:22.784 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O6 há 4s
+  O5 10.0.23.1 indicado por O6 há 4s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 4s
+16:45:32.782 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 114s fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 149s fila=0
+16:45:32.783 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=0.51 ms rttvar=0.20 ms perda=0.0% amostras=570 capacidade=111.3 Mbit/s custo=1.63 ms
+  O7 srtt=0.66 ms rttvar=0.26 ms perda=0.0% amostras=743 capacidade=67.5 Mbit/s custo=1.88 ms
+16:45:32.784 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O6 há 4s
+  O5 10.0.23.1 indicado por O6 há 4s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 4s
+16:45:42.783 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 124s fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 159s fila=0
+16:45:42.783 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=0.40 ms rttvar=0.12 ms perda=0.0% amostras=620 capacidade=105.9 Mbit/s custo=1.50 ms
+  O7 srtt=0.52 ms rttvar=0.12 ms perda=0.0% amostras=793 capacidade=54.7 Mbit/s custo=1.75 ms
+16:45:42.784 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O6 há 4s
+  O5 10.0.23.1 indicado por O6 há 4s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 4s
+16:45:52.784 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 134s fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 169s fila=0
+16:45:52.785 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=0.52 ms rttvar=0.24 ms perda=0.0% amostras=670 capacidade=105.9 Mbit/s custo=1.69 ms
+  O7 srtt=0.79 ms rttvar=0.34 ms perda=0.0% amostras=843 capacidade=67.5 Mbit/s custo=2.03 ms
+16:45:52.786 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O6 há 4s
+  O5 10.0.23.1 indicado por O6 há 4s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 4s
+16:46:02.585 [O10] WARNING ligação a O6 perdida (sem resposta aos probes)
+16:46:02.587 [O10] DEBUG evento: vizinho O6 down (sem resposta aos probes)
+16:46:02.588 [O10] INFO perdi O6; vizinhos restantes: 1; sem aresta nova
+16:46:02.782 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:46:02.785 [O10] INFO Estado de O10: 2 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 connecting estático iniciada por mim há - fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 179s fila=0
+16:46:02.786 [O10] INFO Métricas de O10: 1 vizinhos
+  O7 srtt=1.00 ms rttvar=0.39 ms perda=0.0% amostras=893 capacidade=79.4 Mbit/s custo=2.14 ms
+16:46:02.787 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O6 há 4s
+  O5 10.0.23.1 indicado por O6 há 4s
+  O6 10.0.20.1 indicado por O7 há 5s
+  O7 10.0.20.10 indicado por O6 há 4s
+16:46:05.789 [O10] WARNING ligação a O6 (10.0.20.1) falhou: timed out
+16:46:07.783 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:46:10.792 [O10] WARNING ligação a O6 (10.0.20.1) falhou: timed out
+16:46:12.782 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:46:12.784 [O10] INFO Estado de O10: 2 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 connecting estático iniciada por mim há - fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 189s fila=0
+16:46:12.785 [O10] INFO Métricas de O10: 1 vizinhos
+  O7 srtt=0.61 ms rttvar=0.20 ms perda=0.0% amostras=943 capacidade=64.4 Mbit/s custo=1.81 ms
+16:46:12.785 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O6 há 14s
+  O5 10.0.23.1 indicado por O6 há 14s
+  O6 10.0.20.1 indicado por O7 há 15s
+  O7 10.0.20.10 indicado por O6 há 14s
+16:46:15.789 [O10] WARNING ligação a O6 (10.0.20.1) falhou: timed out
+16:46:17.782 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:46:20.788 [O10] WARNING ligação a O6 (10.0.20.1) falhou: timed out
+16:46:22.783 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:46:22.785 [O10] INFO Estado de O10: 2 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 connecting estático iniciada por mim há - fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 199s fila=0
+16:46:22.786 [O10] INFO Métricas de O10: 1 vizinhos
+  O7 srtt=0.66 ms rttvar=0.20 ms perda=0.0% amostras=993 capacidade=79.4 Mbit/s custo=1.78 ms
+16:46:22.786 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O6 há 24s
+  O5 10.0.23.1 indicado por O6 há 24s
+  O6 10.0.20.1 indicado por O7 há 25s
+  O7 10.0.20.10 indicado por O6 há 24s
+16:46:25.787 [O10] WARNING ligação a O6 (10.0.20.1) falhou: timed out
+16:46:27.782 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:46:30.787 [O10] WARNING ligação a O6 (10.0.20.1) falhou: timed out
+16:46:32.783 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:46:32.786 [O10] INFO Estado de O10: 2 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 connecting estático iniciada por mim há - fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 209s fila=0
+16:46:32.786 [O10] INFO Métricas de O10: 1 vizinhos
+  O7 srtt=0.72 ms rttvar=0.25 ms perda=0.0% amostras=1043 capacidade=79.4 Mbit/s custo=1.86 ms
+16:46:32.787 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O6 há 34s
+  O5 10.0.23.1 indicado por O6 há 34s
+  O6 10.0.20.1 indicado por O7 há 35s
+  O7 10.0.20.10 indicado por O6 há 34s
+16:46:35.790 [O10] WARNING ligação a O6 (10.0.20.1) falhou: timed out
+16:46:37.782 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:46:40.790 [O10] WARNING ligação a O6 (10.0.20.1) falhou: timed out
+16:46:42.782 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:46:42.784 [O10] INFO Estado de O10: 2 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 connecting estático iniciada por mim há - fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 219s fila=0
+16:46:42.785 [O10] INFO Métricas de O10: 1 vizinhos
+  O7 srtt=0.63 ms rttvar=0.16 ms perda=0.0% amostras=1093 capacidade=135.1 Mbit/s custo=1.62 ms
+16:46:42.785 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O6 há 44s
+  O5 10.0.23.1 indicado por O6 há 44s
+  O6 10.0.20.1 indicado por O7 há 45s
+  O7 10.0.20.10 indicado por O6 há 44s
+16:46:45.786 [O10] WARNING ligação a O6 (10.0.20.1) falhou: timed out
+16:46:47.783 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+16:46:50.790 [O10] WARNING ligação a O6 (10.0.20.1) falhou: timed out
+16:46:52.029 [O10] INFO ligação a O6 (10.0.20.1) estabelecida, iniciada por O6
+16:46:52.032 [O10] DEBUG evento: vizinho O6 up
+16:46:52.782 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 1s fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 229s fila=0
+16:46:52.783 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=0.43 ms rttvar=0.20 ms perda=0.0% amostras=4 capacidade=- custo=50.00 ms
+  O7 srtt=0.69 ms rttvar=0.51 ms perda=0.0% amostras=1143 capacidade=135.1 Mbit/s custo=2.00 ms
+16:46:52.783 [O10] INFO Candidatos de O10: 4
+  O4 10.0.22.1 indicado por O6 há 0s
+  O5 10.0.23.1 indicado por O6 há 54s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 0s
+16:47:02.785 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 11s fila=1
+  O7 10.0.20.10 up dinâmico iniciada por mim há 239s fila=1
+16:47:02.803 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=2.96 ms rttvar=4.91 ms perda=0.0% amostras=54 capacidade=49.8 Mbit/s custo=7.79 ms
+  O7 srtt=2.98 ms rttvar=4.56 ms perda=0.0% amostras=1193 capacidade=135.1 Mbit/s custo=7.19 ms
+16:47:02.803 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 1s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 1s
+16:47:12.783 [O10] INFO Estado de O10: 2 vizinhos (2 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 21s fila=0
+  O7 10.0.20.10 up dinâmico iniciada por mim há 249s fila=0
+16:47:12.784 [O10] INFO Métricas de O10: 2 vizinhos
+  O6 srtt=0.37 ms rttvar=0.16 ms perda=0.0% amostras=104 capacidade=93.6 Mbit/s custo=1.55 ms
+  O7 srtt=0.50 ms rttvar=0.20 ms perda=0.0% amostras=1243 capacidade=135.1 Mbit/s custo=1.60 ms
+16:47:12.784 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 indicado por O6 há 1s
+  O6 10.0.20.1 indicado por O7 há 0s
+  O7 10.0.20.10 indicado por O6 há 1s
