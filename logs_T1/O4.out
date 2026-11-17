@@ -1,0 +1,1086 @@
+--- 2026-11-16 19:39:32 arranque de O4 no n7
+19:39:32.600 [O4] INFO vizinhos estáticos: O2 (10.0.24.1), O5 (10.0.23.1), O6 (10.0.20.1), O8 (10.0.22.11)
+19:39:32.601 [O4] INFO probes à escuta em 0.0.0.0:5002
+19:39:32.601 [O4] INFO controlo à escuta em 0.0.0.0:5000
+19:39:32.602 [O4] INFO a ligar a O2 (10.0.24.1)
+19:39:32.602 [O4] INFO a ligar a O5 (10.0.23.1)
+19:39:32.603 [O4] WARNING ligação a O5 (10.0.23.1) falhou: [Errno 111] Connection refused
+19:39:32.603 [O4] INFO a ligar a O6 (10.0.20.1)
+19:39:32.604 [O4] WARNING ligação a O6 (10.0.20.1) falhou: [Errno 111] Connection refused
+19:39:32.604 [O4] INFO a ligar a O8 (10.0.22.11)
+19:39:32.606 [O4] WARNING ligação a O8 (10.0.22.11) falhou: [Errno 111] Connection refused
+19:39:32.606 [O4] INFO ligação a O2 (10.0.24.1) estabelecida, iniciada por mim
+19:39:32.607 [O4] DEBUG evento: vizinho O2 up
+19:39:32.746 [O4] INFO ligação a O5 (10.0.23.1) estabelecida, iniciada por O5
+19:39:32.747 [O4] DEBUG evento: vizinho O5 up
+19:39:33.081 [O4] INFO ligação a O6 (10.0.20.1) estabelecida, iniciada por O6
+19:39:33.083 [O4] DEBUG evento: vizinho O6 up
+19:39:33.261 [O4] INFO ligação a O8 (10.0.22.11) estabelecida, iniciada por O8
+19:39:33.262 [O4] DEBUG evento: vizinho O8 up
+19:39:42.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 10s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 10s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 10s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 9s fila=0
+19:39:42.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.82 ms rttvar=0.39 ms perda=0.0% amostras=50 capacidade=172.3 Mbit/s custo=1.92 ms
+  O5 srtt=0.78 ms rttvar=0.33 ms perda=0.0% amostras=50 capacidade=304.8 Mbit/s custo=1.79 ms
+  O6 srtt=0.80 ms rttvar=0.39 ms perda=0.0% amostras=48 capacidade=252.4 Mbit/s custo=1.87 ms
+  O8 srtt=0.74 ms rttvar=0.52 ms perda=0.0% amostras=47 capacidade=463.6 Mbit/s custo=1.93 ms
+19:39:42.606 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:39:52.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 20s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 20s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 20s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 19s fila=0
+19:39:52.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.64 ms rttvar=0.22 ms perda=0.0% amostras=100 capacidade=181.0 Mbit/s custo=1.65 ms
+  O5 srtt=0.65 ms rttvar=0.30 ms perda=0.0% amostras=100 capacidade=508.6 Mbit/s custo=1.66 ms
+  O6 srtt=0.56 ms rttvar=0.23 ms perda=0.0% amostras=98 capacidade=252.4 Mbit/s custo=1.59 ms
+  O8 srtt=0.63 ms rttvar=0.39 ms perda=0.0% amostras=97 capacidade=463.6 Mbit/s custo=1.75 ms
+19:39:52.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:40:02.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 30s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 30s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 30s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 29s fila=0
+19:40:02.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.46 ms rttvar=0.17 ms perda=0.0% amostras=150 capacidade=181.0 Mbit/s custo=1.51 ms
+  O5 srtt=0.53 ms rttvar=0.26 ms perda=0.0% amostras=150 capacidade=486.1 Mbit/s custo=1.56 ms
+  O6 srtt=0.46 ms rttvar=0.25 ms perda=0.0% amostras=148 capacidade=252.4 Mbit/s custo=1.55 ms
+  O8 srtt=0.46 ms rttvar=0.37 ms perda=0.0% amostras=147 capacidade=463.6 Mbit/s custo=1.65 ms
+19:40:02.606 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:40:12.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 40s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 40s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 40s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 39s fila=0
+19:40:12.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.58 ms rttvar=0.21 ms perda=0.0% amostras=200 capacidade=181.0 Mbit/s custo=1.61 ms
+  O5 srtt=0.49 ms rttvar=0.21 ms perda=0.0% amostras=200 capacidade=478.0 Mbit/s custo=1.49 ms
+  O6 srtt=0.46 ms rttvar=0.21 ms perda=0.0% amostras=198 capacidade=313.1 Mbit/s custo=1.50 ms
+  O8 srtt=0.41 ms rttvar=0.22 ms perda=0.0% amostras=197 capacidade=437.2 Mbit/s custo=1.47 ms
+19:40:12.606 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:40:22.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 50s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 50s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 50s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 49s fila=0
+19:40:22.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.78 ms rttvar=0.58 ms perda=0.0% amostras=250 capacidade=254.3 Mbit/s custo=2.05 ms
+  O5 srtt=0.54 ms rttvar=0.23 ms perda=0.0% amostras=250 capacidade=475.1 Mbit/s custo=1.54 ms
+  O6 srtt=0.47 ms rttvar=0.25 ms perda=0.0% amostras=248 capacidade=347.0 Mbit/s custo=1.55 ms
+  O8 srtt=0.43 ms rttvar=0.28 ms perda=0.0% amostras=247 capacidade=437.2 Mbit/s custo=1.54 ms
+19:40:22.606 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:40:32.606 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 60s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 60s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 60s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 59s fila=0
+19:40:32.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.74 ms rttvar=0.36 ms perda=0.0% amostras=300 capacidade=263.0 Mbit/s custo=1.81 ms
+  O5 srtt=0.64 ms rttvar=0.33 ms perda=0.0% amostras=300 capacidade=455.4 Mbit/s custo=1.70 ms
+  O6 srtt=0.55 ms rttvar=0.41 ms perda=0.0% amostras=298 capacidade=353.9 Mbit/s custo=1.74 ms
+  O8 srtt=0.52 ms rttvar=0.36 ms perda=0.0% amostras=297 capacidade=466.4 Mbit/s custo=1.66 ms
+19:40:32.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:40:42.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 70s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 70s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 70s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 69s fila=0
+19:40:42.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.65 ms rttvar=0.31 ms perda=0.0% amostras=350 capacidade=263.0 Mbit/s custo=1.71 ms
+  O5 srtt=0.47 ms rttvar=0.16 ms perda=0.0% amostras=350 capacidade=435.6 Mbit/s custo=1.45 ms
+  O6 srtt=0.50 ms rttvar=0.31 ms perda=0.0% amostras=348 capacidade=343.9 Mbit/s custo=1.61 ms
+  O8 srtt=0.38 ms rttvar=0.18 ms perda=0.0% amostras=347 capacidade=437.2 Mbit/s custo=1.42 ms
+19:40:42.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:40:52.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 80s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 80s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 80s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 79s fila=0
+19:40:52.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.66 ms rttvar=0.34 ms perda=0.0% amostras=400 capacidade=337.8 Mbit/s custo=1.73 ms
+  O5 srtt=0.55 ms rttvar=0.26 ms perda=0.0% amostras=400 capacidade=364.0 Mbit/s custo=1.59 ms
+  O6 srtt=0.48 ms rttvar=0.27 ms perda=0.0% amostras=398 capacidade=353.9 Mbit/s custo=1.57 ms
+  O8 srtt=0.46 ms rttvar=0.30 ms perda=0.0% amostras=397 capacidade=466.4 Mbit/s custo=1.57 ms
+19:40:52.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:41:02.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 90s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 90s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 90s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 89s fila=0
+19:41:02.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.64 ms rttvar=0.25 ms perda=0.0% amostras=450 capacidade=353.4 Mbit/s custo=1.63 ms
+  O5 srtt=0.43 ms rttvar=0.16 ms perda=0.0% amostras=450 capacidade=349.1 Mbit/s custo=1.43 ms
+  O6 srtt=0.34 ms rttvar=0.16 ms perda=0.0% amostras=448 capacidade=352.9 Mbit/s custo=1.39 ms
+  O8 srtt=0.40 ms rttvar=0.26 ms perda=0.0% amostras=447 capacidade=477.0 Mbit/s custo=1.50 ms
+19:41:02.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:41:12.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 100s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 100s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 100s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 99s fila=0
+19:41:12.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=1.06 ms rttvar=0.72 ms perda=0.0% amostras=500 capacidade=316.1 Mbit/s custo=2.32 ms
+  O5 srtt=0.89 ms rttvar=0.68 ms perda=0.0% amostras=500 capacidade=352.3 Mbit/s custo=2.18 ms
+  O6 srtt=0.83 ms rttvar=0.66 ms perda=0.0% amostras=498 capacidade=353.9 Mbit/s custo=2.13 ms
+  O8 srtt=0.79 ms rttvar=0.67 ms perda=0.0% amostras=497 capacidade=466.4 Mbit/s custo=2.10 ms
+19:41:12.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:41:22.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 110s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 110s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 110s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 109s fila=0
+19:41:22.608 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.78 ms rttvar=0.63 ms perda=0.0% amostras=550 capacidade=315.2 Mbit/s custo=2.08 ms
+  O5 srtt=0.82 ms rttvar=0.68 ms perda=0.0% amostras=550 capacidade=364.0 Mbit/s custo=2.14 ms
+  O6 srtt=0.62 ms rttvar=0.59 ms perda=0.0% amostras=548 capacidade=358.3 Mbit/s custo=1.96 ms
+  O8 srtt=0.65 ms rttvar=0.67 ms perda=0.0% amostras=547 capacidade=430.7 Mbit/s custo=2.04 ms
+19:41:22.609 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:41:32.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 120s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 120s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 120s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 119s fila=0
+19:41:32.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.53 ms rttvar=0.24 ms perda=0.0% amostras=600 capacidade=316.1 Mbit/s custo=1.56 ms
+  O5 srtt=0.57 ms rttvar=0.31 ms perda=0.0% amostras=600 capacidade=346.5 Mbit/s custo=1.65 ms
+  O6 srtt=0.50 ms rttvar=0.33 ms perda=0.0% amostras=598 capacidade=352.9 Mbit/s custo=1.64 ms
+  O8 srtt=0.46 ms rttvar=0.37 ms perda=0.0% amostras=597 capacidade=430.7 Mbit/s custo=1.65 ms
+19:41:32.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:41:42.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 130s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 130s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 130s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 129s fila=0
+19:41:42.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.72 ms rttvar=0.40 ms perda=0.0% amostras=650 capacidade=269.2 Mbit/s custo=1.83 ms
+  O5 srtt=0.61 ms rttvar=0.38 ms perda=0.0% amostras=650 capacidade=313.1 Mbit/s custo=1.75 ms
+  O6 srtt=0.56 ms rttvar=0.37 ms perda=0.0% amostras=648 capacidade=337.4 Mbit/s custo=1.71 ms
+  O8 srtt=0.51 ms rttvar=0.37 ms perda=0.0% amostras=647 capacidade=430.7 Mbit/s custo=1.67 ms
+19:41:42.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:41:52.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 140s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 140s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 140s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 139s fila=0
+19:41:52.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.67 ms rttvar=0.29 ms perda=0.0% amostras=700 capacidade=209.8 Mbit/s custo=1.72 ms
+  O5 srtt=0.59 ms rttvar=0.29 ms perda=0.0% amostras=700 capacidade=342.9 Mbit/s custo=1.65 ms
+  O6 srtt=0.60 ms rttvar=0.27 ms perda=0.0% amostras=698 capacidade=337.4 Mbit/s custo=1.63 ms
+  O8 srtt=0.69 ms rttvar=0.53 ms perda=0.0% amostras=697 capacidade=452.7 Mbit/s custo=1.92 ms
+19:41:52.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:42:02.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 150s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 150s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 150s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 149s fila=0
+19:42:02.608 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=1.14 ms rttvar=1.02 ms perda=0.0% amostras=750 capacidade=203.9 Mbit/s custo=2.69 ms
+  O5 srtt=1.24 ms rttvar=0.91 ms perda=0.0% amostras=750 capacidade=247.5 Mbit/s custo=2.61 ms
+  O6 srtt=1.12 ms rttvar=1.11 ms perda=0.0% amostras=748 capacidade=337.4 Mbit/s custo=2.73 ms
+  O8 srtt=0.99 ms rttvar=0.89 ms perda=0.0% amostras=747 capacidade=415.2 Mbit/s custo=2.43 ms
+19:42:02.608 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 152s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 152s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 151s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 151s fila=0
+19:42:12.606 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 160s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 160s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 160s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 159s fila=0
+19:42:12.608 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.98 ms rttvar=0.90 ms perda=0.0% amostras=800 capacidade=155.1 Mbit/s custo=2.51 ms
+  O5 srtt=0.89 ms rttvar=0.94 ms perda=0.0% amostras=800 capacidade=224.6 Mbit/s custo=2.48 ms
+  O6 srtt=0.82 ms rttvar=0.92 ms perda=0.0% amostras=798 capacidade=335.4 Mbit/s custo=2.39 ms
+  O8 srtt=1.32 ms rttvar=1.92 ms perda=0.0% amostras=797 capacidade=415.2 Mbit/s custo=3.63 ms
+19:42:12.608 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:42:22.618 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 170s fila=1
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 170s fila=1
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 170s fila=1
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 169s fila=1
+19:42:22.625 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=1.33 ms rttvar=1.75 ms perda=0.0% amostras=850 capacidade=153.3 Mbit/s custo=3.54 ms
+  O5 srtt=1.64 ms rttvar=2.01 ms perda=0.0% amostras=850 capacidade=217.8 Mbit/s custo=3.92 ms
+  O6 srtt=1.47 ms rttvar=2.10 ms perda=0.0% amostras=848 capacidade=337.4 Mbit/s custo=3.89 ms
+  O8 srtt=1.18 ms rttvar=1.76 ms perda=0.0% amostras=847 capacidade=415.2 Mbit/s custo=3.40 ms
+19:42:22.626 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:42:32.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 180s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 180s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 180s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 179s fila=0
+19:42:32.608 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=1.16 ms rttvar=0.90 ms perda=0.0% amostras=900 capacidade=153.3 Mbit/s custo=2.61 ms
+  O5 srtt=0.92 ms rttvar=0.74 ms perda=0.0% amostras=900 capacidade=207.3 Mbit/s custo=2.30 ms
+  O6 srtt=0.83 ms rttvar=0.70 ms perda=0.0% amostras=898 capacidade=300.8 Mbit/s custo=2.18 ms
+  O8 srtt=0.86 ms rttvar=0.72 ms perda=0.0% amostras=897 capacidade=387.9 Mbit/s custo=2.20 ms
+19:42:32.609 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:42:42.607 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 190s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 190s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 190s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 189s fila=0
+19:42:42.608 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.79 ms rttvar=0.56 ms perda=0.0% amostras=950 capacidade=153.3 Mbit/s custo=2.09 ms
+  O5 srtt=0.71 ms rttvar=0.55 ms perda=0.0% amostras=950 capacidade=286.7 Mbit/s custo=1.97 ms
+  O6 srtt=0.68 ms rttvar=0.63 ms perda=0.0% amostras=948 capacidade=300.8 Mbit/s custo=2.03 ms
+  O8 srtt=0.85 ms rttvar=0.59 ms perda=0.0% amostras=947 capacidade=399.5 Mbit/s custo=2.06 ms
+19:42:42.609 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:42:52.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 200s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 200s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 200s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 199s fila=0
+19:42:52.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.52 ms rttvar=0.23 ms perda=0.0% amostras=1000 capacidade=135.5 Mbit/s custo=1.64 ms
+  O5 srtt=0.59 ms rttvar=0.25 ms perda=0.0% amostras=1000 capacidade=286.7 Mbit/s custo=1.61 ms
+  O6 srtt=0.49 ms rttvar=0.23 ms perda=0.0% amostras=998 capacidade=318.0 Mbit/s custo=1.54 ms
+  O8 srtt=0.61 ms rttvar=0.48 ms perda=0.0% amostras=997 capacidade=446.8 Mbit/s custo=1.83 ms
+19:42:52.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:43:02.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 210s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 210s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 210s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 209s fila=0
+19:43:02.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=1.48 ms rttvar=0.81 ms perda=0.0% amostras=1050 capacidade=138.8 Mbit/s custo=2.70 ms
+  O5 srtt=1.03 ms rttvar=0.47 ms perda=0.0% amostras=1050 capacidade=286.7 Mbit/s custo=2.05 ms
+  O6 srtt=1.40 ms rttvar=0.71 ms perda=0.0% amostras=1048 capacidade=318.0 Mbit/s custo=2.47 ms
+  O8 srtt=1.26 ms rttvar=0.91 ms perda=0.0% amostras=1047 capacidade=413.1 Mbit/s custo=2.59 ms
+19:43:02.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:43:12.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 220s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 220s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 220s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 219s fila=0
+19:43:12.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.65 ms rttvar=0.25 ms perda=0.0% amostras=1100 capacidade=135.5 Mbit/s custo=1.72 ms
+  O5 srtt=0.74 ms rttvar=0.33 ms perda=0.0% amostras=1100 capacidade=265.0 Mbit/s custo=1.78 ms
+  O6 srtt=0.59 ms rttvar=0.43 ms perda=0.0% amostras=1098 capacidade=298.2 Mbit/s custo=1.79 ms
+  O8 srtt=0.62 ms rttvar=0.32 ms perda=0.0% amostras=1097 capacidade=419.9 Mbit/s custo=1.68 ms
+19:43:12.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:43:22.606 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 230s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 230s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 230s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 229s fila=0
+19:43:22.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.73 ms rttvar=0.33 ms perda=0.0% amostras=1150 capacidade=130.8 Mbit/s custo=1.85 ms
+  O5 srtt=0.53 ms rttvar=0.27 ms perda=0.0% amostras=1150 capacidade=265.0 Mbit/s custo=1.61 ms
+  O6 srtt=0.51 ms rttvar=0.26 ms perda=0.0% amostras=1148 capacidade=296.7 Mbit/s custo=1.59 ms
+  O8 srtt=0.51 ms rttvar=0.22 ms perda=0.0% amostras=1147 capacidade=446.8 Mbit/s custo=1.52 ms
+19:43:22.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:43:32.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 240s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 240s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 240s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 239s fila=0
+19:43:32.608 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.71 ms rttvar=0.52 ms perda=0.0% amostras=1200 capacidade=130.8 Mbit/s custo=2.03 ms
+  O5 srtt=0.64 ms rttvar=0.48 ms perda=0.0% amostras=1200 capacidade=265.0 Mbit/s custo=1.88 ms
+  O6 srtt=0.57 ms rttvar=0.47 ms perda=0.0% amostras=1198 capacidade=296.3 Mbit/s custo=1.83 ms
+  O8 srtt=0.55 ms rttvar=0.50 ms perda=0.0% amostras=1197 capacidade=419.9 Mbit/s custo=1.82 ms
+19:43:32.608 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:43:42.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 250s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 250s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 250s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 249s fila=0
+19:43:42.611 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.61 ms rttvar=0.21 ms perda=0.0% amostras=1250 capacidade=115.6 Mbit/s custo=1.69 ms
+  O5 srtt=0.46 ms rttvar=0.12 ms perda=0.0% amostras=1250 capacidade=265.0 Mbit/s custo=1.43 ms
+  O6 srtt=0.35 ms rttvar=0.14 ms perda=0.0% amostras=1248 capacidade=296.7 Mbit/s custo=1.39 ms
+  O8 srtt=0.35 ms rttvar=0.13 ms perda=0.0% amostras=1247 capacidade=443.3 Mbit/s custo=1.35 ms
+19:43:42.611 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:43:52.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 260s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 260s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 260s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 259s fila=0
+19:43:52.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.60 ms rttvar=0.18 ms perda=0.0% amostras=1300 capacidade=115.6 Mbit/s custo=1.65 ms
+  O5 srtt=0.57 ms rttvar=0.22 ms perda=0.0% amostras=1300 capacidade=297.8 Mbit/s custo=1.57 ms
+  O6 srtt=0.43 ms rttvar=0.15 ms perda=0.0% amostras=1298 capacidade=332.2 Mbit/s custo=1.43 ms
+  O8 srtt=0.39 ms rttvar=0.14 ms perda=0.0% amostras=1297 capacidade=443.3 Mbit/s custo=1.38 ms
+19:43:52.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:44:02.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 270s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 270s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 270s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 269s fila=0
+19:44:02.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.68 ms rttvar=0.32 ms perda=0.0% amostras=1350 capacidade=115.6 Mbit/s custo=1.84 ms
+  O5 srtt=0.86 ms rttvar=0.54 ms perda=0.0% amostras=1350 capacidade=379.8 Mbit/s custo=2.02 ms
+  O6 srtt=0.55 ms rttvar=0.22 ms perda=0.0% amostras=1348 capacidade=334.6 Mbit/s custo=1.56 ms
+  O8 srtt=0.51 ms rttvar=0.22 ms perda=0.0% amostras=1347 capacidade=435.8 Mbit/s custo=1.52 ms
+19:44:02.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:44:12.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 280s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 280s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 280s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 279s fila=0
+19:44:12.617 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.66 ms rttvar=0.26 ms perda=0.0% amostras=1400 capacidade=130.3 Mbit/s custo=1.75 ms
+  O5 srtt=0.52 ms rttvar=0.24 ms perda=0.0% amostras=1400 capacidade=379.8 Mbit/s custo=1.55 ms
+  O6 srtt=0.49 ms rttvar=0.23 ms perda=0.0% amostras=1398 capacidade=342.0 Mbit/s custo=1.53 ms
+  O8 srtt=0.47 ms rttvar=0.25 ms perda=0.0% amostras=1397 capacidade=443.3 Mbit/s custo=1.53 ms
+19:44:12.621 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:44:22.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 290s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 290s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 290s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 289s fila=0
+19:44:22.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.52 ms rttvar=0.08 ms perda=0.0% amostras=1450 capacidade=134.7 Mbit/s custo=1.49 ms
+  O5 srtt=0.44 ms rttvar=0.09 ms perda=0.0% amostras=1450 capacidade=379.8 Mbit/s custo=1.37 ms
+  O6 srtt=0.40 ms rttvar=0.06 ms perda=0.0% amostras=1448 capacidade=342.0 Mbit/s custo=1.31 ms
+  O8 srtt=0.39 ms rttvar=0.07 ms perda=0.0% amostras=1447 capacidade=447.6 Mbit/s custo=1.31 ms
+19:44:22.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:44:32.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 300s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 300s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 300s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 299s fila=0
+19:44:32.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.70 ms rttvar=0.28 ms perda=0.0% amostras=1500 capacidade=174.1 Mbit/s custo=1.74 ms
+  O5 srtt=0.56 ms rttvar=0.36 ms perda=0.0% amostras=1500 capacidade=379.8 Mbit/s custo=1.70 ms
+  O6 srtt=0.51 ms rttvar=0.32 ms perda=0.0% amostras=1498 capacidade=289.6 Mbit/s custo=1.64 ms
+  O8 srtt=0.51 ms rttvar=0.36 ms perda=0.0% amostras=1497 capacidade=435.8 Mbit/s custo=1.66 ms
+19:44:32.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:44:42.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 310s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 310s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 310s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 309s fila=0
+19:44:42.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.81 ms rttvar=0.79 ms perda=0.0% amostras=1550 capacidade=174.1 Mbit/s custo=2.31 ms
+  O5 srtt=0.69 ms rttvar=0.65 ms perda=0.0% amostras=1550 capacidade=343.6 Mbit/s custo=2.05 ms
+  O6 srtt=0.60 ms rttvar=0.52 ms perda=0.0% amostras=1548 capacidade=324.7 Mbit/s custo=1.88 ms
+  O8 srtt=0.74 ms rttvar=0.81 ms perda=0.0% amostras=1547 capacidade=447.6 Mbit/s custo=2.23 ms
+19:44:42.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:44:52.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 320s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 320s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 320s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 319s fila=0
+19:44:52.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.67 ms rttvar=0.43 ms perda=0.0% amostras=1600 capacidade=203.8 Mbit/s custo=1.87 ms
+  O5 srtt=0.67 ms rttvar=0.50 ms perda=0.0% amostras=1600 capacidade=335.1 Mbit/s custo=1.90 ms
+  O6 srtt=0.37 ms rttvar=0.15 ms perda=0.0% amostras=1598 capacidade=324.7 Mbit/s custo=1.40 ms
+  O8 srtt=0.52 ms rttvar=0.46 ms perda=0.0% amostras=1597 capacidade=463.8 Mbit/s custo=1.76 ms
+19:44:52.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:45:02.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 330s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 330s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 330s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 329s fila=0
+19:45:02.609 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.52 ms rttvar=0.11 ms perda=0.0% amostras=1650 capacidade=172.9 Mbit/s custo=1.49 ms
+  O5 srtt=0.46 ms rttvar=0.12 ms perda=0.0% amostras=1650 capacidade=335.1 Mbit/s custo=1.42 ms
+  O6 srtt=0.41 ms rttvar=0.12 ms perda=0.0% amostras=1648 capacidade=324.7 Mbit/s custo=1.38 ms
+  O8 srtt=0.38 ms rttvar=0.13 ms perda=0.0% amostras=1647 capacidade=434.1 Mbit/s custo=1.36 ms
+19:45:02.609 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:45:12.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 340s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 340s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 340s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 339s fila=0
+19:45:12.608 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.70 ms rttvar=0.23 ms perda=0.0% amostras=1700 capacidade=157.5 Mbit/s custo=1.71 ms
+  O5 srtt=0.67 ms rttvar=0.25 ms perda=0.0% amostras=1700 capacidade=346.6 Mbit/s custo=1.64 ms
+  O6 srtt=0.53 ms rttvar=0.19 ms perda=0.0% amostras=1698 capacidade=344.6 Mbit/s custo=1.51 ms
+  O8 srtt=0.54 ms rttvar=0.32 ms perda=0.0% amostras=1697 capacidade=356.9 Mbit/s custo=1.65 ms
+19:45:12.608 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:45:22.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 350s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 350s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 350s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 349s fila=0
+19:45:22.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=1.19 ms rttvar=0.98 ms perda=0.0% amostras=1750 capacidade=141.9 Mbit/s custo=2.72 ms
+  O5 srtt=1.08 ms rttvar=0.97 ms perda=0.0% amostras=1750 capacidade=346.6 Mbit/s custo=2.56 ms
+  O6 srtt=1.03 ms rttvar=0.87 ms perda=0.0% amostras=1748 capacidade=452.0 Mbit/s custo=2.42 ms
+  O8 srtt=0.91 ms rttvar=0.93 ms perda=0.0% amostras=1747 capacidade=322.4 Mbit/s custo=2.45 ms
+19:45:22.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:45:32.606 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 360s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 360s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 360s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 359s fila=0
+19:45:32.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.59 ms rttvar=0.27 ms perda=0.0% amostras=1800 capacidade=151.0 Mbit/s custo=1.70 ms
+  O5 srtt=0.49 ms rttvar=0.24 ms perda=0.0% amostras=1800 capacidade=346.6 Mbit/s custo=1.54 ms
+  O6 srtt=0.43 ms rttvar=0.24 ms perda=0.0% amostras=1798 capacidade=413.1 Mbit/s custo=1.50 ms
+  O8 srtt=0.40 ms rttvar=0.23 ms perda=0.0% amostras=1797 capacidade=342.5 Mbit/s custo=1.49 ms
+19:45:32.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:45:42.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 370s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 370s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 370s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 369s fila=0
+19:45:42.609 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.70 ms rttvar=0.21 ms perda=0.0% amostras=1850 capacidade=157.5 Mbit/s custo=1.69 ms
+  O5 srtt=0.62 ms rttvar=0.25 ms perda=0.0% amostras=1850 capacidade=469.5 Mbit/s custo=1.60 ms
+  O6 srtt=0.54 ms rttvar=0.23 ms perda=0.0% amostras=1848 capacidade=452.0 Mbit/s custo=1.55 ms
+  O8 srtt=0.50 ms rttvar=0.25 ms perda=0.0% amostras=1847 capacidade=356.9 Mbit/s custo=1.56 ms
+19:45:42.610 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:45:52.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 380s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 380s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 380s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 379s fila=0
+19:45:52.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.59 ms rttvar=0.14 ms perda=0.0% amostras=1900 capacidade=157.5 Mbit/s custo=1.56 ms
+  O5 srtt=0.43 ms rttvar=0.18 ms perda=0.0% amostras=1900 capacidade=467.6 Mbit/s custo=1.43 ms
+  O6 srtt=0.35 ms rttvar=0.19 ms perda=0.0% amostras=1898 capacidade=413.1 Mbit/s custo=1.42 ms
+  O8 srtt=0.36 ms rttvar=0.11 ms perda=0.0% amostras=1897 capacidade=379.8 Mbit/s custo=1.34 ms
+19:45:52.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:46:02.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 390s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 390s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 390s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 389s fila=0
+19:46:02.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=1.71 ms rttvar=1.45 ms perda=0.0% amostras=1948 capacidade=151.0 Mbit/s custo=3.44 ms
+  O5 srtt=1.19 ms rttvar=1.09 ms perda=0.0% amostras=1948 capacidade=504.4 Mbit/s custo=2.73 ms
+  O6 srtt=1.10 ms rttvar=0.96 ms perda=0.0% amostras=1946 capacidade=358.0 Mbit/s custo=2.57 ms
+  O8 srtt=0.97 ms rttvar=0.80 ms perda=0.0% amostras=1945 capacidade=435.8 Mbit/s custo=2.33 ms
+19:46:02.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:46:12.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 400s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 400s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 400s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 399s fila=0
+19:46:12.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.61 ms rttvar=0.24 ms perda=0.0% amostras=1998 capacidade=158.9 Mbit/s custo=1.68 ms
+  O5 srtt=0.53 ms rttvar=0.16 ms perda=0.0% amostras=1998 capacidade=277.7 Mbit/s custo=1.49 ms
+  O6 srtt=0.44 ms rttvar=0.09 ms perda=0.0% amostras=1996 capacidade=309.8 Mbit/s custo=1.38 ms
+  O8 srtt=0.45 ms rttvar=0.14 ms perda=0.0% amostras=1995 capacidade=419.1 Mbit/s custo=1.41 ms
+19:46:12.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:46:22.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 410s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 410s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 410s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 409s fila=0
+19:46:22.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.66 ms rttvar=0.65 ms perda=0.0% amostras=2048 capacidade=145.4 Mbit/s custo=2.12 ms
+  O5 srtt=0.68 ms rttvar=0.53 ms perda=0.0% amostras=2048 capacidade=194.7 Mbit/s custo=1.97 ms
+  O6 srtt=0.51 ms rttvar=0.52 ms perda=0.0% amostras=2046 capacidade=228.5 Mbit/s custo=1.87 ms
+  O8 srtt=0.53 ms rttvar=0.49 ms perda=0.0% amostras=2045 capacidade=459.2 Mbit/s custo=1.80 ms
+19:46:22.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:46:32.606 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 420s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 420s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 420s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 419s fila=0
+19:46:32.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.54 ms rttvar=0.19 ms perda=0.0% amostras=2098 capacidade=141.9 Mbit/s custo=1.60 ms
+  O5 srtt=0.47 ms rttvar=0.13 ms perda=0.0% amostras=2098 capacidade=170.0 Mbit/s custo=1.48 ms
+  O6 srtt=0.40 ms rttvar=0.17 ms perda=0.0% amostras=2096 capacidade=194.7 Mbit/s custo=1.47 ms
+  O8 srtt=0.48 ms rttvar=0.20 ms perda=0.0% amostras=2095 capacidade=435.8 Mbit/s custo=1.48 ms
+19:46:32.608 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:46:42.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 430s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 430s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 430s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 429s fila=0
+19:46:42.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.64 ms rttvar=0.32 ms perda=0.0% amostras=2148 capacidade=132.3 Mbit/s custo=1.79 ms
+  O5 srtt=0.55 ms rttvar=0.19 ms perda=0.0% amostras=2148 capacidade=150.3 Mbit/s custo=1.61 ms
+  O6 srtt=0.50 ms rttvar=0.18 ms perda=0.0% amostras=2146 capacidade=189.7 Mbit/s custo=1.53 ms
+  O8 srtt=0.49 ms rttvar=0.22 ms perda=0.0% amostras=2145 capacidade=406.5 Mbit/s custo=1.52 ms
+19:46:42.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:46:52.606 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 440s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 440s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 440s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 439s fila=0
+19:46:52.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.67 ms rttvar=0.20 ms perda=0.0% amostras=2198 capacidade=126.0 Mbit/s custo=1.70 ms
+  O5 srtt=0.57 ms rttvar=0.25 ms perda=0.0% amostras=2198 capacidade=174.2 Mbit/s custo=1.64 ms
+  O6 srtt=0.52 ms rttvar=0.24 ms perda=0.0% amostras=2196 capacidade=198.4 Mbit/s custo=1.60 ms
+  O8 srtt=0.52 ms rttvar=0.26 ms perda=0.0% amostras=2195 capacidade=452.0 Mbit/s custo=1.57 ms
+19:46:52.608 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:47:02.608 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 450s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 450s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 450s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 449s fila=0
+19:47:02.611 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.58 ms rttvar=0.22 ms perda=0.0% amostras=2248 capacidade=126.0 Mbit/s custo=1.67 ms
+  O5 srtt=0.62 ms rttvar=0.33 ms perda=0.0% amostras=2248 capacidade=174.2 Mbit/s custo=1.75 ms
+  O6 srtt=0.49 ms rttvar=0.27 ms perda=0.0% amostras=2246 capacidade=213.8 Mbit/s custo=1.60 ms
+  O8 srtt=0.45 ms rttvar=0.26 ms perda=0.0% amostras=2245 capacidade=472.3 Mbit/s custo=1.53 ms
+19:47:02.611 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:47:12.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 460s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 460s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 460s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 459s fila=0
+19:47:12.606 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.56 ms rttvar=0.16 ms perda=0.0% amostras=2298 capacidade=126.0 Mbit/s custo=1.59 ms
+  O5 srtt=0.43 ms rttvar=0.11 ms perda=0.0% amostras=2298 capacidade=200.6 Mbit/s custo=1.43 ms
+  O6 srtt=0.34 ms rttvar=0.11 ms perda=0.0% amostras=2296 capacidade=198.4 Mbit/s custo=1.38 ms
+  O8 srtt=0.30 ms rttvar=0.09 ms perda=0.0% amostras=2295 capacidade=506.6 Mbit/s custo=1.28 ms
+19:47:12.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:47:22.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 470s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 470s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 470s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 469s fila=0
+19:47:22.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.44 ms rttvar=0.06 ms perda=0.0% amostras=2348 capacidade=129.3 Mbit/s custo=1.43 ms
+  O5 srtt=0.39 ms rttvar=0.06 ms perda=0.0% amostras=2348 capacidade=174.2 Mbit/s custo=1.37 ms
+  O6 srtt=0.28 ms rttvar=0.07 ms perda=0.0% amostras=2346 capacidade=188.5 Mbit/s custo=1.32 ms
+  O8 srtt=0.30 ms rttvar=0.19 ms perda=0.0% amostras=2345 capacidade=514.6 Mbit/s custo=1.38 ms
+19:47:22.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:47:32.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 480s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 480s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 480s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 479s fila=0
+19:47:32.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.48 ms rttvar=0.11 ms perda=0.0% amostras=2398 capacidade=193.1 Mbit/s custo=1.45 ms
+  O5 srtt=0.40 ms rttvar=0.11 ms perda=0.0% amostras=2398 capacidade=174.2 Mbit/s custo=1.42 ms
+  O6 srtt=0.33 ms rttvar=0.12 ms perda=0.0% amostras=2396 capacidade=188.5 Mbit/s custo=1.39 ms
+  O8 srtt=0.28 ms rttvar=0.12 ms perda=0.0% amostras=2395 capacidade=514.6 Mbit/s custo=1.30 ms
+19:47:32.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:47:42.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 490s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 490s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 490s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 489s fila=0
+19:47:42.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.53 ms rttvar=0.26 ms perda=0.0% amostras=2448 capacidade=169.6 Mbit/s custo=1.64 ms
+  O5 srtt=0.45 ms rttvar=0.24 ms perda=0.0% amostras=2448 capacidade=214.6 Mbit/s custo=1.56 ms
+  O6 srtt=0.39 ms rttvar=0.26 ms perda=0.0% amostras=2446 capacidade=188.5 Mbit/s custo=1.56 ms
+  O8 srtt=0.34 ms rttvar=0.24 ms perda=0.0% amostras=2445 capacidade=506.6 Mbit/s custo=1.45 ms
+19:47:42.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:47:52.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 500s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 500s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 500s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 499s fila=0
+19:47:52.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.51 ms rttvar=0.12 ms perda=0.0% amostras=2498 capacidade=169.6 Mbit/s custo=1.49 ms
+  O5 srtt=0.41 ms rttvar=0.06 ms perda=0.0% amostras=2498 capacidade=234.0 Mbit/s custo=1.35 ms
+  O6 srtt=0.31 ms rttvar=0.13 ms perda=0.0% amostras=2496 capacidade=58.8 Mbit/s custo=1.62 ms
+  O8 srtt=0.31 ms rttvar=0.10 ms perda=0.0% amostras=2495 capacidade=422.9 Mbit/s custo=1.30 ms
+19:47:52.608 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:48:02.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 510s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 510s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 510s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 509s fila=0
+19:48:02.608 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.55 ms rttvar=0.14 ms perda=0.0% amostras=2548 capacidade=165.2 Mbit/s custo=1.54 ms
+  O5 srtt=0.42 ms rttvar=0.07 ms perda=0.0% amostras=2548 capacidade=234.0 Mbit/s custo=1.37 ms
+  O6 srtt=0.35 ms rttvar=0.06 ms perda=0.0% amostras=2546 capacidade=180.8 Mbit/s custo=1.34 ms
+  O8 srtt=0.37 ms rttvar=0.10 ms perda=0.0% amostras=2545 capacidade=422.9 Mbit/s custo=1.33 ms
+19:48:02.608 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:48:12.606 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 520s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 520s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 520s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 519s fila=0
+19:48:12.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.60 ms rttvar=0.14 ms perda=0.0% amostras=2598 capacidade=169.6 Mbit/s custo=1.55 ms
+  O5 srtt=0.49 ms rttvar=0.12 ms perda=0.0% amostras=2598 capacidade=231.2 Mbit/s custo=1.45 ms
+  O6 srtt=0.38 ms rttvar=0.08 ms perda=0.0% amostras=2596 capacidade=180.8 Mbit/s custo=1.38 ms
+  O8 srtt=0.34 ms rttvar=0.09 ms perda=0.0% amostras=2595 capacidade=422.9 Mbit/s custo=1.31 ms
+19:48:12.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:48:22.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 530s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 530s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 530s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 529s fila=0
+19:48:22.608 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.53 ms rttvar=0.22 ms perda=0.0% amostras=2648 capacidade=141.0 Mbit/s custo=1.63 ms
+  O5 srtt=0.48 ms rttvar=0.14 ms perda=0.0% amostras=2648 capacidade=231.2 Mbit/s custo=1.46 ms
+  O6 srtt=0.41 ms rttvar=0.20 ms perda=0.0% amostras=2646 capacidade=161.6 Mbit/s custo=1.53 ms
+  O8 srtt=0.40 ms rttvar=0.18 ms perda=0.0% amostras=2645 capacidade=422.9 Mbit/s custo=1.42 ms
+19:48:22.608 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:48:32.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 540s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 540s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 540s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 539s fila=0
+19:48:32.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.68 ms rttvar=0.51 ms perda=0.0% amostras=2698 capacidade=163.8 Mbit/s custo=1.97 ms
+  O5 srtt=0.62 ms rttvar=0.48 ms perda=0.0% amostras=2698 capacidade=215.6 Mbit/s custo=1.88 ms
+  O6 srtt=0.58 ms rttvar=0.54 ms perda=0.0% amostras=2696 capacidade=218.3 Mbit/s custo=1.92 ms
+  O8 srtt=0.53 ms rttvar=0.49 ms perda=0.0% amostras=2695 capacidade=483.2 Mbit/s custo=1.80 ms
+19:48:32.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:48:42.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 550s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 550s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 550s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 549s fila=0
+19:48:42.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.51 ms rttvar=0.19 ms perda=0.0% amostras=2748 capacidade=210.7 Mbit/s custo=1.54 ms
+  O5 srtt=0.48 ms rttvar=0.21 ms perda=0.0% amostras=2748 capacidade=215.6 Mbit/s custo=1.54 ms
+  O6 srtt=0.37 ms rttvar=0.10 ms perda=0.0% amostras=2746 capacidade=214.6 Mbit/s custo=1.37 ms
+  O8 srtt=0.31 ms rttvar=0.11 ms perda=0.0% amostras=2745 capacidade=416.0 Mbit/s custo=1.31 ms
+19:48:42.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:48:52.606 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 560s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 560s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 560s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 559s fila=0
+19:48:52.608 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.47 ms rttvar=0.17 ms perda=0.0% amostras=2798 capacidade=163.8 Mbit/s custo=1.53 ms
+  O5 srtt=0.44 ms rttvar=0.10 ms perda=0.0% amostras=2798 capacidade=197.2 Mbit/s custo=1.42 ms
+  O6 srtt=0.37 ms rttvar=0.12 ms perda=0.0% amostras=2796 capacidade=215.6 Mbit/s custo=1.40 ms
+  O8 srtt=0.34 ms rttvar=0.10 ms perda=0.0% amostras=2795 capacidade=416.0 Mbit/s custo=1.32 ms
+19:48:52.609 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:49:02.606 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 570s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 570s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 570s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 569s fila=0
+19:49:02.608 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.51 ms rttvar=0.08 ms perda=0.0% amostras=2848 capacidade=180.2 Mbit/s custo=1.45 ms
+  O5 srtt=0.43 ms rttvar=0.07 ms perda=0.0% amostras=2848 capacidade=186.2 Mbit/s custo=1.39 ms
+  O6 srtt=0.37 ms rttvar=0.07 ms perda=0.0% amostras=2846 capacidade=218.3 Mbit/s custo=1.34 ms
+  O8 srtt=0.35 ms rttvar=0.07 ms perda=0.0% amostras=2845 capacidade=488.3 Mbit/s custo=1.29 ms
+19:49:02.608 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:49:12.607 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 580s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 580s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 580s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 579s fila=0
+19:49:12.608 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.43 ms rttvar=0.09 ms perda=0.0% amostras=2898 capacidade=180.2 Mbit/s custo=1.41 ms
+  O5 srtt=0.40 ms rttvar=0.07 ms perda=0.0% amostras=2898 capacidade=235.9 Mbit/s custo=1.36 ms
+  O6 srtt=0.29 ms rttvar=0.08 ms perda=0.0% amostras=2896 capacidade=215.6 Mbit/s custo=1.32 ms
+  O8 srtt=0.24 ms rttvar=0.11 ms perda=0.0% amostras=2895 capacidade=488.3 Mbit/s custo=1.27 ms
+19:49:12.608 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
+19:49:22.605 [O4] INFO Estado de O4: 4 vizinhos (4 up), 4 estáticos
+  O2 10.0.24.1 up estático iniciada por mim há 590s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 590s fila=0
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 590s fila=0
+  O8 10.0.22.11 up estático iniciada pelo vizinho há 589s fila=0
+19:49:22.607 [O4] INFO Métricas de O4: 4 vizinhos
+  O2 srtt=0.60 ms rttvar=0.18 ms perda=0.0% amostras=2948 capacidade=132.5 Mbit/s custo=1.63 ms
+  O5 srtt=0.58 ms rttvar=0.26 ms perda=0.0% amostras=2948 capacidade=235.9 Mbit/s custo=1.64 ms
+  O6 srtt=0.50 ms rttvar=0.18 ms perda=0.0% amostras=2946 capacidade=215.6 Mbit/s custo=1.52 ms
+  O8 srtt=0.54 ms rttvar=0.34 ms perda=0.0% amostras=2945 capacidade=411.2 Mbit/s custo=1.66 ms
+19:49:22.607 [O4] INFO Candidatos de O4: 7
+  O1 10.0.24.10 indicado por O2 há 0s
+  O10 10.0.21.10 indicado por O6 há 5s
+  O3 10.0.15.1 indicado por O2 há 0s
+  O5 10.0.23.1 indicado por O6 há 5s
+  O6 10.0.20.1 indicado por O5 há 5s
+  O7 10.0.20.10 indicado por O6 há 5s
+  O9 10.0.23.11 indicado por O5 há 5s
