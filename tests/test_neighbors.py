@@ -225,6 +225,16 @@ class NeighborManagerTest(unittest.TestCase):
         self.assertTrue(wait_until(lambda: a.state.count_up() == 1))
         sock.close()
 
+    def test_pending_connections_count_for_x_max(self):
+        """HELLOs à espera do HELLO_CONFIRM ocupam vaga: o seguinte recebe "full"."""
+        self.make_node(1)
+        pending = [self.raw_hello(1, f"O{90 + i}") for i in range(config.X_MAX)]
+        self.assertTrue(all(reply["type"] == control.HELLO_ACK for _, reply in pending))
+        sock, reply = self.raw_hello(1, "O99")
+        self.assertEqual((reply["type"], reply.get("reason")), (control.HELLO_REJECT, "full"))
+        for s, _ in pending + [(sock, None)]:
+            s.close()
+
     def test_new_hello_replaces_stale_pending_one(self):
         """Uma ligação velha da fila (sem CONFIRM) não impede a ligação nova do mesmo vizinho."""
         a, b = self.make_node(1), self.make_node(2)

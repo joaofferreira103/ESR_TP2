@@ -317,7 +317,7 @@ class NeighborManager:
                 else:
                     self.logger.info(f"ligação simultânea com {peer_id}: fica a minha (ID menor)")
                     return None, "duplicate", replaced, False
-            elif self.state.count_up() >= config.X_MAX:
+            elif self._occupied() >= config.X_MAX:
                 if peer_id not in self.state.static_neighbors or self._dynamic_to_evict() is None:
                     return None, "full", replaced, False
                 make_room = True  # a vaga só é cedida ao receber o HELLO_CONFIRM
@@ -330,6 +330,15 @@ class NeighborManager:
                                 dynamic=hello.get("dynamic") is True and not static)
             self.state.neighbors[peer_id] = neighbor
             return neighbor, None, replaced, make_room
+
+    def _occupied(self):
+        """Com o lock: vizinhos "up" mais as ligações de entrada à espera do HELLO_CONFIRM.
+
+        As pendentes contam para X_MAX: sem isto, vários HELLO quase ao mesmo tempo passavam todos
+        a verificação antes de algum chegar a "up", e o nó ficava com mais de X_MAX vizinhos.
+        """
+        return sum(1 for n in self.state.neighbors.values()
+                   if n.status == "up" or not n.initiated_by_me)
 
     def _dynamic_to_evict(self):
         """Com o lock: a aresta dinâmica a fechar para dar lugar a um vizinho estático, ou None.
