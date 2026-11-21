@@ -81,7 +81,9 @@ Depois de o O6 voltar, a aresta **dinâmica** O7–O10 continua ativa (O7 e O10 
 
 **Gravidade:** média. Agora acaba por estabilizar, mas na Fase 3 cada `up` e `down` vai provocar novos anúncios e mudanças de rota.
 
-**Corrigido em `d54c608`:** handshake em 3 passos (`HELLO` -> `HELLO_ACK` -> `HELLO_CONFIRM`). Quem aceita só marca o vizinho `up` ao receber o `HELLO_CONFIRM`, no máximo `HELLO_TIMEOUT` depois; uma ligação que fecha ou expira antes disso é descartada em silêncio (DEBUG), sem `up` nem `down`. Um HELLO novo do mesmo vizinho substitui o que estava pendente. `listen()` com `LISTEN_BACKLOG = 8`. Em local, com O3 congelado 20 s, os `down` de O3 passaram de 11 para 3 (os 3 que restam são o próprio O3 a declarar os vizinhos mortos ao acordar).
+**Corrigido em `d54c608`:** handshake em 3 passos (`HELLO` -> `HELLO_ACK` -> `HELLO_CONFIRM`). Quem aceita só marca o vizinho `up` ao receber o `HELLO_CONFIRM`, no máximo `HELLO_TIMEOUT` depois; uma ligação que fecha ou expira antes disso é descartada em silêncio (DEBUG), sem `up` nem `down`. Um HELLO novo do mesmo vizinho substitui o que estava pendente. `listen()` com `LISTEN_BACKLOG = 8`. Em local, com O3 congelado 20 s, os `down` de O3 passaram de 11 para 3.
+
+**Corrigido também em `1f41b6d` (pausa do próprio nó):** se a verificação de vizinhos mortos chega com mais de `PAUSE_DETECT_SLACK` (1 s) de atraso, o nó não declara ninguém morto nessa ronda e dá a todos um novo `DEAD_TIMEOUT` (log "pausa local de X s detetada"). Com toda a VM parada 5 s, os `down` passaram de 12 para 0 e as reparações falsas de 6 para 0. Com um só nó congelado 20 s restam 4 `down`: 3 por "ligação fechada", porque os vizinhos, que não pararam, o declararam morto e fecharam as ligações (correto), e 1 de uma aresta dinâmica criada pela reparação e desfeita em menos de 0,5 s, quando o primeiro vizinho estático voltou.
 
 ### Condição de teste
 Um nó parado durante vários segundos enquanto os vizinhos tentam ligar-se a ele, e que depois volta:
@@ -135,6 +137,8 @@ Testes T1 a T10 de `resultados_testes_core.md`. Logs em `logs_T<n>/` (os erros 3
 **Gravidade:** alta. A topologia do ficheiro deixa de se repor. A cada falha acumulam-se arestas dinâmicas, e algumas arestas estáticas ficam bloqueadas sem limite de tempo.
 
 **Corrigido em `d7bb43d`:** a aresta criada pela reparação leva `"dynamic": true` no HELLO e fica marcada nos dois lados. (a) Quem a criou fecha-a com LEAVE quando volta a ter um vizinho estático `up`. (b) Um nó cheio que recebe HELLO de um vizinho estático fecha uma aresta dinâmica para lhe dar lugar, se o outro lado tiver grau > 1 segundo o gossip; senão responde `full`.
+
+**Ajustado em `ad022c0`:** a vaga só é cedida ao receber o `HELLO_CONFIRM` do vizinho estático. Durante o handshake o nó pode ter `X_MAX + 1` ligações; se o CONFIRM não chegar, a aresta dinâmica mantém-se.
 
 ### Condição de teste
 Uma reparação liga um nó isolado a um candidato que fica com `X_MAX` (4) vizinhos. Depois volta um vizinho estático desse candidato:

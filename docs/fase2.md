@@ -213,8 +213,9 @@ Os valores são iniciais e **ainda não foram afinados com testes**. A justifica
 
 ## 8. Limitações conhecidas
 
-- **Falsos positivos depois de uma pausa:** um nó congelado mais de 3 s declara todos os vizinhos mortos quando volta. Foi observado com `kill -STOP`: o nó religa-se sozinho ao fim de alguns segundos.
+- **Pausa do próprio nó:** se a verificação de vizinhos mortos chega com mais de `PAUSE_DETECT_SLACK` (1 s) de atraso, o nó assume que esteve parado: nessa ronda não declara ninguém morto e dá a todos os vizinhos um novo `DEAD_TIMEOUT`. Com toda a VM parada 5 s (todos os nós ao mesmo tempo), os `down` passaram de 12 para 0 e as reparações falsas de 6 para 0. Limitação: se só um nó parar mais de 3 s, os vizinhos, que não pararam, declaram-no morto e fecham as ligações, o que ele vê ao acordar (medido com um nó congelado 20 s: 3 `down` por "ligação fechada" e uma reparação desnecessária, desfeita em menos de 0,5 s). Uma sobrecarga da CPU que atrase o scheduler mais de 1 s também é tomada por uma pausa e adia a deteção de falhas reais.
 - **TCP a funcionar com UDP bloqueado:** o vizinho cai ao fim de 3 s e a religação periódica volta a ligá-lo, em ciclo. Previsto a partir do código, não testado.
-- **Perda detetada com atraso:** um probe só conta como perdido ao fim de 3 s, por isso a reação a um link que começa a perder não é imediata.
+- **Perda detetada com atraso:** um probe só entra na perda ao fim de 1 s (`LOSS_EVAL_DELAY`), e a janela tem 100 probes (cerca de 20 s), por isso a reação a um link que começa a perder não é imediata.
+- **Packet pair em links lentos com jitter alto:** os pares verdadeiros também são descartados quando o RTTVAR é maior do que metade da dispersão (a 1 Mbit/s, RTTVAR > 4,8 ms; a 2 Mbit/s, RTTVAR > 2,4 ms). A capacidade fica então desconhecida e o termo de largura de banda vale 0, por isso um link lento e instável pode parecer melhor do que é. Detalhes na secção 4.
 - **Gossip recente:** um nó só fica sem candidatos, e volta ao bootstrapper, se o seu único vizinho ainda não tinha outros vizinhos quando morreu, ou se morreu antes de a lista chegar.
 - **Valores não medidos no CORE:** os limites por omissão do CORE podem comportar-se como o `tbf` da secção 4, o que é preciso confirmar.
