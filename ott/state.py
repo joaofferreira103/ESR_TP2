@@ -47,8 +47,11 @@ class NodeState:
         self.neighbors = {}           # id -> Neighbor
         self.static_neighbors = {}    # id -> ip, lista recebida do bootstrapper
         self.link_metrics = {}        # id -> LinkMetrics, um por vizinho "up" (ott.metrics)
-        # Vizinhos dos vizinhos, para a reparação (ott.repair): id -> {"ip", "via", "last_seen"}
+        # Vizinhos dos vizinhos, para a reparação (ott.repair):
+        # id -> {"ip", "degree" (None se desconhecido), "via" (set de quem o indicou), "last_seen"}
         self.overlay_candidates = {}
+        # Grau de cada vizinho "up", segundo a última NEIGHBOR_LIST que ele próprio enviou (ott.repair)
+        self.neighbor_degrees = {}
 
         # Gancho para a Fase 3 (encaminhamento):
         # candidates[servidor][vizinho] = {"epoch", "seq", "last_seen",

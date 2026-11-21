@@ -296,7 +296,7 @@ def free_udp_port():
             s.bind(("127.0.0.1", 0))
             port = s.getsockname()[1]
         try:
-            for index in range(1, 8):
+            for index in range(1, 11):
                 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
                     s.bind((f"127.0.0.{BASE_IP + index}", port))
             return port

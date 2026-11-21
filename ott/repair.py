@@ -7,6 +7,11 @@ Os candidatos (vizinhos dos vizinhos) são recolhidos ANTES de serem precisos e 
 depois de morrer o vizinho que os indicou: quando o nó fica isolado, já não tem a quem perguntar.
 A lista é enviada periodicamente e também sempre que um vizinho fica "up".
 
+Cada entrada da NEIGHBOR_LIST leva o grau do vizinho ({id, ip, degree}), que o emissor conhece pela
+NEIGHBOR_LIST que esse vizinho lhe enviou. Na reparação, um candidato com grau <= 1 indicado só por
+vizinhos que já morreram fica para o fim: o seu único vizinho era provavelmente o nó que falhou, e
+ligar-se a ele formava uma ilha desligada do resto do overlay (erro 1).
+
 Concorrência: os candidatos vivem em NodeState.overlay_candidates e só se acedem com o lock global.
 A reparação corre numa thread própria, porque medir RTTs e fazer HELLO bloqueia.
 """
@@ -18,6 +23,14 @@ import time
 from ott import config
 from ott.metrics import measure_rtt
 from ott.protocol import control
+
+
+def _degree(entry):
+    """Grau indicado numa entrada da NEIGHBOR_LIST, ou None se não vier ou for inválido."""
+    degree = entry.get("degree")
+    if isinstance(degree, int) and not isinstance(degree, bool) and degree >= 0:
+        return degree
+    return None
 
 
 def _valid_entry(entry):
@@ -38,7 +51,9 @@ def candidates_text(state):
         items = sorted(state.overlay_candidates.items())
         lines = [f"Candidatos de {state.node_id}: {len(items)}"]
         for candidate_id, c in items:
-            lines.append(f"  {candidate_id} {c['ip']} indicado por {c['via']} há {now - c['last_seen']:.0f}s")
+            degree = "?" if c["degree"] is None else c["degree"]
+            lines.append(f"  {candidate_id} {c['ip']} grau {degree} indicado por {', '.join(sorted(c['via']))} "
+                         f"há {now - c['last_seen']:.0f}s")
     return "\n".join(lines)
 
 
@@ -74,7 +89,8 @@ class OverlayRepair:
     def send_gossip(self):
         """Envia a cada vizinho a lista dos vizinhos deste nó."""
         up = self.state.up_neighbors()
-        listing = [{"id": n.id, "ip": n.ip} for n in up]
+        with self.state.lock:
+            listing = [{"id": n.id, "ip": n.ip, "degree": self.state.neighbor_degrees.get(n.id)} for n in up]
         msg = control.make_msg(control.NEIGHBOR_LIST, self.state.node_id, neighbors=listing)
         for neighbor in up:
             self.neighbors.send_to(neighbor.id, msg)
@@ -86,12 +102,15 @@ class OverlayRepair:
             return
         now = time.monotonic()
         with self.state.lock:
+            # A lista do vizinho são os vizinhos dele: o seu tamanho é o grau dele
+            self.state.neighbor_degrees[neighbor_id] = len(entries)
             for entry in entries:
                 if not _valid_entry(entry):
                     self.logger.warning(f"entrada inválida na NEIGHBOR_LIST de {neighbor_id}: {entry}")
                 elif entry["id"] != self.state.node_id:
-                    self.state.overlay_candidates[entry["id"]] = {
-                        "ip": entry["ip"], "via": neighbor_id, "last_seen": now}
+                    candidate = self.state.overlay_candidates.setdefault(entry["id"], {"via": set()})
+                    candidate.update(ip=entry["ip"], degree=_degree(entry), last_seen=now)
+                    candidate["via"].add(neighbor_id)
 
     def expire_candidates(self, now=None):
         now = time.monotonic() if now is None else now
@@ -111,6 +130,8 @@ class OverlayRepair:
         self.send_gossip()
 
     def _on_neighbor_down(self, neighbor_id, reason):
+        with self.state.lock:
+            self.state.neighbor_degrees.pop(neighbor_id, None)
         remaining = self.state.count_up()
         if remaining > 0:
             self.logger.info(f"perdi {neighbor_id}; vizinhos restantes: {remaining}; sem aresta nova")
@@ -171,21 +192,32 @@ class OverlayRepair:
             self.logger.info(f"reparação cancelada: {', '.join(returned)} voltou")
 
     def _rank_candidates(self):
-        """Devolve [(id, ip, rtt)] dos candidatos que respondem, do melhor para o pior."""
+        """Devolve [(id, ip, rtt)] dos candidatos que respondem, do melhor para o pior.
+
+        Os candidatos suspeitos (grau <= 1, indicados só por vizinhos que já morreram) ficam no fim,
+        ordenados pelo RTT entre si: só são usados se nenhum outro aceitar.
+        """
         with self.state.lock:
-            candidates = {i: c["ip"] for i, c in self.state.overlay_candidates.items()
-                          if i not in self.state.neighbors}
+            up = {n.id for n in self.state.neighbors.values() if n.status == "up"}
+            candidates = {}
+            for i, c in self.state.overlay_candidates.items():
+                if i not in self.state.neighbors:
+                    suspect = c["degree"] is not None and c["degree"] <= 1 and not (c["via"] & up)
+                    candidates[i] = (c["ip"], suspect)
         self.logger.info(f"reparação: {len(candidates)} candidatos a medir "
                          f"({', '.join(sorted(candidates)) or 'nenhum'})")
         ranked = []
-        for candidate_id, ip in candidates.items():
+        for candidate_id, (ip, suspect) in candidates.items():
             rtt = self.measure(ip, config.REPAIR_PROBES, config.REPAIR_TIMEOUT, node_id=self.state.node_id,
                                bind_ip=self.bind_ip, port=self.probe_port)
             if rtt is None:
                 self.logger.info(f"reparação: {candidate_id} não respondeu aos probes")
-            else:
-                ranked.append((rtt, candidate_id, ip))
-        return [(candidate_id, ip, rtt) for rtt, candidate_id, ip in sorted(ranked)]
+                continue
+            if suspect:
+                self.logger.info(f"reparação: {candidate_id} fica para o fim (grau <= 1, indicado só por "
+                                 f"vizinhos que morreram: ligar-se a ele podia formar uma ilha)")
+            ranked.append((suspect, rtt, candidate_id, ip))
+        return [(candidate_id, ip, rtt) for suspect, rtt, candidate_id, ip in sorted(ranked)]
 
     def _no_longer_needed(self):
         """Entretanto voltou um vizinho (ex.: um original que religou), ou o nó está a terminar."""

@@ -41,13 +41,16 @@ class _FakeNeighbors:
 class RepairDecisionTest(unittest.TestCase):
     """A lógica da reparação, sem rede: RTTs e respostas ao HELLO conhecidos."""
 
-    def make_repair(self, rtts, accepts):
+    def make_repair(self, rtts, accepts, degrees=None):
+        """degrees: grau de alguns candidatos (os outros ficam com grau desconhecido)."""
+        degrees = degrees or {}
         self.state = NodeState("O1")
         self.neighbors = _FakeNeighbors(accepts)
         self.exhausted = []
         now = time.monotonic()
         self.state.overlay_candidates = {
-            i: {"ip": f"10.0.0.{n}", "via": "O9", "last_seen": now} for n, i in enumerate(rtts, 1)}
+            i: {"ip": f"10.0.0.{n}", "degree": degrees.get(i), "via": {"O9"}, "last_seen": now}
+            for n, i in enumerate(rtts, 1)}
         ip_to_rtt = {self.state.overlay_candidates[i]["ip"]: rtt for i, rtt in rtts.items()}
         logger = logging.getLogger("ott.test.repair")
         logger.addHandler(logging.NullHandler())
@@ -66,6 +69,19 @@ class RepairDecisionTest(unittest.TestCase):
         repair = self.make_repair({"O2": 0.030, "O3": 0.010, "O4": 0.020}, accepts={"O2"})
         repair.repair()
         self.assertEqual(self.neighbors.attempts, ["O3", "O4", "O2"])
+        self.assertEqual(self.exhausted, [])
+
+    def test_degree_one_candidate_of_dead_neighbor_goes_last(self):
+        """Erro 1: O2 tem o melhor RTT, mas o seu único vizinho era o nó que falhou."""
+        repair = self.make_repair({"O2": 0.001, "O3": 0.010, "O4": 0.020}, accepts={"O2", "O3", "O4"},
+                                  degrees={"O2": 1, "O3": 3, "O4": 2})
+        repair.repair()
+        self.assertEqual(self.neighbors.attempts, ["O3"])
+
+    def test_degree_one_candidate_used_if_no_other_accepts(self):
+        repair = self.make_repair({"O2": 0.001, "O3": 0.010}, accepts={"O2"}, degrees={"O2": 1, "O3": 3})
+        repair.repair()
+        self.assertEqual(self.neighbors.attempts, ["O3", "O2"])
         self.assertEqual(self.exhausted, [])
 
     def test_unreachable_candidate_is_not_tried(self):
@@ -123,18 +139,23 @@ class RepairDecisionTest(unittest.TestCase):
         repair._on_neighbor_list("O2", control.make_msg(control.NEIGHBOR_LIST, "O2", neighbors=[
             "x", {"id": "O3"}, {"id": "O4", "ip": "isto não é um IP"}, {"id": 5, "ip": "10.0.0.5"},
             {"id": "O1", "ip": "10.0.0.1"},                 # o próprio nó
-            {"id": "O6", "ip": "10.0.0.6"}]))
-        self.assertEqual(list(self.state.overlay_candidates), ["O6"])
-        self.assertIn("O6 10.0.0.6 indicado por O2", candidates_text(self.state))
+            {"id": "O6", "ip": "10.0.0.6", "degree": 2},
+            {"id": "O7", "ip": "10.0.0.7", "degree": "x"}]))
+        self.assertEqual(sorted(self.state.overlay_candidates), ["O6", "O7"])
+        self.assertEqual(self.state.overlay_candidates["O6"]["degree"], 2)
+        self.assertIsNone(self.state.overlay_candidates["O7"]["degree"])   # grau inválido = desconhecido
+        self.assertEqual(self.state.neighbor_degrees["O2"], 7)              # tamanho da lista de O2
+        self.assertIn("O6 10.0.0.6 grau 2 indicado por O2", candidates_text(self.state))
 
 
 class _RepairNode(_TestNode):
-    def __init__(self, test, index, control_port, probe_port):
+    def __init__(self, test, index, control_port, probe_port, measure=None):
         super().__init__(test, index, control_port, probe_port, run_scheduler=False)
         self.exhausted = []
+        extra = {} if measure is None else {"measure": measure}
         self.repair = OverlayRepair(self.state, self.manager, self.scheduler, self.logger,
                                     lambda: self.exhausted.append(True),
-                                    bind_ip=self.ip, probe_port=probe_port)
+                                    bind_ip=self.ip, probe_port=probe_port, **extra)
         self.scheduler.start()
 
     def stop(self):
@@ -152,8 +173,8 @@ class RepairIntegrationTest(unittest.TestCase):
         for node in self.nodes:
             node.stop()
 
-    def make_node(self, index):
-        node = _RepairNode(self, index, self.control_port, self.probe_port)
+    def make_node(self, index, measure=None):
+        node = _RepairNode(self, index, self.control_port, self.probe_port, measure)
         self.nodes.append(node)
         return node
 
@@ -181,7 +202,7 @@ class RepairIntegrationTest(unittest.TestCase):
         self.assertTrue(wait_until(lambda: self.has_candidate(a, c.id) and self.has_candidate(c, a.id)))
         self.assertFalse(self.has_candidate(a, a.id))
         with a.state.lock:
-            self.assertEqual(a.state.overlay_candidates[c.id]["via"], b.id)
+            self.assertEqual(a.state.overlay_candidates[c.id]["via"], {b.id})
             self.assertEqual(a.state.overlay_candidates[c.id]["ip"], c.ip)
 
     def test_gossip_is_immediate_when_a_neighbor_comes_up(self):
@@ -202,6 +223,30 @@ class RepairIntegrationTest(unittest.TestCase):
         self.crash(b)
         self.assertTrue(wait_until(lambda: a.state.get_neighbor(b.id) is None))
         self.assertTrue(self.has_candidate(a, c.id))
+
+    def test_t8_isolated_leaves_do_not_form_an_island(self):
+        """Caso do T8 (erro 1): O7 e O10 só ligados a O6. Quando O6 cai, O10 não escolhe O7,
+        mesmo sendo o candidato com RTT mais baixo."""
+        ips = {}
+
+        def measure(ip, *args, **kwargs):
+            return 0.0001 if ip == ips.get("O7") else 0.001  # O7 é o mais rápido para toda a gente
+
+        o4, o5, o6, o7, o10 = (self.make_node(i, measure) for i in (4, 5, 6, 7, 10))
+        ips["O7"] = o7.ip
+        for a, b in ((o4, o5), (o6, o4), (o6, o5), (o6, o7), (o6, o10)):
+            self.link(a, b)
+        for _ in range(2):  # 1.ª volta: cada nó fica a saber o grau dos vizinhos; 2.ª: propaga-o
+            self.gossip(o4, o5, o6, o7, o10)
+            time.sleep(0.1)
+        with o10.state.lock:
+            self.assertEqual(o10.state.overlay_candidates["O7"]["degree"], 1)
+
+        self.crash(o6)
+        for leaf in (o7, o10):
+            self.assertTrue(wait_until(lambda: leaf.state.count_up() == 1), leaf.id)
+        for leaf in (o7, o10):
+            self.assertIn(leaf.state.up_neighbors()[0].id, ("O4", "O5"), leaf.id)
 
     def test_teacher_example(self):
         """n1 ligado a n2 e n3; n2 ligado a n1 e n4. Sem n3 continua só com n2; sem n2 liga-se a n4."""
