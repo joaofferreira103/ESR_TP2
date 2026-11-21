@@ -72,13 +72,21 @@ class LinkMetrics:
             self.srtt = (1 - config.RTT_ALPHA) * self.srtt + config.RTT_ALPHA * rtt
 
     def loss(self, now=None):
-        """Fração de probes perdidos na janela. Os que ainda podem ter resposta não contam."""
+        """Fração de probes perdidos na janela, contando só os enviados há mais de LOSS_EVAL_DELAY.
+
+        Os probes recentes ficam de fora todos, respondidos ou não. Contar os respondidos recentes e
+        deixar de fora os perdidos recentes (que ainda podiam ter resposta) subestimava a perda.
+        Um probe sem resposta ao fim de LOSS_EVAL_DELAY conta como perdido; se a resposta chegar
+        depois (antes de DEAD_TIMEOUT), passa a contar como respondido.
+        """
         now = time.monotonic() if now is None else now
         answered = lost = 0
         for ts, replied in self._probes.values():
+            if now - ts <= config.LOSS_EVAL_DELAY:
+                continue
             if replied:
                 answered += 1
-            elif now - ts > config.DEAD_TIMEOUT:
+            else:
                 lost += 1
         total = answered + lost
         return lost / total if total else 0.0

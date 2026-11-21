@@ -52,13 +52,37 @@ class LinkMetricsTest(unittest.TestCase):
             m.on_probe_sent(seq, 0.0)
             if seq % 5 != 0:  # 10 dos 50 ficam sem resposta
                 m.on_reply(seq, 0.01)
+        self.assertLessEqual(50, config.LOSS_WINDOW)
         self.assertAlmostEqual(m.loss(now=LATE), 0.2)
 
-    def test_pending_probe_is_not_lost_yet(self):
+    def test_recent_probes_do_not_count(self):
         m = LinkMetrics(now=0.0)
         m.on_probe_sent(1, 0.0)
-        self.assertEqual(m.loss(now=config.DEAD_TIMEOUT), 0.0)
-        self.assertEqual(m.loss(now=config.DEAD_TIMEOUT + 0.01), 1.0)
+        m.on_probe_sent(2, 0.0)
+        m.on_reply(2, 0.01)
+        # Recentes: nem o respondido nem o que está à espera contam
+        self.assertEqual(m.loss(now=config.LOSS_EVAL_DELAY), 0.0)
+        self.assertEqual(m.loss(now=config.LOSS_EVAL_DELAY + 0.01), 0.5)
+
+    def test_late_reply_turns_lost_into_answered(self):
+        m = LinkMetrics(now=0.0)
+        m.on_probe_sent(1, 0.0)
+        self.assertEqual(m.loss(now=config.LOSS_EVAL_DELAY + 0.1), 1.0)
+        m.on_reply(1, config.LOSS_EVAL_DELAY + 0.2)   # ainda antes de DEAD_TIMEOUT
+        self.assertEqual(m.loss(now=config.LOSS_EVAL_DELAY + 0.3), 0.0)
+
+    def test_uniform_20_percent_loss_is_unbiased_in_every_window(self):
+        """Um em cada cinco probes perdido, RTT de 50 ms, um probe a cada PROBE_INTERVAL."""
+        m = LinkMetrics(now=0.0)
+        estimates = []
+        for seq in range(10 * config.LOSS_WINDOW):
+            t = seq * config.PROBE_INTERVAL
+            m.on_probe_sent(seq, t)
+            if seq % 5 != 0:
+                m.on_reply(seq, t + 0.05)
+            if seq >= config.LOSS_WINDOW:  # janela completa
+                estimates.append(m.loss(now=t + 0.06))
+        self.assertTrue(all(0.15 <= e <= 0.25 for e in estimates), (min(estimates), max(estimates)))
 
     def test_old_probes_leave_window(self):
         m = LinkMetrics(now=0.0)
@@ -171,8 +195,9 @@ class PacketPairTest(unittest.TestCase):
 class LinkCostTest(unittest.TestCase):
     NOW = 1000.0
 
-    def ready(self, srtt=0.100, rttvar=0.020, lost=0, capacity=None):
-        """Link pronto com valores exatos: lost probes perdidos em LOSS_WINDOW."""
+    def ready(self, srtt=0.100, rttvar=0.020, loss=0.0, capacity=None):
+        """Link pronto com valores exatos: a fração loss dos LOSS_WINDOW probes perdida."""
+        lost = round(loss * config.LOSS_WINDOW)
         m = LinkMetrics(now=0.0)
         m.srtt, m.rttvar, m.samples = srtt, rttvar, config.MIN_SAMPLES
         for seq in range(config.LOSS_WINDOW):
@@ -189,11 +214,11 @@ class LinkCostTest(unittest.TestCase):
 
     def test_full_known_value(self):
         # 100/2 + 1*20 + 100*0,2 + 10*2/4 + 1 = 50 + 20 + 20 + 5 + 1 = 96 ms
-        self.assertAlmostEqual(self.cost(self.ready(lost=10, capacity=4e6)), 96.0, places=3)
+        self.assertAlmostEqual(self.cost(self.ready(loss=0.2, capacity=4e6)), 96.0, places=3)
 
     def test_ten_percent_loss_adds_ten_ms(self):
         # 50 + 20 + 100*0,1 + 0 + 1 = 81 ms
-        self.assertAlmostEqual(self.cost(self.ready(lost=5)), 81.0)
+        self.assertAlmostEqual(self.cost(self.ready(loss=0.1)), 81.0)
 
     def test_capacity_equal_to_required_adds_ten_ms(self):
         # 50 + 20 + 0 + 10*2/2 + 1 = 81 ms
@@ -201,7 +226,7 @@ class LinkCostTest(unittest.TestCase):
 
     def test_loss_counts_when_delay_is_almost_zero(self):
         # Com perda: 0,1 + 0,1 + 100*0,1 + 1 = 11,2 ms. Limpo: 5 + 0,1 + 1 = 6,1 ms
-        lossy = self.cost(self.ready(srtt=0.0002, rttvar=0.0001, lost=5))
+        lossy = self.cost(self.ready(srtt=0.0002, rttvar=0.0001, loss=0.1))
         clean = self.cost(self.ready(srtt=0.010, rttvar=0.0001))
         self.assertAlmostEqual(lossy, 11.2)
         self.assertAlmostEqual(clean, 6.1)
@@ -212,10 +237,10 @@ class LinkCostTest(unittest.TestCase):
         self.assertAlmostEqual(self.cost(self.ready()), 71.0)
 
     def test_latency(self):
-        self.assertAlmostEqual(self.cost(self.ready(lost=10, capacity=4e6), "latency"), 51.0)
+        self.assertAlmostEqual(self.cost(self.ready(loss=0.2, capacity=4e6), "latency"), 51.0)
 
     def test_hops(self):
-        self.assertEqual(self.cost(self.ready(lost=10, capacity=4e6), "hops"), config.HOP_COST)
+        self.assertEqual(self.cost(self.ready(loss=0.2, capacity=4e6), "hops"), config.HOP_COST)
 
     def test_not_ready_is_default_in_every_mode(self):
         m = replied_rtts([0.001] * (config.MIN_SAMPLES - 1))
@@ -227,7 +252,7 @@ class LinkCostTest(unittest.TestCase):
             self.cost(self.ready(), "pombo")
 
     def test_more_loss_costs_more(self):
-        costs = [self.cost(self.ready(lost=lost)) for lost in (0, 1, 10, 25, 50)]
+        costs = [self.cost(self.ready(loss=fraction)) for fraction in (0, 0.02, 0.2, 0.5, 1.0)]
         self.assertEqual(costs, sorted(set(costs)))
 
     def test_more_jitter_costs_more(self):

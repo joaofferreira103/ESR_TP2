@@ -32,7 +32,8 @@ PROBE_MAX_SIZE = 2048            # bytes: tamanho máximo de um datagrama de pro
 PROBE_RECV_TIMEOUT = 0.5         # s: espera máxima da thread de receção antes de ver se deve parar
 RTT_ALPHA = 0.125                # peso da nova medição na EWMA do RTT (adimensional)
 RTTVAR_BETA = 0.25               # peso da nova medição na EWMA do desvio do RTT (adimensional)
-LOSS_WINDOW = 50                 # probes: janela usada para calcular a taxa de perda
+LOSS_WINDOW = 100                # probes: janela usada para calcular a taxa de perda (~20 s)
+LOSS_EVAL_DELAY = 1.0            # s: idade mínima de um probe para entrar na perda (respondido ou não)
 DEAD_TIMEOUT = 3.0               # s: sem resposta a probes durante este tempo = vizinho morto
 K_JITTER = 1                     # peso do jitter (RTTVAR) no custo do link (adimensional)
 K_LOSS_MS = 100                  # ms: penalização por perda total no custo do link (10% de perda = +10 ms)
