@@ -13,7 +13,7 @@ from ott.protocol import control
 from ott.scheduler import Scheduler
 from ott.state import Neighbor, NodeState
 from ott.transport.tcp import TcpTransport
-from tests.test_neighbors import free_port, wait_until
+from tests.test_neighbors import wait_until
 
 BASE_IP = 40
 LATE = config.DEAD_TIMEOUT + 1
@@ -290,6 +290,22 @@ class LinkCostTest(unittest.TestCase):
         self.assertGreater(self.cost(self.ready(srtt=0.0, rttvar=0.0)), 0)
 
 
+def free_tcp_port():
+    """Porta TCP livre em todos os IPs dos nós destes testes (127.0.0.41 a 127.0.0.50)."""
+    while True:
+        with socket.socket() as s:
+            s.bind(("127.0.0.1", 0))
+            port = s.getsockname()[1]
+        try:
+            for index in range(1, 11):
+                with socket.socket() as s:
+                    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                    s.bind((f"127.0.0.{BASE_IP + index}", port))
+            return port
+        except OSError:
+            continue
+
+
 def free_udp_port():
     while True:
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
@@ -405,7 +421,7 @@ class LocalPauseTest(unittest.TestCase):
 
 class ProbeServiceTest(unittest.TestCase):
     def setUp(self):
-        self.control_port = free_port()
+        self.control_port = free_tcp_port()
         self.probe_port = free_udp_port()
         self.nodes = []
 
