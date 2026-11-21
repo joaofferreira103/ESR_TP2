@@ -51,6 +51,7 @@ BW_REQUIRED_MBPS = 2             # Mbps: largura de banda necessária usada no c
 PAIR_INTERVAL = 5.0              # s: intervalo entre packet pairs enviados a cada vizinho
 PAIR_SIZE = 1200                 # bytes: tamanho total de cada probe do packet pair
 PAIR_HISTORY = 9                 # estimativas: janela usada para calcular a mediana da capacidade
+PAIR_RTTVAR_FACTOR = 2           # um par com dispersão < PAIR_RTTVAR_FACTOR × RTTVAR é descartado (ruído do jitter)
 
 # --- Autorreparação ---
 GOSSIP_INTERVAL = 5.0            # s: período de envio da NEIGHBOR_LIST a cada vizinho

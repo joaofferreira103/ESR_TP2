@@ -101,6 +101,7 @@ Além disso:
 
 - **Mede a capacidade, não a largura de banda disponível.** Um link de 10 Mbit saturado continua a dar 10 Mbit, porque o método ignora o outro tráfego. A medição passiva do débito recebido, prevista para os links ativos (Fase 6), cobre essa lacuna; o gancho `record_data_bytes`/`throughput` já existe.
 - **Ignora os cabeçalhos UDP/IP**, o que dá cerca de 2% a menos.
+- **Filtro por RTTVAR (correção do erro 5).** Um par cuja dispersão seja menor que `PAIR_RTTVAR_FACTOR × RTTVAR` (2 × RTTVAR) é descartado, porque o intervalo entre os pacotes é então dominado pelo jitter. Limitações: num link lento com jitter alto, os pares verdadeiros também são descartados e a capacidade fica desconhecida, o que põe o termo de largura de banda a 0 (a 1 Mbit/s a dispersão é de 9,6 ms, por isso basta um RTTVAR acima de 4,8 ms; a 2 Mbit/s, acima de 2,4 ms). No T6 do CORE, a 1 Mbit/s, o RTTVAR ficou entre 0,3 e 2,3 ms, dentro do aceite. Um jitter com menos de metade da dispersão não é filtrado e ainda pode enviesar a estimativa. Antes de haver RTTVAR medido, os pares são aceites.
 - **O impacto de um erro depende do sentido do erro.** Acima de umas dezenas de Mbit/s o termo é quase 0 (a 100 Mbit/s vale 0,2 ms), por isso os erros em links rápidos pouco mudam o custo. O erro grave é o jitter fazer parecer lento um link rápido: a 1,9 Mbit/s falsos, o termo soma mais 10,5 ms ao custo (medido com 5 ms de jitter: 37,3 ms).
 
 ## 5. Gossip e regra de reparação

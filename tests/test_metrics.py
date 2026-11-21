@@ -176,6 +176,22 @@ class PacketPairTest(unittest.TestCase):
         m.on_pair_packet(1, 0, 10.001)
         self.assertIsNone(m.capacity())
 
+    def test_dispersion_comparable_to_rttvar_is_discarded(self):
+        # Erro 5: 3 ms de dispersão com RTTVAR de 4 ms é ruído do jitter (3 < 2 × 4)
+        m = LinkMetrics(now=0.0)
+        m.rttvar = 0.004
+        m.on_pair_packet(1, 0, 10.0)
+        m.on_pair_packet(1, 1, 10.003)
+        self.assertIsNone(m.capacity())
+
+    def test_dispersion_well_above_rttvar_is_accepted(self):
+        # 9,6 ms de dispersão (1 Mbit/s) com RTTVAR de 0,1 ms
+        m = LinkMetrics(now=0.0)
+        m.rttvar = 0.0001
+        m.on_pair_packet(1, 0, 10.0)
+        m.on_pair_packet(1, 1, 10.0096)
+        self.assertAlmostEqual(m.capacity(), 1e6, delta=1)
+
     def test_zero_interval_discarded(self):
         m = LinkMetrics(now=0.0)
         m.on_pair_packet(1, 0, 10.0)
@@ -199,14 +215,14 @@ class LinkCostTest(unittest.TestCase):
         """Link pronto com valores exatos: a fração loss dos LOSS_WINDOW probes perdida."""
         lost = round(loss * config.LOSS_WINDOW)
         m = LinkMetrics(now=0.0)
+        if capacity is not None:
+            add_pair(m, 1, capacity)  # antes de haver RTTVAR, para o filtro do erro 5 não o descartar
         m.srtt, m.rttvar, m.samples = srtt, rttvar, config.MIN_SAMPLES
         for seq in range(config.LOSS_WINDOW):
             m.on_probe_sent(seq, 0.0)
             if seq >= lost:
                 m.on_reply(seq, 0.001)
         m.srtt, m.rttvar, m.samples = srtt, rttvar, config.MIN_SAMPLES  # on_reply alterou-os
-        if capacity is not None:
-            add_pair(m, 1, capacity)
         return m
 
     def cost(self, m, mode="full"):

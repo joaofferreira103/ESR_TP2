@@ -108,6 +108,10 @@ class LinkMetrics:
 
         Um par é descartado se faltar um dos pacotes ou se chegarem trocados: o idx 1 sem o idx 0 do
         mesmo pair_id não conta, e um idx 0 sem par é substituído pelo do par seguinte.
+
+        Também se descarta quando a dispersão (t1 - t0) é menor que PAIR_RTTVAR_FACTOR × RTTVAR: com
+        jitter, o intervalo entre os dois pacotes passa a ser ruído de alguns ms, o que dava capacidades
+        falsas de poucos Mbit/s em links sem limite. Sem RTTVAR ainda medido, o par é aceite.
         """
         if idx == 0:
             self._pair_start = (pair_id, now)
@@ -117,8 +121,11 @@ class LinkMetrics:
         if start is None or start[0] != pair_id:
             return
         interval = now - start[1]
-        if interval > 0:
-            self._capacities.append(config.PAIR_SIZE * BITS_PER_BYTE / interval)
+        if interval <= 0:
+            return
+        if self.rttvar is not None and interval < config.PAIR_RTTVAR_FACTOR * self.rttvar:
+            return
+        self._capacities.append(config.PAIR_SIZE * BITS_PER_BYTE / interval)
 
     def capacity(self):
         """Capacidade estimada em bits/s, ou None se ainda não for conhecida.
