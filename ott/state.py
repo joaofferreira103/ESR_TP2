@@ -16,13 +16,14 @@ import time
 class Neighbor:
     """Um vizinho overlay e o seu canal de controlo (None enquanto a ligação de saída não está feita)."""
 
-    def __init__(self, neighbor_id, ip, channel=None, initiated_by_me=False, static=False):
+    def __init__(self, neighbor_id, ip, channel=None, initiated_by_me=False, static=False, dynamic=False):
         self.id = neighbor_id
         self.ip = ip
         self.channel = channel
         self.status = "connecting"          # "connecting" | "up"
         self.initiated_by_me = initiated_by_me
         self.static = static                # True se veio da lista do bootstrapper
+        self.dynamic = dynamic              # True se a aresta foi criada por uma reparação (nos dois lados)
         self.connected_since = None         # instante (time.time()) em que ficou "up"
 
     def pending(self):
@@ -47,8 +48,11 @@ class NodeState:
         self.neighbors = {}           # id -> Neighbor
         self.static_neighbors = {}    # id -> ip, lista recebida do bootstrapper
         self.link_metrics = {}        # id -> LinkMetrics, um por vizinho "up" (ott.metrics)
-        # Vizinhos dos vizinhos, para a reparação (ott.repair): id -> {"ip", "via", "last_seen"}
+        # Vizinhos dos vizinhos, para a reparação (ott.repair):
+        # id -> {"ip", "degree" (None se desconhecido), "via" (set de quem o indicou), "last_seen"}
         self.overlay_candidates = {}
+        # Grau de cada vizinho "up", segundo a última NEIGHBOR_LIST que ele próprio enviou (ott.repair)
+        self.neighbor_degrees = {}
 
         # Gancho para a Fase 3 (encaminhamento):
         # candidates[servidor][vizinho] = {"epoch", "seq", "last_seen",

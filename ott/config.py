@@ -20,7 +20,8 @@ PROBE_PORT = 5002                # UDP: probes (métricas e heartbeat)
 BOOTSTRAP_RETRY_INTERVAL = 2.0   # s: intervalo entre tentativas de contactar o bootstrapper
 BOOTSTRAP_REQUEST_TIMEOUT = 5.0  # s: tempo máximo que o bootstrapper espera pelo REGISTER numa ligação
 ACCEPT_RETRY_DELAY = 0.1         # s: espera depois de um erro em accept() (ex.: sem descritores livres)
-HELLO_TIMEOUT = 3.0              # s: tempo máximo à espera de HELLO_ACK / HELLO_REJECT
+HELLO_TIMEOUT = 3.0              # s: tempo máximo à espera de HELLO_ACK / HELLO_REJECT, e depois do HELLO_CONFIRM
+LISTEN_BACKLOG = 8               # ligações: fila do listen() de controlo (limita as ligações velhas acumuladas)
 LEAVE_FLUSH_TIMEOUT = 1.0        # s: tempo máximo à espera que os LEAVE saiam antes de fechar as ligações
 RECONNECT_INTERVAL = 5.0         # s: intervalo entre tentativas de ligar a vizinhos estáticos em falta
 X_MAX = 4                        # nº máximo de vizinhos (acima disto, HELLO_REJECT)
@@ -32,9 +33,12 @@ PROBE_MAX_SIZE = 2048            # bytes: tamanho máximo de um datagrama de pro
 PROBE_RECV_TIMEOUT = 0.5         # s: espera máxima da thread de receção antes de ver se deve parar
 RTT_ALPHA = 0.125                # peso da nova medição na EWMA do RTT (adimensional)
 RTTVAR_BETA = 0.25               # peso da nova medição na EWMA do desvio do RTT (adimensional)
-LOSS_WINDOW = 50                 # probes: janela usada para calcular a taxa de perda
+LOSS_WINDOW = 100                # probes: janela usada para calcular a taxa de perda (~20 s)
+LOSS_EVAL_DELAY = 1.0            # s: idade mínima de um probe para entrar na perda (respondido ou não)
 DEAD_TIMEOUT = 3.0               # s: sem resposta a probes durante este tempo = vizinho morto
+PAUSE_DETECT_SLACK = 1.0         # s: atraso da verificação de vizinhos acima do qual se assume que o próprio nó parou
 K_JITTER = 1                     # peso do jitter (RTTVAR) no custo do link (adimensional)
+JITTER_CAP_MS = 20               # ms: valor máximo do termo de jitter (uma pausa da VM fazia o RTTVAR disparar)
 K_LOSS_MS = 100                  # ms: penalização por perda total no custo do link (10% de perda = +10 ms)
 HOP_COST = 1.0                   # ms: custo fixo somado por salto (desempate por nº de saltos)
 MIN_SAMPLES = 5                  # amostras de RTT necessárias antes de usar o custo medido
@@ -49,6 +53,7 @@ BW_REQUIRED_MBPS = 2             # Mbps: largura de banda necessária usada no c
 PAIR_INTERVAL = 5.0              # s: intervalo entre packet pairs enviados a cada vizinho
 PAIR_SIZE = 1200                 # bytes: tamanho total de cada probe do packet pair
 PAIR_HISTORY = 9                 # estimativas: janela usada para calcular a mediana da capacidade
+PAIR_RTTVAR_FACTOR = 2           # um par com dispersão < PAIR_RTTVAR_FACTOR × RTTVAR é descartado (ruído do jitter)
 
 # --- Autorreparação ---
 GOSSIP_INTERVAL = 5.0            # s: período de envio da NEIGHBOR_LIST a cada vizinho

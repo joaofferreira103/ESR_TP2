@@ -7,8 +7,10 @@ Garantias que qualquer implementação tem de dar a quem a usa:
   e o canal já está marcado como fechado (closed == True) quando é chamado.
 - Os callbacks não adquirem locks do transporte, por isso podem chamar send() e close().
 
-Ciclo de vida de um canal: criado por connect() ou entregue pelo listener, responde ao HELLO
-(só no lado que o recebeu), start() arranca a entrega de mensagens, close() termina.
+Ciclo de vida de um canal: criado por connect() ou entregue pelo listener. Handshake em 3 passos,
+antes de start(): HELLO -> HELLO_ACK -> HELLO_CONFIRM. Quem recebeu o HELLO responde com respond()
+e espera o HELLO_CONFIRM com receive_handshake(); quem o enviou envia o HELLO_CONFIRM com respond().
+Depois, start() arranca a entrega de mensagens e close() termina.
 """
 
 from abc import ABC, abstractmethod
@@ -38,6 +40,13 @@ class ControlChannel(ABC):
     @abstractmethod
     def respond(self, msg):
         """Envia já a resposta ao HELLO, antes de start(). Lança TransportError se falhar."""
+
+    @abstractmethod
+    def receive_handshake(self, timeout):
+        """Recebe uma mensagem do handshake, antes de start(). Bloqueia no máximo timeout s.
+
+        Devolve a mensagem validada; lança TransportError se a ligação fechar, expirar ou a mensagem for inválida.
+        """
 
     @abstractmethod
     def send(self, msg):

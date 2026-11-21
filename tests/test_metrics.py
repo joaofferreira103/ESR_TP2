@@ -11,9 +11,9 @@ from ott.metrics import LinkMetrics, ProbeService, measure_rtt, metrics_text
 from ott.neighbors import NeighborManager
 from ott.protocol import control
 from ott.scheduler import Scheduler
-from ott.state import NodeState
+from ott.state import Neighbor, NodeState
 from ott.transport.tcp import TcpTransport
-from tests.test_neighbors import free_port, wait_until
+from tests.test_neighbors import wait_until
 
 BASE_IP = 40
 LATE = config.DEAD_TIMEOUT + 1
@@ -52,13 +52,37 @@ class LinkMetricsTest(unittest.TestCase):
             m.on_probe_sent(seq, 0.0)
             if seq % 5 != 0:  # 10 dos 50 ficam sem resposta
                 m.on_reply(seq, 0.01)
+        self.assertLessEqual(50, config.LOSS_WINDOW)
         self.assertAlmostEqual(m.loss(now=LATE), 0.2)
 
-    def test_pending_probe_is_not_lost_yet(self):
+    def test_recent_probes_do_not_count(self):
         m = LinkMetrics(now=0.0)
         m.on_probe_sent(1, 0.0)
-        self.assertEqual(m.loss(now=config.DEAD_TIMEOUT), 0.0)
-        self.assertEqual(m.loss(now=config.DEAD_TIMEOUT + 0.01), 1.0)
+        m.on_probe_sent(2, 0.0)
+        m.on_reply(2, 0.01)
+        # Recentes: nem o respondido nem o que está à espera contam
+        self.assertEqual(m.loss(now=config.LOSS_EVAL_DELAY), 0.0)
+        self.assertEqual(m.loss(now=config.LOSS_EVAL_DELAY + 0.01), 0.5)
+
+    def test_late_reply_turns_lost_into_answered(self):
+        m = LinkMetrics(now=0.0)
+        m.on_probe_sent(1, 0.0)
+        self.assertEqual(m.loss(now=config.LOSS_EVAL_DELAY + 0.1), 1.0)
+        m.on_reply(1, config.LOSS_EVAL_DELAY + 0.2)   # ainda antes de DEAD_TIMEOUT
+        self.assertEqual(m.loss(now=config.LOSS_EVAL_DELAY + 0.3), 0.0)
+
+    def test_uniform_20_percent_loss_is_unbiased_in_every_window(self):
+        """Um em cada cinco probes perdido, RTT de 50 ms, um probe a cada PROBE_INTERVAL."""
+        m = LinkMetrics(now=0.0)
+        estimates = []
+        for seq in range(10 * config.LOSS_WINDOW):
+            t = seq * config.PROBE_INTERVAL
+            m.on_probe_sent(seq, t)
+            if seq % 5 != 0:
+                m.on_reply(seq, t + 0.05)
+            if seq >= config.LOSS_WINDOW:  # janela completa
+                estimates.append(m.loss(now=t + 0.06))
+        self.assertTrue(all(0.15 <= e <= 0.25 for e in estimates), (min(estimates), max(estimates)))
 
     def test_old_probes_leave_window(self):
         m = LinkMetrics(now=0.0)
@@ -152,6 +176,22 @@ class PacketPairTest(unittest.TestCase):
         m.on_pair_packet(1, 0, 10.001)
         self.assertIsNone(m.capacity())
 
+    def test_dispersion_comparable_to_rttvar_is_discarded(self):
+        # Erro 5: 3 ms de dispersão com RTTVAR de 4 ms é ruído do jitter (3 < 2 × 4)
+        m = LinkMetrics(now=0.0)
+        m.rttvar = 0.004
+        m.on_pair_packet(1, 0, 10.0)
+        m.on_pair_packet(1, 1, 10.003)
+        self.assertIsNone(m.capacity())
+
+    def test_dispersion_well_above_rttvar_is_accepted(self):
+        # 9,6 ms de dispersão (1 Mbit/s) com RTTVAR de 0,1 ms
+        m = LinkMetrics(now=0.0)
+        m.rttvar = 0.0001
+        m.on_pair_packet(1, 0, 10.0)
+        m.on_pair_packet(1, 1, 10.0096)
+        self.assertAlmostEqual(m.capacity(), 1e6, delta=1)
+
     def test_zero_interval_discarded(self):
         m = LinkMetrics(now=0.0)
         m.on_pair_packet(1, 0, 10.0)
@@ -171,17 +211,18 @@ class PacketPairTest(unittest.TestCase):
 class LinkCostTest(unittest.TestCase):
     NOW = 1000.0
 
-    def ready(self, srtt=0.100, rttvar=0.020, lost=0, capacity=None):
-        """Link pronto com valores exatos: lost probes perdidos em LOSS_WINDOW."""
+    def ready(self, srtt=0.100, rttvar=0.020, loss=0.0, capacity=None):
+        """Link pronto com valores exatos: a fração loss dos LOSS_WINDOW probes perdida."""
+        lost = round(loss * config.LOSS_WINDOW)
         m = LinkMetrics(now=0.0)
+        if capacity is not None:
+            add_pair(m, 1, capacity)  # antes de haver RTTVAR, para o filtro do erro 5 não o descartar
         m.srtt, m.rttvar, m.samples = srtt, rttvar, config.MIN_SAMPLES
         for seq in range(config.LOSS_WINDOW):
             m.on_probe_sent(seq, 0.0)
             if seq >= lost:
                 m.on_reply(seq, 0.001)
         m.srtt, m.rttvar, m.samples = srtt, rttvar, config.MIN_SAMPLES  # on_reply alterou-os
-        if capacity is not None:
-            add_pair(m, 1, capacity)
         return m
 
     def cost(self, m, mode="full"):
@@ -189,11 +230,11 @@ class LinkCostTest(unittest.TestCase):
 
     def test_full_known_value(self):
         # 100/2 + 1*20 + 100*0,2 + 10*2/4 + 1 = 50 + 20 + 20 + 5 + 1 = 96 ms
-        self.assertAlmostEqual(self.cost(self.ready(lost=10, capacity=4e6)), 96.0, places=3)
+        self.assertAlmostEqual(self.cost(self.ready(loss=0.2, capacity=4e6)), 96.0, places=3)
 
     def test_ten_percent_loss_adds_ten_ms(self):
         # 50 + 20 + 100*0,1 + 0 + 1 = 81 ms
-        self.assertAlmostEqual(self.cost(self.ready(lost=5)), 81.0)
+        self.assertAlmostEqual(self.cost(self.ready(loss=0.1)), 81.0)
 
     def test_capacity_equal_to_required_adds_ten_ms(self):
         # 50 + 20 + 0 + 10*2/2 + 1 = 81 ms
@@ -201,7 +242,7 @@ class LinkCostTest(unittest.TestCase):
 
     def test_loss_counts_when_delay_is_almost_zero(self):
         # Com perda: 0,1 + 0,1 + 100*0,1 + 1 = 11,2 ms. Limpo: 5 + 0,1 + 1 = 6,1 ms
-        lossy = self.cost(self.ready(srtt=0.0002, rttvar=0.0001, lost=5))
+        lossy = self.cost(self.ready(srtt=0.0002, rttvar=0.0001, loss=0.1))
         clean = self.cost(self.ready(srtt=0.010, rttvar=0.0001))
         self.assertAlmostEqual(lossy, 11.2)
         self.assertAlmostEqual(clean, 6.1)
@@ -212,10 +253,10 @@ class LinkCostTest(unittest.TestCase):
         self.assertAlmostEqual(self.cost(self.ready()), 71.0)
 
     def test_latency(self):
-        self.assertAlmostEqual(self.cost(self.ready(lost=10, capacity=4e6), "latency"), 51.0)
+        self.assertAlmostEqual(self.cost(self.ready(loss=0.2, capacity=4e6), "latency"), 51.0)
 
     def test_hops(self):
-        self.assertEqual(self.cost(self.ready(lost=10, capacity=4e6), "hops"), config.HOP_COST)
+        self.assertEqual(self.cost(self.ready(loss=0.2, capacity=4e6), "hops"), config.HOP_COST)
 
     def test_not_ready_is_default_in_every_mode(self):
         m = replied_rtts([0.001] * (config.MIN_SAMPLES - 1))
@@ -227,11 +268,18 @@ class LinkCostTest(unittest.TestCase):
             self.cost(self.ready(), "pombo")
 
     def test_more_loss_costs_more(self):
-        costs = [self.cost(self.ready(lost=lost)) for lost in (0, 1, 10, 25, 50)]
+        costs = [self.cost(self.ready(loss=fraction)) for fraction in (0, 0.02, 0.2, 0.5, 1.0)]
         self.assertEqual(costs, sorted(set(costs)))
 
+    def test_jitter_term_is_capped(self):
+        # Caso do CORE (erro 7): SRTT 0,5 ms, RTTVAR 72 ms. Antes: 0,25 + 72 + 1 = 73,25 ms
+        # Agora: 0,25 + min(72, 20) + 1 = 21,25 ms
+        self.assertAlmostEqual(self.cost(self.ready(srtt=0.0005, rttvar=0.072)), 21.25)
+        # Abaixo do limite, o termo não muda: 50 + 19 + 1 = 70 ms
+        self.assertAlmostEqual(self.cost(self.ready(rttvar=0.019)), 70.0)
+
     def test_more_jitter_costs_more(self):
-        costs = [self.cost(self.ready(rttvar=v)) for v in (0.0, 0.001, 0.02, 0.5)]
+        costs = [self.cost(self.ready(rttvar=v)) for v in (0.0, 0.001, 0.01, 0.019)]  # abaixo do limite
         self.assertEqual(costs, sorted(set(costs)))
 
     def test_less_capacity_costs_more(self):
@@ -242,13 +290,29 @@ class LinkCostTest(unittest.TestCase):
         self.assertGreater(self.cost(self.ready(srtt=0.0, rttvar=0.0)), 0)
 
 
+def free_tcp_port():
+    """Porta TCP livre em todos os IPs dos nós destes testes (127.0.0.41 a 127.0.0.50)."""
+    while True:
+        with socket.socket() as s:
+            s.bind(("127.0.0.1", 0))
+            port = s.getsockname()[1]
+        try:
+            for index in range(1, 11):
+                with socket.socket() as s:
+                    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                    s.bind((f"127.0.0.{BASE_IP + index}", port))
+            return port
+        except OSError:
+            continue
+
+
 def free_udp_port():
     while True:
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind(("127.0.0.1", 0))
             port = s.getsockname()[1]
         try:
-            for index in range(1, 8):
+            for index in range(1, 11):
                 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
                     s.bind((f"127.0.0.{BASE_IP + index}", port))
             return port
@@ -286,9 +350,78 @@ class _TestNode:
         self.probes.stop()
 
 
+class _NoNeighbors:
+    """NeighborManager falso: regista os vizinhos que o ProbeService manda fechar e tira-os do estado."""
+
+    def __init__(self, state):
+        self.state = state
+        self.closed = []
+
+    def add_up_listener(self, func):
+        pass
+
+    def add_down_listener(self, func):
+        pass
+
+    def close_neighbor(self, neighbor, reason):
+        self.closed.append((neighbor.id, reason))
+        self.state.remove_neighbor(neighbor.id)
+
+
+class LocalPauseTest(unittest.TestCase):
+    """Verificação de vizinhos mortos com relógio simulado (instantes passados à mão)."""
+
+    def setUp(self):
+        self.state = NodeState("O1")
+        neighbor = Neighbor("O2", "10.0.0.2")
+        neighbor.status = "up"
+        self.state.add_neighbor(neighbor)
+        self.metrics = LinkMetrics(now=0.0)
+        self.metrics.on_probe_sent(1, 0.0)
+        self.metrics.on_reply(1, 0.0)            # última resposta no instante 0
+        self.state.link_metrics["O2"] = self.metrics
+        self.neighbors = _NoNeighbors(self.state)
+        self.logger = logging.getLogger("ott.test.pause")
+        self.logger.propagate = False
+        self.logger.addHandler(logging.NullHandler())
+        self.probes = ProbeService(self.state, self.neighbors, Scheduler(self.logger), self.logger)
+
+    def tick_until(self, start, end):
+        """Corre a verificação a cada PROBE_INTERVAL, de start a end (inclusive)."""
+        t = start
+        while t <= end + 1e-9:
+            self.probes.check_dead(now=t)
+            t += config.PROBE_INTERVAL
+
+    def test_silent_neighbor_still_dies_without_pause(self):
+        self.tick_until(config.PROBE_INTERVAL, config.DEAD_TIMEOUT + 2 * config.PROBE_INTERVAL)
+        self.assertEqual(self.neighbors.closed, [("O2", "sem resposta aos probes")])
+
+    def test_local_pause_does_not_kill_neighbors(self):
+        self.tick_until(config.PROBE_INTERVAL, 1.0)
+        with self.assertLogs(self.logger, "WARNING") as logs:
+            self.probes.check_dead(now=21.0)     # o nó esteve parado 20 s
+        self.assertIn("pausa local de 19.8 s detetada: verificação de vizinhos adiada", logs.output[0])
+        self.assertEqual(self.neighbors.closed, [])
+        self.assertEqual(self.metrics.last_reply_time, 21.0)   # novo DEAD_TIMEOUT a contar de agora
+
+    def test_after_pause_a_silent_neighbor_dies_one_dead_timeout_later(self):
+        self.tick_until(config.PROBE_INTERVAL, 1.0)
+        self.probes.check_dead(now=21.0)
+        self.tick_until(21.0 + config.PROBE_INTERVAL, 21.0 + config.DEAD_TIMEOUT - config.PROBE_INTERVAL)
+        self.assertEqual(self.neighbors.closed, [])
+        self.tick_until(21.0 + config.DEAD_TIMEOUT, 21.0 + config.DEAD_TIMEOUT + 2 * config.PROBE_INTERVAL)
+        self.assertEqual(self.neighbors.closed, [("O2", "sem resposta aos probes")])
+
+    def test_small_delay_is_not_a_pause(self):
+        self.probes.check_dead(now=1.0)
+        self.probes.check_dead(now=1.0 + config.PROBE_INTERVAL + config.PAUSE_DETECT_SLACK - 0.01)
+        self.assertNotEqual(self.metrics.last_reply_time, 1.0 + config.PROBE_INTERVAL + config.PAUSE_DETECT_SLACK - 0.01)
+
+
 class ProbeServiceTest(unittest.TestCase):
     def setUp(self):
-        self.control_port = free_port()
+        self.control_port = free_tcp_port()
         self.probe_port = free_udp_port()
         self.nodes = []
 

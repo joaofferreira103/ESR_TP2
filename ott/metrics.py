@@ -72,13 +72,21 @@ class LinkMetrics:
             self.srtt = (1 - config.RTT_ALPHA) * self.srtt + config.RTT_ALPHA * rtt
 
     def loss(self, now=None):
-        """Fração de probes perdidos na janela. Os que ainda podem ter resposta não contam."""
+        """Fração de probes perdidos na janela, contando só os enviados há mais de LOSS_EVAL_DELAY.
+
+        Os probes recentes ficam de fora todos, respondidos ou não. Contar os respondidos recentes e
+        deixar de fora os perdidos recentes (que ainda podiam ter resposta) subestimava a perda.
+        Um probe sem resposta ao fim de LOSS_EVAL_DELAY conta como perdido; se a resposta chegar
+        depois (antes de DEAD_TIMEOUT), passa a contar como respondido.
+        """
         now = time.monotonic() if now is None else now
         answered = lost = 0
         for ts, replied in self._probes.values():
+            if now - ts <= config.LOSS_EVAL_DELAY:
+                continue
             if replied:
                 answered += 1
-            elif now - ts > config.DEAD_TIMEOUT:
+            else:
                 lost += 1
         total = answered + lost
         return lost / total if total else 0.0
@@ -100,6 +108,10 @@ class LinkMetrics:
 
         Um par é descartado se faltar um dos pacotes ou se chegarem trocados: o idx 1 sem o idx 0 do
         mesmo pair_id não conta, e um idx 0 sem par é substituído pelo do par seguinte.
+
+        Também se descarta quando a dispersão (t1 - t0) é menor que PAIR_RTTVAR_FACTOR × RTTVAR: com
+        jitter, o intervalo entre os dois pacotes passa a ser ruído de alguns ms, o que dava capacidades
+        falsas de poucos Mbit/s em links sem limite. Sem RTTVAR ainda medido, o par é aceite.
         """
         if idx == 0:
             self._pair_start = (pair_id, now)
@@ -109,8 +121,11 @@ class LinkMetrics:
         if start is None or start[0] != pair_id:
             return
         interval = now - start[1]
-        if interval > 0:
-            self._capacities.append(config.PAIR_SIZE * BITS_PER_BYTE / interval)
+        if interval <= 0:
+            return
+        if self.rttvar is not None and interval < config.PAIR_RTTVAR_FACTOR * self.rttvar:
+            return
+        self._capacities.append(config.PAIR_SIZE * BITS_PER_BYTE / interval)
 
     def capacity(self):
         """Capacidade estimada em bits/s, ou None se ainda não for conhecida.
@@ -234,6 +249,7 @@ class ProbeService:
         # anterior nunca coincide com um probe da ligação nova ao mesmo vizinho
         self._next_seq = 0
         self._next_pair_id = 0
+        self._last_check = None         # instante da última verificação de vizinhos mortos
         neighbors.add_up_listener(self._on_neighbor_up)
         neighbors.add_down_listener(self._on_neighbor_down)
 
@@ -316,10 +332,24 @@ class ProbeService:
             datagrams.append(control.encode_udp(msg))
         return datagrams
 
-    def check_dead(self):
+    def check_dead(self, now=None):
+        """Declara mortos os vizinhos sem resposta há mais de DEAD_TIMEOUT.
+
+        Se esta verificação chegar com um atraso muito maior do que o previsto, foi o próprio nó que
+        esteve parado (ex.: kill -STOP, ou a VM parada): os vizinhos não tiveram como responder, por
+        isso nessa ronda ninguém é declarado morto e todos recebem um novo DEAD_TIMEOUT a contar de agora.
+        """
         if self._stop.is_set():
             return
-        now = time.monotonic()
+        now = time.monotonic() if now is None else now
+        last, self._last_check = self._last_check, now
+        if last is not None and now - last > config.PROBE_INTERVAL + config.PAUSE_DETECT_SLACK:
+            with self.state.lock:
+                for metrics in self.state.link_metrics.values():
+                    metrics.last_reply_time = now
+            self.logger.warning(f"pausa local de {now - last - config.PROBE_INTERVAL:.1f} s detetada: "
+                                f"verificação de vizinhos adiada")
+            return
         dead = []
         with self.state.lock:
             for neighbor in self.state.up_neighbors():
