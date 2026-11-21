@@ -24,6 +24,8 @@ from ott import config
 from ott.metrics import measure_rtt
 from ott.protocol import control
 
+PENDING_POLL = 0.05     # s: intervalo entre verificações enquanto se espera por uma ligação pendente
+
 
 def _degree(entry):
     """Grau indicado numa entrada da NEIGHBOR_LIST, ou None se não vier ou for inválido."""
@@ -199,11 +201,25 @@ class OverlayRepair:
                 self.logger.info(f"reparação concluída: ligado a {candidate_id}")
                 return
             self.logger.info(f"reparação: {candidate_id} não aceitou, a tentar o seguinte")
+        # Um candidato que se ligou a mim ao mesmo tempo fica pendente à espera do HELLO_CONFIRM e faz
+        # falhar a minha tentativa a ele: esperar que essa ligação se resolva antes de desistir
+        self._wait_for_pending_incoming()
         if self._no_longer_needed():
             self._log_cancelled()
             return
         self.logger.warning("reparação: nenhum candidato aceitou, a voltar ao bootstrapper")
         self.on_exhausted()
+
+    def _wait_for_pending_incoming(self):
+        """Espera (no máximo HELLO_TIMEOUT) que as ligações de entrada pendentes cheguem a "up" ou desistam."""
+        deadline = time.monotonic() + config.HELLO_TIMEOUT
+        while time.monotonic() < deadline:
+            with self.state.lock:
+                pending = any(n.status != "up" and not n.initiated_by_me
+                              for n in self.state.neighbors.values())
+            if not pending:
+                return
+            time.sleep(PENDING_POLL)
 
     def _log_cancelled(self):
         with self.state.lock:

@@ -14,8 +14,8 @@ from ott.protocol import control
 from ott.repair import OverlayRepair, candidates_text
 from ott.scheduler import Scheduler
 from ott.state import Neighbor, NodeState
-from tests.test_metrics import _TestNode, free_udp_port
-from tests.test_neighbors import free_port, wait_until
+from tests.test_metrics import _TestNode, free_tcp_port as free_port, free_udp_port
+from tests.test_neighbors import wait_until
 
 
 class _FakeNeighbors:
@@ -112,6 +112,22 @@ class RepairDecisionTest(unittest.TestCase):
         self.assertEqual(self.neighbors.attempts, [])
         self.assertEqual(self.exhausted, [])
 
+    def test_waits_for_pending_incoming_before_giving_up(self):
+        """Um candidato que se ligou a mim ao mesmo tempo está pendente: não desistir antes de ele confirmar."""
+        repair = self.make_repair({"O2": 0.010}, accepts=set())
+        arriving = Neighbor("O2", "10.0.0.2")          # ligação de entrada, à espera do HELLO_CONFIRM
+        self.state.add_neighbor(arriving)
+
+        def confirm_later():
+            time.sleep(0.2)
+            with self.state.lock:
+                arriving.status = "up"
+        threading.Thread(target=confirm_later, daemon=True).start()
+        with self.assertLogs(repair.logger, "INFO") as logs:
+            repair.repair()
+        self.assertEqual(self.exhausted, [])
+        self.assertIn("reparação cancelada: O2 voltou", "\n".join(logs.output))
+
     def test_does_not_repair_a_node_that_never_had_neighbors(self):
         repair = self.make_repair({"O2": 0.010}, accepts={"O2"})
         repair.periodic_check()
@@ -129,7 +145,8 @@ class RepairDecisionTest(unittest.TestCase):
     def test_expiry(self):
         repair = self.make_repair({"O2": 0.010}, accepts=set())
         seen = self.state.overlay_candidates["O2"]["last_seen"]
-        repair.expire_candidates(now=seen + config.CANDIDATE_EXPIRY)
+        # Margem de 0,01 s: com o relógio em vírgula flutuante, (seen + 60) - seen pode dar 60,000...01
+        repair.expire_candidates(now=seen + config.CANDIDATE_EXPIRY - 0.01)
         self.assertIn("O2", self.state.overlay_candidates)
         repair.expire_candidates(now=seen + config.CANDIDATE_EXPIRY + 1)
         self.assertEqual(self.state.overlay_candidates, {})
