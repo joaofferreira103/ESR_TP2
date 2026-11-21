@@ -1,10 +1,14 @@
-"""Gestão de vizinhos: HELLO/HELLO_ACK/HELLO_REJECT/LEAVE e reconexão, sobre a camada de transporte (ott.transport.base).
+"""Gestão de vizinhos: HELLO/HELLO_ACK/HELLO_CONFIRM/HELLO_REJECT/LEAVE e reconexão, sobre a camada de transporte (ott.transport.base).
 
-Ciclo de vida de uma ligação:
+Ciclo de vida de uma ligação (handshake em 3 passos: HELLO -> HELLO_ACK -> HELLO_CONFIRM):
 - Saída (connect_to): o vizinho é reservado no estado como "connecting", o transporte envia o
-  HELLO e devolve o canal e a resposta. Com HELLO_ACK passa a "up".
+  HELLO e devolve o canal e a resposta. Com HELLO_ACK, envia HELLO_CONFIRM e passa a "up".
 - Entrada (_handle_incoming): o listener entrega o canal com o HELLO já lido; decide-se (aceitar
-  ou rejeitar) com o lock e responde-se sem o lock. Ao aceitar, o vizinho entra logo como "up".
+  ou rejeitar) com o lock e responde-se sem o lock. Ao aceitar, o vizinho fica "connecting" e só
+  passa a "up" (e só gera on_neighbor_up) quando chega o HELLO_CONFIRM. Uma ligação que fecha ou
+  expira antes disso é descartada em silêncio: sem eventos up/down, só uma linha DEBUG no log.
+  Isto evita a tempestade de up/down quando um nó parado volta e aceita de uma vez as ligações
+  velhas da fila do listen(), já abandonadas pelo outro lado.
 - Depois do HELLO, as mensagens recebidas chegam a _on_channel_message, que as despacha para os
   handlers registados.
 - Remoção (_drop): acontece uma única vez por vizinho, mesmo que várias falhas cheguem ao mesmo
@@ -165,6 +169,11 @@ class NeighborManager:
         if reply["type"] != control.HELLO_ACK or reply["src"] != neighbor.id:
             self._abort(neighbor, f"resposta inesperada: {reply['type']} de {reply['src']}")
             return False
+        try:
+            channel.respond(control.make_msg(control.HELLO_CONFIRM, self.state.node_id))
+        except TransportError as e:
+            self._abort(neighbor, f"falhou ao enviar HELLO_CONFIRM: {e}")
+            return False
 
         with self.state.lock:
             still_mine = self.state.neighbors.get(neighbor.id) is neighbor
@@ -195,7 +204,9 @@ class NeighborManager:
 
     def _handle_incoming(self, channel, hello):
         peer_id = hello["src"]
-        neighbor, reject_reason = self._decide(peer_id, channel)
+        neighbor, reject_reason, replaced = self._decide(peer_id, channel)
+        if replaced is not None:
+            replaced.close()  # a thread que esperava o HELLO_CONFIRM dela vê o erro e desiste em silêncio
         if neighbor is None:
             if reject_reason is not None:
                 self._reply_and_close(channel, peer_id, reject_reason)
@@ -205,19 +216,52 @@ class NeighborManager:
 
         try:
             channel.respond(control.make_msg(control.HELLO_ACK, self.state.node_id))
+            confirm = channel.receive_handshake(config.HELLO_TIMEOUT)
+            if confirm["type"] != control.HELLO_CONFIRM or confirm["src"] != peer_id:
+                raise TransportError(f"esperava HELLO_CONFIRM, recebi {confirm['type']} de {confirm['src']}")
         except TransportError as e:
-            self._drop(neighbor, f"erro ao enviar HELLO_ACK: {e}")
+            self._discard_pending(neighbor, str(e))
+            return
+
+        with self.state.lock:
+            still_mine = self.state.neighbors.get(peer_id) is neighbor
+            if still_mine:
+                neighbor.status = "up"
+                neighbor.connected_since = time.time()
+        if not still_mine:
+            neighbor.close()
+            self.logger.debug(f"ligação de {peer_id} descartada: substituída por outra ou nó a terminar")
             return
         self._activate(neighbor)
 
+    def _discard_pending(self, neighbor, reason):
+        """Desiste, em silêncio, de uma ligação de entrada que não chegou ao HELLO_CONFIRM."""
+        with self.state.lock:
+            if self.state.neighbors.get(neighbor.id) is neighbor:
+                del self.state.neighbors[neighbor.id]
+        neighbor.close()
+        self.logger.debug(f"ligação de {neighbor.id} descartada antes do HELLO_CONFIRM ({reason})")
+
     def _decide(self, peer_id, channel):
-        """Decide (com o lock) se aceita o HELLO. Devolve (Neighbor aceite, None) ou (None, motivo)."""
+        """Decide (com o lock) se aceita o HELLO.
+
+        Devolve (Neighbor pendente aceite ou None, motivo da rejeição ou None, Neighbor pendente
+        substituído ou None). Quem chama fecha o substituído, sem o lock.
+        """
+        replaced = None
         with self.state.lock:
             if self._stopping:
-                return None, None
+                return None, None, None
             existing = self.state.neighbors.get(peer_id)
             if existing is not None and existing.status == "up":
-                return None, "duplicate"
+                return None, "duplicate", None
+            if existing is not None and not existing.initiated_by_me:
+                # Outro HELLO deste vizinho ainda à espera do HELLO_CONFIRM: o novo é mais recente,
+                # porque o vizinho só tem uma tentativa de cada vez. A pendente é descartada
+                self.logger.debug(f"novo HELLO de {peer_id}: substitui a ligação pendente")
+                replaced = existing
+                del self.state.neighbors[peer_id]
+                existing = None
             if existing is not None:
                 # Os dois ligaram-se ao mesmo tempo: fica a ligação iniciada pelo ID menor
                 if peer_id < self.state.node_id:
@@ -225,18 +269,17 @@ class NeighborManager:
                     # A minha tentativa é abandonada: a thread de saída vê que deixou de estar no estado
                 else:
                     self.logger.info(f"ligação simultânea com {peer_id}: fica a minha (ID menor)")
-                    return None, "duplicate"
+                    return None, "duplicate", replaced
             elif self.state.count_up() >= config.X_MAX:
-                return None, "full"
+                return None, "full", replaced
 
             # IP: o da lista estática se existir; senão, o IP de onde veio a ligação
             ip = self.state.static_neighbors.get(peer_id, channel.peer_ip)
+            # Fica "connecting" até ao HELLO_CONFIRM: ocupa o id, mas ainda não conta como vizinho
             neighbor = Neighbor(peer_id, ip, channel=channel, initiated_by_me=False,
                                 static=peer_id in self.state.static_neighbors)
-            neighbor.status = "up"
-            neighbor.connected_since = time.time()
             self.state.neighbors[peer_id] = neighbor
-            return neighbor, None
+            return neighbor, None, replaced
 
     def _reply_and_close(self, channel, peer_id, reason):
         try:

@@ -43,6 +43,17 @@ class TcpChannel(ControlChannel):
         except (OSError, control.ProtocolError) as e:
             raise TransportError(str(e)) from e
 
+    def receive_handshake(self, timeout):
+        try:
+            self._sock.settimeout(timeout)
+            msg = control.recv_msg(self._sock)
+            if msg is None:
+                raise OSError("ligação fechada")
+            control.validate(msg)
+        except (OSError, control.ProtocolError) as e:
+            raise TransportError(str(e) or type(e).__name__) from e
+        return msg
+
     def send(self, msg):
         try:
             self._send_queue.put_nowait(msg)
@@ -145,7 +156,7 @@ class TcpListener(ControlListener):
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._sock.bind((self._bind_ip, self._port))
-        self._sock.listen()
+        self._sock.listen(config.LISTEN_BACKLOG)
         threading.Thread(target=self._accept_loop, name="control-accept", daemon=True).start()
         self._logger.info(f"controlo à escuta em {self._bind_ip}:{self._port}")
 
@@ -182,7 +193,12 @@ class TcpListener(ControlListener):
                 conn.close()
                 return
             control.validate(msg)
-        except (OSError, control.ProtocolError) as e:
+        except OSError as e:
+            # Normal depois de uma pausa: ligações velhas da fila do listen(), já abandonadas pelo outro lado
+            self._logger.debug(f"ligação de {addr[0]} fechada antes do HELLO: {e}")
+            conn.close()
+            return
+        except control.ProtocolError as e:
             self._logger.warning(f"ligação de {addr[0]} sem HELLO válido: {e}")
             conn.close()
             return

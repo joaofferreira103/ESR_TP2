@@ -5,6 +5,7 @@ import socket
 import threading
 import time
 import unittest
+from unittest import mock
 
 from ott import config
 from ott.neighbors import NeighborManager
@@ -178,6 +179,64 @@ class NeighborManagerTest(unittest.TestCase):
         self.assertTrue(wait_until(lambda: b._listener._sock.failed or logged(b, "sem HELLO")))
         self.assertTrue(a.connect_to("O2", self.ip(2)))
         self.assertTrue(wait_until(lambda: logged(b, "sem descritores livres")))
+
+    def raw_hello(self, node_index, src):
+        """Ligação TCP em bruto que envia HELLO como src e lê a resposta, sem enviar HELLO_CONFIRM."""
+        sock = socket.create_connection((self.ip(node_index), self.port), timeout=WAIT_TIMEOUT)
+        control.send_msg(sock, control.make_msg(control.HELLO, src))
+        return sock, control.recv_msg(sock)
+
+    def watch_events(self, manager):
+        events = []
+        manager.add_up_listener(lambda nid: events.append(("up", nid)))
+        manager.add_down_listener(lambda nid, reason: events.append(("down", nid)))
+        return events
+
+    def test_sender_closes_before_confirm_generates_no_event(self):
+        """Erro 2: uma ligação abandonada antes do HELLO_CONFIRM não gera up nem down."""
+        a = self.make_node(1)
+        events = self.watch_events(a)
+        sock, reply = self.raw_hello(1, "O9")
+        self.assertEqual(reply["type"], control.HELLO_ACK)
+        sock.close()
+        self.assertTrue(wait_until(lambda: logged(a, "descartada antes do HELLO_CONFIRM")))
+        time.sleep(0.1)
+        self.assertEqual(events, [])
+        self.assertIsNone(a.state.get_neighbor("O9"))
+        self.assertFalse(any(line.startswith(("WARNING", "ERROR")) for line in a.log_lines), a.log_lines)
+
+    def test_missing_confirm_expires_silently(self):
+        a = self.make_node(1)
+        events = self.watch_events(a)
+        with mock.patch.object(config, "HELLO_TIMEOUT", 0.3):
+            sock, _ = self.raw_hello(1, "O9")
+            self.assertTrue(wait_until(lambda: logged(a, "descartada antes do HELLO_CONFIRM")))
+        sock.close()
+        self.assertEqual(events, [])
+        self.assertIsNone(a.state.get_neighbor("O9"))
+
+    def test_neighbor_is_not_up_before_confirm(self):
+        a = self.make_node(1)
+        sock, _ = self.raw_hello(1, "O9")
+        self.assertTrue(wait_until(lambda: a.state.get_neighbor("O9") is not None))
+        self.assertEqual(a.state.get_neighbor("O9").status, "connecting")
+        self.assertEqual(a.state.count_up(), 0)
+        control.send_msg(sock, control.make_msg(control.HELLO_CONFIRM, "O9"))
+        self.assertTrue(wait_until(lambda: a.state.count_up() == 1))
+        sock.close()
+
+    def test_new_hello_replaces_stale_pending_one(self):
+        """Uma ligação velha da fila (sem CONFIRM) não impede a ligação nova do mesmo vizinho."""
+        a, b = self.make_node(1), self.make_node(2)
+        events = self.watch_events(a)
+        stale, _ = self.raw_hello(1, "O2")  # fica aberta, sem HELLO_CONFIRM
+        self.assertTrue(wait_until(lambda: a.state.get_neighbor("O2") is not None))
+        self.assertTrue(b.connect_to("O1", self.ip(1)))
+        self.assertTrue(wait_until(lambda: a.state.count_up() == 1))
+        stale.close()
+        time.sleep(0.2)
+        self.assertEqual(events, [("up", "O2")])
+        self.assertEqual(a.state.get_neighbor("O2").status, "up")
 
     def test_leave_removes_neighbor(self):
         a, b = self.make_node(1), self.make_node(2)

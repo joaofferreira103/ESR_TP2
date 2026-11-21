@@ -171,7 +171,7 @@ Ficheiro do bootstrapper: {"nodes": {"O1": {"ip": "...", "neighbors": ["O2", ...
 
 Mensagens de controlo (TCP, 4 bytes big-endian com o tamanho + JSON UTF-8, máx. 1 MB). Campos comuns: {"v": 1, "type": ..., "src": <ID>}
 REGISTER {} -> NEIGHBORS {"neighbors": [{"id", "ip"}]} | ERROR {"reason"}   (Fase 1)
-HELLO {} -> HELLO_ACK {} | HELLO_REJECT {"reason": "full" | "duplicate"}   (Fase 1)
+HELLO {} -> HELLO_ACK {} | HELLO_REJECT {"reason": "full" | "duplicate"}; depois do HELLO_ACK, quem iniciou envia HELLO_CONFIRM {} e só então os dois lados ficam "up" (quem aceitou espera no máximo HELLO_TIMEOUT)   (Fase 1)
 LEAVE {}   (Fase 1)
 ANNOUNCE {"server", "epoch", "seq", "streams": {"<stream>": {"cost", "hops", "active", "via"}}}   (Fase 3)
 PING {"server", "flow", "ping_id"}   (Fase 3)

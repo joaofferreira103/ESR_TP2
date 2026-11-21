@@ -147,6 +147,7 @@ class OverlayRepair:
         self.logger.warning("nó isolado: a iniciar a reparação")
         for candidate_id, ip, rtt in self._rank_candidates():
             if self._no_longer_needed():
+                self._log_cancelled()
                 return
             self.logger.info(f"reparação: HELLO a {candidate_id} ({ip}), RTT {rtt * 1000:.2f} ms")
             if self.neighbors.connect_to(candidate_id, ip):
@@ -154,9 +155,20 @@ class OverlayRepair:
                 self.logger.info(f"reparação concluída: ligado a {candidate_id}")
                 return
             self.logger.info(f"reparação: {candidate_id} não aceitou, a tentar o seguinte")
-        if not self._no_longer_needed():
-            self.logger.warning("reparação: nenhum candidato aceitou, a voltar ao bootstrapper")
-            self.on_exhausted()
+        if self._no_longer_needed():
+            self._log_cancelled()
+            return
+        self.logger.warning("reparação: nenhum candidato aceitou, a voltar ao bootstrapper")
+        self.on_exhausted()
+
+    def _log_cancelled(self):
+        with self.state.lock:
+            stopping = self._stopping
+            returned = sorted(n.id for n in self.state.neighbors.values() if n.status == "up")
+        if stopping:
+            self.logger.info("reparação cancelada: o nó está a terminar")
+        else:
+            self.logger.info(f"reparação cancelada: {', '.join(returned)} voltou")
 
     def _rank_candidates(self):
         """Devolve [(id, ip, rtt)] dos candidatos que respondem, do melhor para o pior."""

@@ -37,7 +37,7 @@ class FakeChannel(ControlChannel):
     def __init__(self, neighbor_id, peer_ip, on_message, on_closed):
         super().__init__(neighbor_id, peer_ip, on_message, on_closed)
         self.peer = None
-        self.handshake_replies = None   # onde o lado que recebeu o HELLO põe a resposta
+        self.handshake_inbox = queue.Queue()    # mensagens do handshake, antes de start()
         self.inbox = queue.Queue()
         self.blocked = False            # True simula um vizinho que deixou de escoar a fila
         self._closed = False
@@ -47,7 +47,18 @@ class FakeChannel(ControlChannel):
         threading.Thread(target=self._deliver_loop, daemon=True).start()
 
     def respond(self, msg):
-        self.handshake_replies.put(msg)
+        if self.closed:
+            raise TransportError("canal fechado")
+        self.peer.handshake_inbox.put(msg)
+
+    def receive_handshake(self, timeout):
+        try:
+            item = self.handshake_inbox.get(timeout=timeout)
+        except queue.Empty:
+            raise TransportError("timed out") from None
+        if item is _STOP:
+            raise TransportError("ligação fechada")
+        return item
 
     def send(self, msg):
         if self.blocked:
@@ -74,6 +85,7 @@ class FakeChannel(ControlChannel):
     def peer_closed(self):
         """O outro lado fechou: para este lado é uma falha, avisada com on_closed."""
         self.inbox.put(("closed", "ligação fechada"))
+        self.handshake_inbox.put(_STOP)
 
     def _mark_closed(self):
         with self._lock:
@@ -124,17 +136,12 @@ class FakeTransport(ControlTransport):
         listener = self.network.get((ip, port))
         if listener is None:
             raise TransportError("ninguém à escuta")
-        replies = queue.Queue()
         remote = FakeChannel(hello_msg["src"], self.ip, listener.on_message, listener.on_closed)
-        remote.handshake_replies = replies
         # O id do lado local só se sabe com a resposta; o par fica ligado antes de o outro lado poder enviar
         local = FakeChannel(None, ip, self._on_message, self._on_closed)
         local.peer, remote.peer = remote, local
         threading.Thread(target=listener.on_channel, args=(remote, hello_msg), daemon=True).start()
-        try:
-            reply = replies.get(timeout=timeout)
-        except queue.Empty:
-            raise TransportError("sem resposta ao HELLO") from None
+        reply = local.receive_handshake(timeout)
         local.neighbor_id = reply["src"]
         return local, reply
 

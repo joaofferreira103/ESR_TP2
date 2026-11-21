@@ -89,7 +89,9 @@ class RepairDecisionTest(unittest.TestCase):
         returned = Neighbor("O7", "10.0.0.7")
         returned.status = "up"
         self.state.add_neighbor(returned)
-        repair.repair()
+        with self.assertLogs(repair.logger, "INFO") as logs:
+            repair.repair()
+        self.assertIn("reparação cancelada: O7 voltou", "\n".join(logs.output))
         self.assertEqual(self.neighbors.attempts, [])
         self.assertEqual(self.exhausted, [])
 
