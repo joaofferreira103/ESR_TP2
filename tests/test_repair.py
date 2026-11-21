@@ -1,6 +1,7 @@
 """Testes da autorreparação: gossip, regra do docente (só quando isolado) e fallback para o bootstrapper."""
 
 import logging
+import socket
 import threading
 import time
 import unittest
@@ -318,6 +319,34 @@ class RepairIntegrationTest(unittest.TestCase):
             self.assertTrue(wait_until(lambda: o5.state.neighbor_degrees.get("O8") == 2))
 
             self.assertTrue(o4.manager.connect_to("O5", o5.ip))
+            self.assertTrue(wait_until(lambda: sorted(n.id for n in o5.state.up_neighbors()) == ["O3", "O4"]))
+            self.assertTrue(wait_until(lambda: [n.id for n in o8.state.up_neighbors()] == ["O9"]))
+
+    def test_place_is_only_given_after_confirm(self):
+        """Com X_MAX = 2: O5 cheio com O3 e O8 (dinâmico, grau 2). Um HELLO de O4 (estático) sem
+        HELLO_CONFIRM não fecha a aresta O5-O8; com CONFIRM, fecha."""
+        with mock.patch.object(config, "X_MAX", 2):
+            o3, o4, o5, o8, o9 = (self.make_node(i) for i in (3, 4, 5, 8, 9))
+            o5.state.static_neighbors = {"O3": o3.ip, "O4": o4.ip}
+            self.link(o5, o3)
+            self.link(o8, o9)
+            self.assertTrue(o8.manager.connect_to("O5", o5.ip, dynamic=True))
+            self.gossip(o8)
+            self.assertTrue(wait_until(lambda: o5.state.neighbor_degrees.get("O8") == 2))
+
+            raw = socket.create_connection((o5.ip, self.control_port), timeout=3)
+            control.send_msg(raw, control.make_msg(control.HELLO, "O4"))
+            self.assertEqual(control.recv_msg(raw)["type"], control.HELLO_ACK)
+            # Durante o handshake: 3 ligações (X_MAX + 1), a aresta dinâmica continua
+            self.assertEqual(sorted(n.id for n in o5.state.up_neighbors()), ["O3", "O8"])
+            self.assertEqual(o5.state.get_neighbor("O4").status, "connecting")
+            raw.close()  # o CONFIRM nunca chega
+            self.assertTrue(wait_until(lambda: o5.state.get_neighbor("O4") is None))
+            time.sleep(0.2)
+            self.assertEqual(sorted(n.id for n in o5.state.up_neighbors()), ["O3", "O8"])
+            self.assertEqual([n.id for n in o8.state.up_neighbors()].count("O5"), 1)
+
+            self.assertTrue(o4.manager.connect_to("O5", o5.ip))   # agora com CONFIRM
             self.assertTrue(wait_until(lambda: sorted(n.id for n in o5.state.up_neighbors()) == ["O3", "O4"]))
             self.assertTrue(wait_until(lambda: [n.id for n in o8.state.up_neighbors()] == ["O9"]))
 

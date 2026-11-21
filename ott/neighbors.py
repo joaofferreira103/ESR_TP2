@@ -13,7 +13,9 @@ Ciclo de vida de uma ligação (handshake em 3 passos: HELLO -> HELLO_ACK -> HEL
   handlers registados.
 - Arestas dinâmicas: as criadas pela reparação levam "dynamic": true no HELLO, e ficam marcadas
   nos dois lados. Um nó cheio que recebe HELLO de um vizinho estático fecha uma aresta dinâmica
-  (com LEAVE) para lhe dar lugar, desde que o outro lado dessa aresta tenha grau > 1.
+  (com LEAVE) para lhe dar lugar, desde que o outro lado dessa aresta tenha grau > 1. A vaga só é
+  cedida ao receber o HELLO_CONFIRM: durante o handshake o nó pode ter X_MAX + 1 ligações, e se o
+  CONFIRM não chegar a aresta dinâmica mantém-se.
 - Remoção (_drop): acontece uma única vez por vizinho, mesmo que várias falhas cheguem ao mesmo
   tempo, porque só remove se o objeto no estado ainda for o mesmo.
 """
@@ -239,11 +241,9 @@ class NeighborManager:
 
     def _handle_incoming(self, channel, hello):
         peer_id = hello["src"]
-        neighbor, reject_reason, replaced, evicted = self._decide(peer_id, channel, hello)
+        neighbor, reject_reason, replaced, make_room = self._decide(peer_id, channel, hello)
         if replaced is not None:
             replaced.close()  # a thread que esperava o HELLO_CONFIRM dela vê o erro e desiste em silêncio
-        if evicted is not None:
-            self._finish_leave(evicted, True, f"vaga cedida ao vizinho estático {peer_id}")
         if neighbor is None:
             if reject_reason is not None:
                 self._reply_and_close(channel, peer_id, reject_reason)
@@ -260,15 +260,23 @@ class NeighborManager:
             self._discard_pending(neighbor, str(e))
             return
 
+        evicted = None
         with self.state.lock:
             still_mine = self.state.neighbors.get(peer_id) is neighbor
             if still_mine:
+                if make_room and self.state.count_up() >= config.X_MAX:
+                    # Só agora, com o CONFIRM, se cede a vaga de uma aresta dinâmica
+                    evicted = self._dynamic_to_evict()
+                    if evicted is not None:
+                        del self.state.neighbors[evicted.id]
                 neighbor.status = "up"
                 neighbor.connected_since = time.time()
         if not still_mine:
             neighbor.close()
             self.logger.debug(f"ligação de {peer_id} descartada: substituída por outra ou nó a terminar")
             return
+        if evicted is not None:
+            self._finish_leave(evicted, True, f"vaga cedida ao vizinho estático {peer_id}")
         self._activate(neighbor)
 
     def _discard_pending(self, neighbor, reason):
@@ -283,16 +291,17 @@ class NeighborManager:
         """Decide (com o lock) se aceita o HELLO.
 
         Devolve (Neighbor pendente aceite ou None, motivo da rejeição ou None, Neighbor pendente
-        substituído ou None, vizinho dinâmico retirado para dar lugar a um estático ou None).
-        Quem chama fecha o substituído e avisa o retirado, sem o lock.
+        substituído ou None, True se é preciso ceder a vaga de uma aresta dinâmica ao receber o
+        HELLO_CONFIRM). Quem chama fecha o substituído, sem o lock.
         """
-        replaced = evicted = None
+        replaced = None
+        make_room = False
         with self.state.lock:
             if self._stopping:
-                return None, None, None, None
+                return None, None, None, False
             existing = self.state.neighbors.get(peer_id)
             if existing is not None and existing.status == "up":
-                return None, "duplicate", None, None
+                return None, "duplicate", None, False
             if existing is not None and not existing.initiated_by_me:
                 # Outro HELLO deste vizinho ainda à espera do HELLO_CONFIRM: o novo é mais recente,
                 # porque o vizinho só tem uma tentativa de cada vez. A pendente é descartada
@@ -307,12 +316,11 @@ class NeighborManager:
                     # A minha tentativa é abandonada: a thread de saída vê que deixou de estar no estado
                 else:
                     self.logger.info(f"ligação simultânea com {peer_id}: fica a minha (ID menor)")
-                    return None, "duplicate", replaced, None
+                    return None, "duplicate", replaced, False
             elif self.state.count_up() >= config.X_MAX:
-                evicted = self._dynamic_to_evict() if peer_id in self.state.static_neighbors else None
-                if evicted is None:
-                    return None, "full", replaced, None
-                del self.state.neighbors[evicted.id]
+                if peer_id not in self.state.static_neighbors or self._dynamic_to_evict() is None:
+                    return None, "full", replaced, False
+                make_room = True  # a vaga só é cedida ao receber o HELLO_CONFIRM
 
             # IP: o da lista estática se existir; senão, o IP de onde veio a ligação
             ip = self.state.static_neighbors.get(peer_id, channel.peer_ip)
@@ -321,7 +329,7 @@ class NeighborManager:
             neighbor = Neighbor(peer_id, ip, channel=channel, initiated_by_me=False, static=static,
                                 dynamic=hello.get("dynamic") is True and not static)
             self.state.neighbors[peer_id] = neighbor
-            return neighbor, None, replaced, evicted
+            return neighbor, None, replaced, make_room
 
     def _dynamic_to_evict(self):
         """Com o lock: a aresta dinâmica a fechar para dar lugar a um vizinho estático, ou None.
