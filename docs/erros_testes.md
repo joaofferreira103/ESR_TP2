@@ -32,6 +32,8 @@ O7 e O10 dependem os dois **só** de O6.
 
 **Gravidade:** alta. Na Fase 5, os clientes da ilha ficam sem vídeo enquanto ela existir.
 
+**Corrigido em `590e68d` e `5188e6a`:** a `NEIGHBOR_LIST` leva o grau de cada vizinho (`{id, ip, degree}`) e é reenviada logo que o grau de um vizinho muda. Na reparação, um candidato com grau <= 1 indicado só por vizinhos que já morreram fica para o fim e só é usado se nenhum outro aceitar. A questão relacionada (arestas dinâmicas) ficou resolvida com o erro 3.
+
 ### Condição de teste
 Falha silenciosa de um nó que é o único vizinho de **dois ou mais** nós:
 ```bash
@@ -78,6 +80,8 @@ Depois de o O6 voltar, a aresta **dinâmica** O7–O10 continua ativa (O7 e O10 
 ## Erro 2: tempestade de ligações quando um nó parado volta
 
 **Gravidade:** média. Agora acaba por estabilizar, mas na Fase 3 cada `up` e `down` vai provocar novos anúncios e mudanças de rota.
+
+**Corrigido em `d54c608`:** handshake em 3 passos (`HELLO` -> `HELLO_ACK` -> `HELLO_CONFIRM`). Quem aceita só marca o vizinho `up` ao receber o `HELLO_CONFIRM`, no máximo `HELLO_TIMEOUT` depois; uma ligação que fecha ou expira antes disso é descartada em silêncio (DEBUG), sem `up` nem `down`. Um HELLO novo do mesmo vizinho substitui o que estava pendente. `listen()` com `LISTEN_BACKLOG = 8`. Em local, com O3 congelado 20 s, os `down` de O3 passaram de 11 para 3 (os 3 que restam são o próprio O3 a declarar os vizinhos mortos ao acordar).
 
 ### Condição de teste
 Um nó parado durante vários segundos enquanto os vizinhos tentam ligar-se a ele, e que depois volta:
@@ -130,6 +134,8 @@ Testes T1 a T10 de `resultados_testes_core.md`. Logs em `logs_T<n>/` (os erros 3
 
 **Gravidade:** alta. A topologia do ficheiro deixa de se repor. A cada falha acumulam-se arestas dinâmicas, e algumas arestas estáticas ficam bloqueadas sem limite de tempo.
 
+**Corrigido em `d7bb43d`:** a aresta criada pela reparação leva `"dynamic": true` no HELLO e fica marcada nos dois lados. (a) Quem a criou fecha-a com LEAVE quando volta a ter um vizinho estático `up`. (b) Um nó cheio que recebe HELLO de um vizinho estático fecha uma aresta dinâmica para lhe dar lugar, se o outro lado tiver grau > 1 segundo o gossip; senão responde `full`.
+
 ### Condição de teste
 Uma reparação liga um nó isolado a um candidato que fica com `X_MAX` (4) vizinhos. Depois volta um vizinho estático desse candidato:
 ```bash
@@ -167,6 +173,8 @@ Nas duas primeiras vezes, o bloqueio só acabou porque outra falha libertou uma 
 
 **Gravidade:** baixa. É uma consequência do erro 2 e fica resolvido quando este for corrigido.
 
+**Corrigido em `d54c608`:** com o handshake em 3 passos já não há `up`/`down` falsos; e a reparação cancelada escreve "reparação cancelada: <vizinho> voltou".
+
 ### O que se observou (T10)
 No `unfreeze`, a contagem de vizinhos do O6 chegou a 0 a meio da tempestade. O O6 julgou-se isolado e começou uma reparação com 7 candidatos. Os vizinhos voltaram e a reparação parou sem escrever nada:
 ```
@@ -189,6 +197,7 @@ No `unfreeze`, a contagem de vizinhos do O6 chegou a 0 a meio da tempestade. O O
 - **Observado:** O8→O4 com 2,9 a 4,3 Mbit/s; O4→O8 a descer de 58 para 7,7 Mbit/s. Cerca de +6,7 ms de custo vêm só da capacidade falsa.
 - **Causa:** o netem atrasa e troca a ordem dos pacotes de forma aleatória. O intervalo entre os dois pacotes do par passa a ser ruído de alguns ms, e 1200 B em cerca de 3 ms dão cerca de 3 Mbit/s.
 - **Correção:** descartar as estimativas em que o intervalo entre os pacotes do par é comparável ao RTTVAR, ou ignorar o termo de capacidade quando o RTTVAR é alto.
+- **Corrigido em `be09655`:** um par com dispersão menor que `PAIR_RTTVAR_FACTOR` (2) × RTTVAR é descartado. Limitação em `fase2.md`, secção 4.
 
 ---
 
@@ -200,6 +209,7 @@ No `unfreeze`, a contagem de vizinhos do O6 chegou a 0 a meio da tempestade. O O
 - **Observado:** a perda real ficou em cerca de 20%: chegaram 36 a 45 respostas por cada 50 probes. Mas a perda mostrada variou entre **6,4% e 21,7%**, e o custo entre 9 e 24 ms.
 - **Causa:** a janela tem 50 probes, mas os dos últimos 3 s (`DEAD_TIMEOUT`) não contam, o que deixa cerca de 35. Isso dá um desvio padrão de cerca de ±7 pontos.
 - **Correção:** uma janela maior (por exemplo 150 probes, cerca de 30 s) ou uma média móvel da perda, como no SRTT. Na Fase 3, usar histerese na troca de rota.
+- **Corrigido em `36a98a7`:** só entram na perda os probes com mais de `LOSS_EVAL_DELAY` (1 s), respondidos ou não (antes os respondidos recentes contavam e os perdidos recentes não, o que subestimava a perda); `LOSS_WINDOW` passou de 50 para 100. Com 20% de perda uniforme simulada, a estimativa fica em 20% ± 5 pontos em todas as janelas. A histerese fica para a Fase 3.
 
 ---
 
@@ -210,3 +220,4 @@ No `unfreeze`, a contagem de vizinhos do O6 chegou a 0 a meio da tempestade. O O
 - **Observado (T1 às 19:46, T4 às 20:00:06):** picos em vários links ao mesmo tempo, sem perda e com cerca de 6 amostras em falta, sinal de que a VM parou cerca de 1 s. Um link com SRTT de 0,5 ms chegou a um custo de **91 ms**, com RTTVAR de 72 ms.
 - **Causa:** `K_JITTER = 1` soma o RTTVAR inteiro ao custo, e um único RTT muito alto faz o RTTVAR disparar.
 - **Correção:** limitar o termo do jitter (por exemplo, no máximo igual ao SRTT), suavizar o custo e usar histerese na troca de rota.
+- **Corrigido em `9242567`:** o termo do jitter passa a ser `min(K_JITTER × RTTVAR, JITTER_CAP_MS)`, com `JITTER_CAP_MS = 20`. O caso do CORE (SRTT 0,5 ms, RTTVAR 72 ms) passa de 73 para 21 ms. A histerese fica para a Fase 3.

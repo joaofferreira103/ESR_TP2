@@ -95,17 +95,19 @@ Testada com `python3 -m unittest discover -s tests`, com o cenário 2 em local e
 
 **Resultados no CORE:** o arranque, as métricas de atraso e de largura de banda, a deteção de falhas (LEAVE cerca de 2 ms, crash cerca de 1 ms, falha silenciosa cerca de 3 s) e a reparação de um nó isolado (cerca de 6 ms) funcionam.
 
-**Por corrigir** (detalhes em `docs/erros_testes.md`):
+**Erros corrigidos** no ramo `correcoes-fase2` (detalhes em `docs/erros_testes.md`). Testados com os testes automáticos e em local; **ainda não repetidos no CORE**.
 
-| Erro | Problema | Gravidade |
-|---|---|---|
-| 1 | A reparação pode criar uma ilha desligada (dois nós isolados ligam-se um ao outro) | alta |
-| 3 | As arestas dinâmicas ocupam vagas de `X_MAX` e impedem os vizinhos estáticos de voltar; a topologia não se repõe | alta |
-| 2 | Tempestade de ligações quando um nó parado volta | média |
-| 5 | Com jitter, o packet pair mede capacidade falsa | média |
-| 6 | A estimativa da perda oscila muito (6 a 22% com 19% reais) | média (Fase 3) |
-| 7 | O custo reage muito ao RTTVAR quando a VM para (até 91 ms) | média (Fase 3) |
-| 4 | Reparação falsa durante a tempestade, cancelada sem nada no log | baixa |
+| Erro | Problema | Correção | Commit |
+|---|---|---|---|
+| 1 | A reparação podia criar uma ilha desligada | Grau dos vizinhos no gossip; candidatos de grau <= 1 de vizinhos mortos ficam para o fim | `590e68d`, `5188e6a` |
+| 3 | As arestas dinâmicas ocupavam as vagas dos vizinhos estáticos | Quem criou a aresta fecha-a quando um estático volta; um nó cheio cede-a a um estático | `d7bb43d` |
+| 2 | Tempestade de ligações quando um nó parado volta | Handshake em 3 passos (`HELLO_CONFIRM`); `listen()` com backlog 8 | `d54c608` |
+| 4 | Reparação falsa cancelada sem nada no log | Consequência do erro 2; agora escreve "reparação cancelada: X voltou" | `d54c608` |
+| 5 | Com jitter, o packet pair media capacidade falsa | Descarta pares com dispersão < 2 × RTTVAR | `be09655` |
+| 6 | A estimativa da perda oscilava e era enviesada | Só conta probes com mais de 1 s; janela de 100 | `36a98a7` |
+| 7 | O custo disparava com o RTTVAR quando a VM parava | Termo de jitter limitado a 20 ms | `9242567` |
+
+Fica para a Fase 3: histerese na troca de rota (erros 6 e 7) e a deteção de partições pela ausência de `ANNOUNCE` (erro 1).
 
 O que foi feito antes destes testes:
 - Probes UDP com SRTT, RTTVAR e perda por link; capacidade por packet pair; função de custo com os modos `full`, `latency` e `hops`.
