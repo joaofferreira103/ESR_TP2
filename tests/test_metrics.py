@@ -11,7 +11,7 @@ from ott.metrics import LinkMetrics, ProbeService, measure_rtt, metrics_text
 from ott.neighbors import NeighborManager
 from ott.protocol import control
 from ott.scheduler import Scheduler
-from ott.state import NodeState
+from ott.state import Neighbor, NodeState
 from ott.transport.tcp import TcpTransport
 from tests.test_neighbors import free_port, wait_until
 
@@ -332,6 +332,75 @@ class _TestNode:
         self.scheduler.stop()
         self.manager.stop()
         self.probes.stop()
+
+
+class _NoNeighbors:
+    """NeighborManager falso: regista os vizinhos que o ProbeService manda fechar e tira-os do estado."""
+
+    def __init__(self, state):
+        self.state = state
+        self.closed = []
+
+    def add_up_listener(self, func):
+        pass
+
+    def add_down_listener(self, func):
+        pass
+
+    def close_neighbor(self, neighbor, reason):
+        self.closed.append((neighbor.id, reason))
+        self.state.remove_neighbor(neighbor.id)
+
+
+class LocalPauseTest(unittest.TestCase):
+    """Verificação de vizinhos mortos com relógio simulado (instantes passados à mão)."""
+
+    def setUp(self):
+        self.state = NodeState("O1")
+        neighbor = Neighbor("O2", "10.0.0.2")
+        neighbor.status = "up"
+        self.state.add_neighbor(neighbor)
+        self.metrics = LinkMetrics(now=0.0)
+        self.metrics.on_probe_sent(1, 0.0)
+        self.metrics.on_reply(1, 0.0)            # última resposta no instante 0
+        self.state.link_metrics["O2"] = self.metrics
+        self.neighbors = _NoNeighbors(self.state)
+        self.logger = logging.getLogger("ott.test.pause")
+        self.logger.propagate = False
+        self.logger.addHandler(logging.NullHandler())
+        self.probes = ProbeService(self.state, self.neighbors, Scheduler(self.logger), self.logger)
+
+    def tick_until(self, start, end):
+        """Corre a verificação a cada PROBE_INTERVAL, de start a end (inclusive)."""
+        t = start
+        while t <= end + 1e-9:
+            self.probes.check_dead(now=t)
+            t += config.PROBE_INTERVAL
+
+    def test_silent_neighbor_still_dies_without_pause(self):
+        self.tick_until(config.PROBE_INTERVAL, config.DEAD_TIMEOUT + 2 * config.PROBE_INTERVAL)
+        self.assertEqual(self.neighbors.closed, [("O2", "sem resposta aos probes")])
+
+    def test_local_pause_does_not_kill_neighbors(self):
+        self.tick_until(config.PROBE_INTERVAL, 1.0)
+        with self.assertLogs(self.logger, "WARNING") as logs:
+            self.probes.check_dead(now=21.0)     # o nó esteve parado 20 s
+        self.assertIn("pausa local de 19.8 s detetada: verificação de vizinhos adiada", logs.output[0])
+        self.assertEqual(self.neighbors.closed, [])
+        self.assertEqual(self.metrics.last_reply_time, 21.0)   # novo DEAD_TIMEOUT a contar de agora
+
+    def test_after_pause_a_silent_neighbor_dies_one_dead_timeout_later(self):
+        self.tick_until(config.PROBE_INTERVAL, 1.0)
+        self.probes.check_dead(now=21.0)
+        self.tick_until(21.0 + config.PROBE_INTERVAL, 21.0 + config.DEAD_TIMEOUT - config.PROBE_INTERVAL)
+        self.assertEqual(self.neighbors.closed, [])
+        self.tick_until(21.0 + config.DEAD_TIMEOUT, 21.0 + config.DEAD_TIMEOUT + 2 * config.PROBE_INTERVAL)
+        self.assertEqual(self.neighbors.closed, [("O2", "sem resposta aos probes")])
+
+    def test_small_delay_is_not_a_pause(self):
+        self.probes.check_dead(now=1.0)
+        self.probes.check_dead(now=1.0 + config.PROBE_INTERVAL + config.PAUSE_DETECT_SLACK - 0.01)
+        self.assertNotEqual(self.metrics.last_reply_time, 1.0 + config.PROBE_INTERVAL + config.PAUSE_DETECT_SLACK - 0.01)
 
 
 class ProbeServiceTest(unittest.TestCase):

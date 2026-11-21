@@ -249,6 +249,7 @@ class ProbeService:
         # anterior nunca coincide com um probe da ligação nova ao mesmo vizinho
         self._next_seq = 0
         self._next_pair_id = 0
+        self._last_check = None         # instante da última verificação de vizinhos mortos
         neighbors.add_up_listener(self._on_neighbor_up)
         neighbors.add_down_listener(self._on_neighbor_down)
 
@@ -331,10 +332,24 @@ class ProbeService:
             datagrams.append(control.encode_udp(msg))
         return datagrams
 
-    def check_dead(self):
+    def check_dead(self, now=None):
+        """Declara mortos os vizinhos sem resposta há mais de DEAD_TIMEOUT.
+
+        Se esta verificação chegar com um atraso muito maior do que o previsto, foi o próprio nó que
+        esteve parado (ex.: kill -STOP, ou a VM parada): os vizinhos não tiveram como responder, por
+        isso nessa ronda ninguém é declarado morto e todos recebem um novo DEAD_TIMEOUT a contar de agora.
+        """
         if self._stop.is_set():
             return
-        now = time.monotonic()
+        now = time.monotonic() if now is None else now
+        last, self._last_check = self._last_check, now
+        if last is not None and now - last > config.PROBE_INTERVAL + config.PAUSE_DETECT_SLACK:
+            with self.state.lock:
+                for metrics in self.state.link_metrics.values():
+                    metrics.last_reply_time = now
+            self.logger.warning(f"pausa local de {now - last - config.PROBE_INTERVAL:.1f} s detetada: "
+                                f"verificação de vizinhos adiada")
+            return
         dead = []
         with self.state.lock:
             for neighbor in self.state.up_neighbors():

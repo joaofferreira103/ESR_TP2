@@ -36,6 +36,7 @@ RTTVAR_BETA = 0.25               # peso da nova medição na EWMA do desvio do R
 LOSS_WINDOW = 100                # probes: janela usada para calcular a taxa de perda (~20 s)
 LOSS_EVAL_DELAY = 1.0            # s: idade mínima de um probe para entrar na perda (respondido ou não)
 DEAD_TIMEOUT = 3.0               # s: sem resposta a probes durante este tempo = vizinho morto
+PAUSE_DETECT_SLACK = 1.0         # s: atraso da verificação de vizinhos acima do qual se assume que o próprio nó parou
 K_JITTER = 1                     # peso do jitter (RTTVAR) no custo do link (adimensional)
 JITTER_CAP_MS = 20               # ms: valor máximo do termo de jitter (uma pausa da VM fazia o RTTVAR disparar)
 K_LOSS_MS = 100                  # ms: penalização por perda total no custo do link (10% de perda = +10 ms)
