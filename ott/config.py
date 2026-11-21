@@ -36,6 +36,7 @@ LOSS_WINDOW = 100                # probes: janela usada para calcular a taxa de 
 LOSS_EVAL_DELAY = 1.0            # s: idade mínima de um probe para entrar na perda (respondido ou não)
 DEAD_TIMEOUT = 3.0               # s: sem resposta a probes durante este tempo = vizinho morto
 K_JITTER = 1                     # peso do jitter (RTTVAR) no custo do link (adimensional)
+JITTER_CAP_MS = 20               # ms: valor máximo do termo de jitter (uma pausa da VM fazia o RTTVAR disparar)
 K_LOSS_MS = 100                  # ms: penalização por perda total no custo do link (10% de perda = +10 ms)
 HOP_COST = 1.0                   # ms: custo fixo somado por salto (desempate por nº de saltos)
 MIN_SAMPLES = 5                  # amostras de RTT necessárias antes de usar o custo medido

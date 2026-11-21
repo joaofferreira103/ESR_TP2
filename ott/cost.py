@@ -10,13 +10,15 @@ def link_cost(metrics, mode=config.COST_MODE, now=None):
     """Custo do link descrito por metrics (LinkMetrics), em ms. Chamar com o lock global adquirido.
 
     Modo "full":
-        SRTT/2 + K_JITTER × RTTVAR + K_LOSS_MS × perda + W_BW_MS × BW_REQUIRED / capacidade + HOP_COST
+        SRTT/2 + min(K_JITTER × RTTVAR, JITTER_CAP_MS) + K_LOSS_MS × perda + W_BW_MS × BW_REQUIRED / capacidade + HOP_COST
 
     Cada métrica é convertida numa penalização em ms ("atraso equivalente") e soma-se, para a perda e a
     falta de capacidade contarem mesmo quando o atraso é quase nulo (caso do CORE sem atraso configurado).
 
     - SRTT/2: atraso estimado num só sentido, assumindo um link simétrico.
-    - K_JITTER × RTTVAR: o atraso extra que o cliente tem de absorver no buffer de reprodução.
+    - min(K_JITTER × RTTVAR, JITTER_CAP_MS): o atraso extra que o cliente tem de absorver no buffer de
+      reprodução. Fica limitado porque um único RTT muito alto (ex.: a VM parou 1 s) faz o RTTVAR
+      disparar durante vários segundos: no CORE, um link com SRTT de 0,5 ms chegou a custar 91 ms.
     - K_LOSS_MS × perda: 10% de perda equivale a +10 ms.
     - W_BW_MS × BW_REQUIRED / capacidade: uma capacidade igual ao débito necessário equivale a +10 ms,
       e o termo cresce quando a capacidade é menor. Com a capacidade ainda desconhecida vale 0.
@@ -47,7 +49,7 @@ def link_cost(metrics, mode=config.COST_MODE, now=None):
     if mode == "latency":
         return delay + config.HOP_COST
 
-    jitter = config.K_JITTER * metrics.rttvar * MS_PER_SECOND
+    jitter = min(config.K_JITTER * metrics.rttvar * MS_PER_SECOND, config.JITTER_CAP_MS)
     loss = config.K_LOSS_MS * metrics.loss(now)
     capacity = metrics.capacity()
     bw_required = config.BW_REQUIRED_MBPS * BITS_PER_MBIT

@@ -255,8 +255,15 @@ class LinkCostTest(unittest.TestCase):
         costs = [self.cost(self.ready(loss=fraction)) for fraction in (0, 0.02, 0.2, 0.5, 1.0)]
         self.assertEqual(costs, sorted(set(costs)))
 
+    def test_jitter_term_is_capped(self):
+        # Caso do CORE (erro 7): SRTT 0,5 ms, RTTVAR 72 ms. Antes: 0,25 + 72 + 1 = 73,25 ms
+        # Agora: 0,25 + min(72, 20) + 1 = 21,25 ms
+        self.assertAlmostEqual(self.cost(self.ready(srtt=0.0005, rttvar=0.072)), 21.25)
+        # Abaixo do limite, o termo não muda: 50 + 19 + 1 = 70 ms
+        self.assertAlmostEqual(self.cost(self.ready(rttvar=0.019)), 70.0)
+
     def test_more_jitter_costs_more(self):
-        costs = [self.cost(self.ready(rttvar=v)) for v in (0.0, 0.001, 0.02, 0.5)]
+        costs = [self.cost(self.ready(rttvar=v)) for v in (0.0, 0.001, 0.01, 0.019)]  # abaixo do limite
         self.assertEqual(costs, sorted(set(costs)))
 
     def test_less_capacity_costs_more(self):
