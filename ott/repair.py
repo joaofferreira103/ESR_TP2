@@ -103,6 +103,7 @@ class OverlayRepair:
         now = time.monotonic()
         with self.state.lock:
             # A lista do vizinho são os vizinhos dele: o seu tamanho é o grau dele
+            degree_changed = self.state.neighbor_degrees.get(neighbor_id) != len(entries)
             self.state.neighbor_degrees[neighbor_id] = len(entries)
             for entry in entries:
                 if not _valid_entry(entry):
@@ -111,6 +112,11 @@ class OverlayRepair:
                     candidate = self.state.overlay_candidates.setdefault(entry["id"], {"via": set()})
                     candidate.update(ip=entry["ip"], degree=_degree(entry), last_seen=now)
                     candidate["via"].add(neighbor_id)
+        if degree_changed:
+            # A minha lista leva o grau deste vizinho: reenviá-la já, para os outros não ficarem com um
+            # grau antigo até ao próximo GOSSIP_INTERVAL. Termina sozinho: reenviar a minha lista não
+            # muda o meu grau, por isso não provoca novos reenvios
+            self.send_gossip()
 
     def expire_candidates(self, now=None):
         now = time.monotonic() if now is None else now

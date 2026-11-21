@@ -230,6 +230,21 @@ class RepairIntegrationTest(unittest.TestCase):
         self.assertTrue(wait_until(lambda: self.has_candidate(c, a.id) and self.has_candidate(a, c.id)))
         self.assertLess(time.monotonic() - start, config.GOSSIP_INTERVAL)
 
+    def test_degree_change_is_propagated_without_waiting(self):
+        """O grau que chega a um vizinho de 2.º nível acompanha as ligações novas, sem o gossip periódico."""
+        a, b, c, d = self.make_node(1), self.make_node(2), self.make_node(3), self.make_node(4)
+        self.link(a, b)
+        self.link(b, c)   # c tem grau 1 quando b o anuncia a a
+        start = time.monotonic()
+        self.link(c, d)   # c passa a grau 2: b tem de reenviar a sua lista a a
+        self.assertTrue(wait_until(lambda: self.candidate_degree(a, c.id) == 2))
+        self.assertLess(time.monotonic() - start, config.GOSSIP_INTERVAL)
+
+    def candidate_degree(self, node, candidate_id):
+        with node.state.lock:
+            candidate = node.state.overlay_candidates.get(candidate_id)
+            return None if candidate is None else candidate["degree"]
+
     def test_candidates_survive_death_of_indicator(self):
         a, b, c = self.make_node(1), self.make_node(2), self.make_node(3)
         self.link(a, b)
