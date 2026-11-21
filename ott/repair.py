@@ -128,6 +128,18 @@ class OverlayRepair:
         # Sem esperar pelo GOSSIP_INTERVAL: o vizinho novo fica logo com candidatos, e os outros
         # recebem a lista atualizada, de que ele já faz parte. send_gossip só coloca nas filas
         self.send_gossip()
+        self.release_dynamic_edges()
+
+    def release_dynamic_edges(self):
+        """Fecha (com LEAVE) as arestas dinâmicas criadas por este nó quando já tem um vizinho
+        estático "up": deixaram de ser precisas, e assim a topologia volta à do ficheiro."""
+        with self.state.lock:
+            up = [n for n in self.state.neighbors.values() if n.status == "up"]
+            if not any(n.static for n in up):
+                return
+            mine = [n for n in up if n.dynamic and n.initiated_by_me]
+        for neighbor in mine:
+            self.neighbors.leave_neighbor(neighbor, "aresta dinâmica já não é precisa: vizinho estático de volta")
 
     def _on_neighbor_down(self, neighbor_id, reason):
         with self.state.lock:
@@ -139,8 +151,10 @@ class OverlayRepair:
         self.start_repair()
 
     def periodic_check(self):
-        """Remove candidatos expirados e volta a tentar se a última reparação não resultou."""
+        """Remove candidatos expirados, fecha arestas dinâmicas que já não são precisas e volta a
+        tentar se a última reparação não resultou."""
         self.expire_candidates()
+        self.release_dynamic_edges()
         self.start_repair()
 
     def start_repair(self):
@@ -171,7 +185,10 @@ class OverlayRepair:
                 self._log_cancelled()
                 return
             self.logger.info(f"reparação: HELLO a {candidate_id} ({ip}), RTT {rtt * 1000:.2f} ms")
-            if self.neighbors.connect_to(candidate_id, ip):
+            with self.state.lock:
+                # Voltar a ligar a um vizinho original não é uma aresta nova
+                dynamic = candidate_id not in self.state.static_neighbors
+            if self.neighbors.connect_to(candidate_id, ip, dynamic=dynamic):
                 # Liga-se a um só: depois disto já não está isolado
                 self.logger.info(f"reparação concluída: ligado a {candidate_id}")
                 return

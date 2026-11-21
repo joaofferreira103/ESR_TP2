@@ -11,6 +11,9 @@ Ciclo de vida de uma ligação (handshake em 3 passos: HELLO -> HELLO_ACK -> HEL
   velhas da fila do listen(), já abandonadas pelo outro lado.
 - Depois do HELLO, as mensagens recebidas chegam a _on_channel_message, que as despacha para os
   handlers registados.
+- Arestas dinâmicas: as criadas pela reparação levam "dynamic": true no HELLO, e ficam marcadas
+  nos dois lados. Um nó cheio que recebe HELLO de um vizinho estático fecha uma aresta dinâmica
+  (com LEAVE) para lhe dar lugar, desde que o outro lado dessa aresta tenha grau > 1.
 - Remoção (_drop): acontece uma única vez por vizinho, mesmo que várias falhas cheguem ao mesmo
   tempo, porque só remove se o objeto no estado ainda for o mesmo.
 """
@@ -110,6 +113,34 @@ class NeighborManager:
             return False
         return True
 
+    def leave_neighbor(self, neighbor, reason):
+        """Fecha de propósito a ligação a um vizinho, avisando-o com LEAVE (chama on_neighbor_down).
+
+        Não bloqueia: o LEAVE sai e a ligação fecha numa thread própria.
+        """
+        with self.state.lock:
+            if self.state.neighbors.get(neighbor.id) is not neighbor:
+                return
+            del self.state.neighbors[neighbor.id]
+            was_up = neighbor.status == "up"
+        self._finish_leave(neighbor, was_up, reason)
+
+    def _finish_leave(self, neighbor, was_up, reason):
+        """Já removido do estado: envia LEAVE, fecha depois de o LEAVE sair e avisa os ganchos."""
+        if neighbor.channel is not None:
+            neighbor.channel.send(control.make_msg(control.LEAVE, self.state.node_id))
+        threading.Thread(target=self._flush_and_close, args=(neighbor,),
+                         name=f"leave-{neighbor.id}", daemon=True).start()
+        self.logger.info(f"ligação a {neighbor.id} fechada ({reason})")
+        if was_up:
+            self.on_neighbor_down(neighbor.id, reason)
+
+    @staticmethod
+    def _flush_and_close(neighbor):
+        if neighbor.channel is not None:
+            neighbor.channel.flush(config.LEAVE_FLUSH_TIMEOUT)
+        neighbor.close()
+
     def close_neighbor(self, neighbor, reason):
         """Fecha a ligação a um vizinho falhado (chama on_neighbor_down). Recebe o objeto Neighbor,
         e não o id, para nunca fechar uma ligação nova ao mesmo vizinho."""
@@ -117,9 +148,12 @@ class NeighborManager:
 
     # --- Ligações de saída ---
 
-    def connect_to(self, neighbor_id, ip):
-        """Liga-se a um vizinho e faz o HELLO (bloqueia até HELLO_TIMEOUT). Devolve True se ficou "up"."""
-        neighbor = self._reserve(neighbor_id, ip)
+    def connect_to(self, neighbor_id, ip, dynamic=False):
+        """Liga-se a um vizinho e faz o HELLO (bloqueia até HELLO_TIMEOUT). Devolve True se ficou "up".
+
+        dynamic=True marca a aresta como criada por uma reparação (vai no HELLO, para o outro lado saber).
+        """
+        neighbor = self._reserve(neighbor_id, ip, dynamic)
         if neighbor is None:
             return False
         return self._handshake(neighbor)
@@ -142,7 +176,7 @@ class NeighborManager:
             self.logger.info(f"nova tentativa de ligação a {neighbor_id} ({ip})")
             self.connect_async(neighbor_id, ip)
 
-    def _reserve(self, neighbor_id, ip):
+    def _reserve(self, neighbor_id, ip, dynamic=False):
         """Regista o vizinho como "connecting" (evita duas tentativas em paralelo para o mesmo id)."""
         with self.state.lock:
             if self._stopping or neighbor_id == self.state.node_id or neighbor_id in self.state.neighbors:
@@ -150,12 +184,13 @@ class NeighborManager:
             if self.state.count_up() >= config.X_MAX:
                 return None  # X_MAX também limita as ligações de saída, não só os HELLO recebidos
             neighbor = Neighbor(neighbor_id, ip, initiated_by_me=True,
-                                static=neighbor_id in self.state.static_neighbors)
+                                static=neighbor_id in self.state.static_neighbors, dynamic=dynamic)
             self.state.neighbors[neighbor_id] = neighbor
             return neighbor
 
     def _handshake(self, neighbor):
-        hello = control.make_msg(control.HELLO, self.state.node_id)
+        fields = {"dynamic": True} if neighbor.dynamic else {}
+        hello = control.make_msg(control.HELLO, self.state.node_id, **fields)
         try:
             channel, reply = self.transport.connect(neighbor.ip, self.port, hello, config.HELLO_TIMEOUT)
         except TransportError as e:
@@ -204,9 +239,11 @@ class NeighborManager:
 
     def _handle_incoming(self, channel, hello):
         peer_id = hello["src"]
-        neighbor, reject_reason, replaced = self._decide(peer_id, channel)
+        neighbor, reject_reason, replaced, evicted = self._decide(peer_id, channel, hello)
         if replaced is not None:
             replaced.close()  # a thread que esperava o HELLO_CONFIRM dela vê o erro e desiste em silêncio
+        if evicted is not None:
+            self._finish_leave(evicted, True, f"vaga cedida ao vizinho estático {peer_id}")
         if neighbor is None:
             if reject_reason is not None:
                 self._reply_and_close(channel, peer_id, reject_reason)
@@ -242,19 +279,20 @@ class NeighborManager:
         neighbor.close()
         self.logger.debug(f"ligação de {neighbor.id} descartada antes do HELLO_CONFIRM ({reason})")
 
-    def _decide(self, peer_id, channel):
+    def _decide(self, peer_id, channel, hello):
         """Decide (com o lock) se aceita o HELLO.
 
         Devolve (Neighbor pendente aceite ou None, motivo da rejeição ou None, Neighbor pendente
-        substituído ou None). Quem chama fecha o substituído, sem o lock.
+        substituído ou None, vizinho dinâmico retirado para dar lugar a um estático ou None).
+        Quem chama fecha o substituído e avisa o retirado, sem o lock.
         """
-        replaced = None
+        replaced = evicted = None
         with self.state.lock:
             if self._stopping:
-                return None, None, None
+                return None, None, None, None
             existing = self.state.neighbors.get(peer_id)
             if existing is not None and existing.status == "up":
-                return None, "duplicate", None
+                return None, "duplicate", None, None
             if existing is not None and not existing.initiated_by_me:
                 # Outro HELLO deste vizinho ainda à espera do HELLO_CONFIRM: o novo é mais recente,
                 # porque o vizinho só tem uma tentativa de cada vez. A pendente é descartada
@@ -269,17 +307,32 @@ class NeighborManager:
                     # A minha tentativa é abandonada: a thread de saída vê que deixou de estar no estado
                 else:
                     self.logger.info(f"ligação simultânea com {peer_id}: fica a minha (ID menor)")
-                    return None, "duplicate", replaced
+                    return None, "duplicate", replaced, None
             elif self.state.count_up() >= config.X_MAX:
-                return None, "full", replaced
+                evicted = self._dynamic_to_evict() if peer_id in self.state.static_neighbors else None
+                if evicted is None:
+                    return None, "full", replaced, None
+                del self.state.neighbors[evicted.id]
 
             # IP: o da lista estática se existir; senão, o IP de onde veio a ligação
             ip = self.state.static_neighbors.get(peer_id, channel.peer_ip)
             # Fica "connecting" até ao HELLO_CONFIRM: ocupa o id, mas ainda não conta como vizinho
-            neighbor = Neighbor(peer_id, ip, channel=channel, initiated_by_me=False,
-                                static=peer_id in self.state.static_neighbors)
+            static = peer_id in self.state.static_neighbors
+            neighbor = Neighbor(peer_id, ip, channel=channel, initiated_by_me=False, static=static,
+                                dynamic=hello.get("dynamic") is True and not static)
             self.state.neighbors[peer_id] = neighbor
-            return neighbor, None, replaced
+            return neighbor, None, replaced, evicted
+
+    def _dynamic_to_evict(self):
+        """Com o lock: a aresta dinâmica a fechar para dar lugar a um vizinho estático, ou None.
+
+        Só serve uma cujo outro lado tenha grau > 1 (segundo o gossip), para não o isolar.
+        Entre várias, a do vizinho com mais ligações.
+        """
+        eligible = [n for n in self.state.neighbors.values()
+                    if n.status == "up" and n.dynamic
+                    and (self.state.neighbor_degrees.get(n.id) or 0) > 1]
+        return max(eligible, key=lambda n: (self.state.neighbor_degrees[n.id], n.id), default=None)
 
     def _reply_and_close(self, channel, peer_id, reason):
         try:

@@ -33,7 +33,7 @@ class _FakeNeighbors:
     def add_down_listener(self, func):
         pass
 
-    def connect_to(self, neighbor_id, ip):
+    def connect_to(self, neighbor_id, ip, dynamic=False):
         self.attempts.append(neighbor_id)
         return neighbor_id in self.accepts
 
@@ -148,9 +148,25 @@ class RepairDecisionTest(unittest.TestCase):
         self.assertIn("O6 10.0.0.6 grau 2 indicado por O2", candidates_text(self.state))
 
 
+class _Lines(logging.Handler):
+    def __init__(self):
+        super().__init__()
+        self.lines = []
+
+    def emit(self, record):
+        self.lines.append(record.getMessage())
+
+
+def logged_in(node, text):
+    return any(text in line for line in node.log_capture.lines)
+
+
 class _RepairNode(_TestNode):
     def __init__(self, test, index, control_port, probe_port, measure=None):
         super().__init__(test, index, control_port, probe_port, run_scheduler=False)
+        self.log_capture = _Lines()
+        self.logger.setLevel(logging.DEBUG)
+        self.logger.addHandler(self.log_capture)
         self.exhausted = []
         extra = {} if measure is None else {"measure": measure}
         self.repair = OverlayRepair(self.state, self.manager, self.scheduler, self.logger,
@@ -247,6 +263,62 @@ class RepairIntegrationTest(unittest.TestCase):
             self.assertTrue(wait_until(lambda: leaf.state.count_up() == 1), leaf.id)
         for leaf in (o7, o10):
             self.assertIn(leaf.state.up_neighbors()[0].id, ("O4", "O5"), leaf.id)
+
+    def test_t8_dynamic_edge_closed_when_static_neighbor_returns(self):
+        """Caso do T8 (erro 3, regra a): O10 só tem O6. O6 cai, O10 liga-se a O4 (aresta dinâmica).
+        Quando O6 volta, O10 fecha a aresta O10-O4 com LEAVE e a topologia volta à do ficheiro."""
+        o4, o6, o10 = self.make_node(4), self.make_node(6), self.make_node(10)
+        o10.state.static_neighbors = {"O6": o6.ip}
+        self.link(o6, o4)
+        self.link(o6, o10)
+        self.gossip(o6)
+        self.assertTrue(wait_until(lambda: self.has_candidate(o10, "O4")))
+
+        self.crash(o6)
+        self.assertTrue(wait_until(lambda: o10.state.get_neighbor("O4") is not None
+                                   and o10.state.get_neighbor("O4").status == "up"))
+        self.assertTrue(wait_until(lambda: o4.state.get_neighbor("O10") is not None))
+        self.assertTrue(o10.state.get_neighbor("O4").dynamic)
+        self.assertTrue(o4.state.get_neighbor("O10").dynamic)   # marcada nos dois lados
+
+        o6 = self.make_node(6)
+        o6.state.static_neighbors = {"O4": o4.ip, "O10": o10.ip}
+        self.assertTrue(o6.manager.connect_to("O10", o10.ip))
+        self.assertTrue(wait_until(lambda: [n.id for n in o10.state.up_neighbors()] == ["O6"]))
+        self.assertTrue(wait_until(lambda: o4.state.get_neighbor("O10") is None))
+        self.assertTrue(wait_until(lambda: logged_in(o4, "O10 saiu")))
+
+    def test_t9_full_node_gives_static_neighbor_the_place_of_a_dynamic_edge(self):
+        """Caso do T9 (erro 3, regra b), com X_MAX = 2: O5 está cheio com O3 (estático) e O8
+        (dinâmico). O4, vizinho estático de O5, volta: O5 fecha a aresta O5-O8 para lhe dar lugar,
+        porque O8 tem outro vizinho (O9)."""
+        with mock.patch.object(config, "X_MAX", 2):
+            o3, o4, o5, o8, o9 = (self.make_node(i) for i in (3, 4, 5, 8, 9))
+            o5.state.static_neighbors = {"O3": o3.ip, "O4": o4.ip}
+            self.link(o5, o3)
+            self.link(o8, o9)
+            self.assertTrue(o8.manager.connect_to("O5", o5.ip, dynamic=True))
+            self.assertTrue(wait_until(lambda: o5.state.count_up() == 2))
+            self.gossip(o8)  # O5 fica a saber que O8 tem grau 2
+            self.assertTrue(wait_until(lambda: o5.state.neighbor_degrees.get("O8") == 2))
+
+            self.assertTrue(o4.manager.connect_to("O5", o5.ip))
+            self.assertTrue(wait_until(lambda: sorted(n.id for n in o5.state.up_neighbors()) == ["O3", "O4"]))
+            self.assertTrue(wait_until(lambda: [n.id for n in o8.state.up_neighbors()] == ["O9"]))
+
+    def test_t9_full_node_rejects_if_dynamic_edge_would_isolate(self):
+        """Regra b: se o outro lado da aresta dinâmica só tem esta ligação, não se fecha: "full"."""
+        with mock.patch.object(config, "X_MAX", 2):
+            o3, o4, o5, o8 = (self.make_node(i) for i in (3, 4, 5, 8))
+            o5.state.static_neighbors = {"O3": o3.ip, "O4": o4.ip}
+            self.link(o5, o3)
+            self.assertTrue(o8.manager.connect_to("O5", o5.ip, dynamic=True))
+            self.gossip(o8)  # O8 só tem O5: grau 1
+            self.assertTrue(wait_until(lambda: o5.state.neighbor_degrees.get("O8") == 1))
+
+            self.assertFalse(o4.manager.connect_to("O5", o5.ip))
+            self.assertTrue(wait_until(lambda: logged_in(o5, "HELLO de O4 rejeitado (full)")))
+            self.assertEqual(sorted(n.id for n in o5.state.up_neighbors()), ["O3", "O8"])
 
     def test_teacher_example(self):
         """n1 ligado a n2 e n3; n2 ligado a n1 e n4. Sem n3 continua só com n2; sem n2 liga-se a n4."""
