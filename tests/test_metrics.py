@@ -176,7 +176,7 @@ class PacketPairTest(unittest.TestCase):
         m.on_pair_packet(1, 0, 10.001)
         self.assertIsNone(m.capacity())
 
-    def test_dispersion_comparable_to_rttvar_is_discarded(self):
+    def test_dispersion_comparable_to_rttvar_is_unknown(self):
         # Erro 5: 3 ms de dispersão com RTTVAR de 4 ms é ruído do jitter (3 < 2 × 4)
         m = LinkMetrics(now=0.0)
         m.rttvar = 0.004
@@ -190,6 +190,26 @@ class PacketPairTest(unittest.TestCase):
         m.rttvar = 0.0001
         m.on_pair_packet(1, 0, 10.0)
         m.on_pair_packet(1, 1, 10.0096)
+        self.assertAlmostEqual(m.capacity(), 1e6, delta=1)
+
+    def test_jitter_only_link_has_no_false_low_capacity(self):
+        # R2 no CORE: link sem limite com 5 ms de jitter, RTTVAR de cerca de 3,5 ms. As dispersões são
+        # ruído entre 0 e cerca de 10 ms. O filtro antigo, par a par, ficava só com as maiores (>= 7 ms)
+        # e dava cerca de 1,3 Mbit/s; a decisão sobre a mediana deixa a capacidade desconhecida.
+        m = LinkMetrics(now=0.0)
+        m.rttvar = 0.0035
+        for pair_id, ms in enumerate([0.4, 1.1, 2.0, 2.6, 3.0, 4.2, 7.3, 8.1, 9.5]):
+            m.on_pair_packet(pair_id, 0, 10.0 * pair_id)
+            m.on_pair_packet(pair_id, 1, 10.0 * pair_id + ms / 1000)
+        self.assertIsNone(m.capacity())
+
+    def test_decision_follows_current_rttvar(self):
+        # As dispersões ficam guardadas: quando o jitter desce, a capacidade volta a ser conhecida
+        m = LinkMetrics(now=0.0)
+        m.rttvar = 0.006
+        add_pair(m, 1, 1e6)                     # 9,6 ms < 2 × 6 ms
+        self.assertIsNone(m.capacity())
+        m.rttvar = 0.001
         self.assertAlmostEqual(m.capacity(), 1e6, delta=1)
 
     def test_zero_interval_discarded(self):
@@ -216,7 +236,9 @@ class LinkCostTest(unittest.TestCase):
         lost = round(loss * config.LOSS_WINDOW)
         m = LinkMetrics(now=0.0)
         if capacity is not None:
-            add_pair(m, 1, capacity)  # antes de haver RTTVAR, para o filtro do erro 5 não o descartar
+            add_pair(m, 1, capacity)
+            # Capacidade fixa: estes testes são da função de custo, não do filtro do jitter (erro 5)
+            m.capacity = lambda: capacity
         m.srtt, m.rttvar, m.samples = srtt, rttvar, config.MIN_SAMPLES
         for seq in range(config.LOSS_WINDOW):
             m.on_probe_sent(seq, 0.0)
