@@ -203,7 +203,10 @@ No `unfreeze`, a contagem de vizinhos do O6 chegou a 0 a meio da tempestade. O O
 - **Observado:** O8→O4 com 2,9 a 4,3 Mbit/s; O4→O8 a descer de 58 para 7,7 Mbit/s. Cerca de +6,7 ms de custo vêm só da capacidade falsa.
 - **Causa:** o netem atrasa e troca a ordem dos pacotes de forma aleatória. O intervalo entre os dois pacotes do par passa a ser ruído de alguns ms, e 1200 B em cerca de 3 ms dão cerca de 3 Mbit/s.
 - **Correção:** descartar as estimativas em que o intervalo entre os pacotes do par é comparável ao RTTVAR, ou ignorar o termo de capacidade quando o RTTVAR é alto.
-- **Corrigido em `be09655`:** um par com dispersão menor que `PAIR_RTTVAR_FACTOR` (2) × RTTVAR é descartado. Limitação em `fase2.md`, secção 4.
+- **Primeira correção (`be09655`), insuficiente:** cada par com dispersão menor que `PAIR_RTTVAR_FACTOR` (2) × RTTVAR era descartado.
+- **Reteste R2 no CORE (2026-11-24), nas mesmas condições do T4:** capacidade de **1,2 a 1,3 Mbit/s** nas duas pontas, em todas as leituras, e custo de cerca de 40 ms (esperava-se cerca de 25). Pior do que antes: a capacidade falsa somava cerca de 15 ms.
+- **Causa:** viés de seleção. Sem limite de largura de banda, a dispersão é só ruído do jitter, entre 0 e cerca de 10 ms. O filtro deitava fora as dispersões pequenas e ficava só com as maiores (7 a 10 ms), e 1200 B × 8 / cerca de 7,5 ms ≈ 1,3 Mbit/s.
+- **Corrigido de novo:** as dispersões de todos os pares são guardadas sem filtro, e a decisão é tomada sobre o conjunto: se a **mediana** das últimas 9 for menor que 2 × RTTVAR, a capacidade fica desconhecida (termo de largura de banda = 0). Com 5 ms de jitter, a mediana do ruído é de cerca de 3 ms, menor que os 6 a 10 ms do limiar; a 1 Mbit/s (T6) a dispersão é de 9,6 ms e o RTTVAR fica abaixo de 2,3 ms, e a medida mantém-se. **Confirmado no CORE (2026-11-24):** no R2, a capacidade ficou desconhecida (`-`) em todas as 20 leituras e o custo ficou entre 23 e 28 ms nas duas pontas (`logs_R2/`); no R10, com 1 Mbps em n12–n19, a capacidade deu 0,9 a 1,0 Mbit/s nas duas pontas, com um custo de cerca de 23,5 ms (`logs_R10/`). Limitação em `fase2.md`, secção 4.
 
 ---
 

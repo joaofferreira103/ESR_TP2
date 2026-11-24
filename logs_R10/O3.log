@@ -1,0 +1,167 @@
+17:11:22.101 [O3] INFO vizinhos estáticos: O1 (10.0.24.10), O2 (10.0.24.1), O5 (10.0.23.1)
+17:11:22.102 [O3] INFO probes à escuta em 0.0.0.0:5002
+17:11:22.103 [O3] INFO controlo à escuta em 0.0.0.0:5000
+17:11:22.103 [O3] INFO a ligar a O1 (10.0.24.10)
+17:11:22.103 [O3] INFO a ligar a O2 (10.0.24.1)
+17:11:22.105 [O3] INFO a ligar a O5 (10.0.23.1)
+17:11:22.105 [O3] INFO ligação a O1 (10.0.24.10) estabelecida, iniciada por mim
+17:11:22.107 [O3] DEBUG evento: vizinho O1 up
+17:11:22.106 [O3] WARNING ligação a O5 (10.0.23.1) falhou: [Errno 111] Connection refused
+17:11:22.107 [O3] INFO ligação a O2 (10.0.24.1) estabelecida, iniciada por mim
+17:11:22.108 [O3] DEBUG evento: vizinho O2 up
+17:11:22.244 [O3] INFO ligação a O5 (10.0.23.1) estabelecida, iniciada por O5
+17:11:22.245 [O3] DEBUG evento: vizinho O5 up
+17:11:32.107 [O3] INFO Estado de O3: 3 vizinhos (3 up), 3 estáticos
+  O1 10.0.24.10 up estático iniciada por mim há 10s fila=0
+  O2 10.0.24.1 up estático iniciada por mim há 10s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 10s fila=0
+17:11:32.108 [O3] INFO Métricas de O3: 3 vizinhos
+  O1 srtt=1.20 ms rttvar=0.48 ms perda=0.0% amostras=50 capacidade=- custo=2.08 ms
+  O2 srtt=0.96 ms rttvar=0.48 ms perda=0.0% amostras=50 capacidade=- custo=1.96 ms
+  O5 srtt=1.00 ms rttvar=0.42 ms perda=0.0% amostras=50 capacidade=- custo=1.92 ms
+17:11:32.108 [O3] INFO Candidatos de O3: 5
+  O1 10.0.24.10 grau 2 indicado por O2 há 0s
+  O2 10.0.24.1 grau 3 indicado por O1 há 0s
+  O4 10.0.22.1 grau 4 indicado por O2, O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 5s
+  O9 10.0.23.11 grau 1 indicado por O5 há 5s
+17:11:42.107 [O3] INFO Estado de O3: 3 vizinhos (3 up), 3 estáticos
+  O1 10.0.24.10 up estático iniciada por mim há 20s fila=0
+  O2 10.0.24.1 up estático iniciada por mim há 20s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 20s fila=0
+17:11:42.109 [O3] INFO Métricas de O3: 3 vizinhos
+  O1 srtt=1.16 ms rttvar=0.34 ms perda=0.0% amostras=100 capacidade=- custo=1.92 ms
+  O2 srtt=0.90 ms rttvar=0.25 ms perda=0.0% amostras=100 capacidade=- custo=1.70 ms
+  O5 srtt=1.03 ms rttvar=0.24 ms perda=0.0% amostras=100 capacidade=- custo=1.76 ms
+17:11:42.110 [O3] INFO Candidatos de O3: 5
+  O1 10.0.24.10 grau 2 indicado por O2 há 0s
+  O2 10.0.24.1 grau 3 indicado por O1 há 0s
+  O4 10.0.22.1 grau 4 indicado por O2, O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 5s
+  O9 10.0.23.11 grau 1 indicado por O5 há 5s
+17:11:52.106 [O3] INFO Estado de O3: 3 vizinhos (3 up), 3 estáticos
+  O1 10.0.24.10 up estático iniciada por mim há 30s fila=0
+  O2 10.0.24.1 up estático iniciada por mim há 30s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 30s fila=0
+17:11:52.108 [O3] INFO Métricas de O3: 3 vizinhos
+  O1 srtt=1.41 ms rttvar=0.50 ms perda=0.0% amostras=150 capacidade=- custo=2.20 ms
+  O2 srtt=1.15 ms rttvar=0.47 ms perda=0.0% amostras=150 capacidade=- custo=2.04 ms
+  O5 srtt=1.14 ms rttvar=0.39 ms perda=0.0% amostras=150 capacidade=- custo=1.96 ms
+17:11:52.108 [O3] INFO Candidatos de O3: 5
+  O1 10.0.24.10 grau 2 indicado por O2 há 0s
+  O2 10.0.24.1 grau 3 indicado por O1 há 0s
+  O4 10.0.22.1 grau 4 indicado por O2, O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 5s
+  O9 10.0.23.11 grau 1 indicado por O5 há 5s
+17:12:02.107 [O3] INFO Estado de O3: 3 vizinhos (3 up), 3 estáticos
+  O1 10.0.24.10 up estático iniciada por mim há 40s fila=0
+  O2 10.0.24.1 up estático iniciada por mim há 40s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 40s fila=0
+17:12:02.108 [O3] INFO Métricas de O3: 3 vizinhos
+  O1 srtt=1.42 ms rttvar=0.60 ms perda=0.0% amostras=200 capacidade=- custo=2.30 ms
+  O2 srtt=1.11 ms rttvar=0.59 ms perda=0.0% amostras=200 capacidade=- custo=2.14 ms
+  O5 srtt=1.12 ms rttvar=0.65 ms perda=0.0% amostras=200 capacidade=- custo=2.20 ms
+17:12:02.108 [O3] INFO Candidatos de O3: 5
+  O1 10.0.24.10 grau 2 indicado por O2 há 0s
+  O2 10.0.24.1 grau 3 indicado por O1 há 0s
+  O4 10.0.22.1 grau 4 indicado por O2, O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 5s
+  O9 10.0.23.11 grau 1 indicado por O5 há 5s
+17:12:12.106 [O3] INFO Estado de O3: 3 vizinhos (3 up), 3 estáticos
+  O1 10.0.24.10 up estático iniciada por mim há 50s fila=0
+  O2 10.0.24.1 up estático iniciada por mim há 50s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 50s fila=0
+17:12:12.108 [O3] INFO Métricas de O3: 3 vizinhos
+  O1 srtt=1.14 ms rttvar=0.39 ms perda=0.0% amostras=250 capacidade=- custo=1.96 ms
+  O2 srtt=1.06 ms rttvar=0.60 ms perda=0.0% amostras=250 capacidade=- custo=2.13 ms
+  O5 srtt=1.24 ms rttvar=0.82 ms perda=0.0% amostras=250 capacidade=- custo=2.44 ms
+17:12:12.109 [O3] INFO Candidatos de O3: 5
+  O1 10.0.24.10 grau 2 indicado por O2 há 0s
+  O2 10.0.24.1 grau 3 indicado por O1 há 0s
+  O4 10.0.22.1 grau 4 indicado por O2, O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 5s
+  O9 10.0.23.11 grau 1 indicado por O5 há 5s
+17:12:22.106 [O3] INFO Estado de O3: 3 vizinhos (3 up), 3 estáticos
+  O1 10.0.24.10 up estático iniciada por mim há 60s fila=0
+  O2 10.0.24.1 up estático iniciada por mim há 60s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 60s fila=0
+17:12:22.108 [O3] INFO Métricas de O3: 3 vizinhos
+  O1 srtt=1.38 ms rttvar=0.33 ms perda=0.0% amostras=300 capacidade=- custo=2.02 ms
+  O2 srtt=1.11 ms rttvar=0.35 ms perda=0.0% amostras=300 capacidade=- custo=1.90 ms
+  O5 srtt=1.00 ms rttvar=0.22 ms perda=0.0% amostras=300 capacidade=- custo=1.72 ms
+17:12:22.108 [O3] INFO Candidatos de O3: 5
+  O1 10.0.24.10 grau 2 indicado por O2 há 0s
+  O2 10.0.24.1 grau 3 indicado por O1 há 0s
+  O4 10.0.22.1 grau 4 indicado por O2, O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 5s
+  O9 10.0.23.11 grau 1 indicado por O5 há 5s
+17:12:32.106 [O3] INFO Estado de O3: 3 vizinhos (3 up), 3 estáticos
+  O1 10.0.24.10 up estático iniciada por mim há 70s fila=0
+  O2 10.0.24.1 up estático iniciada por mim há 70s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 70s fila=0
+17:12:32.107 [O3] INFO Métricas de O3: 3 vizinhos
+  O1 srtt=1.12 ms rttvar=0.26 ms perda=0.0% amostras=350 capacidade=- custo=1.82 ms
+  O2 srtt=0.91 ms rttvar=0.20 ms perda=0.0% amostras=350 capacidade=- custo=1.65 ms
+  O5 srtt=0.87 ms rttvar=0.24 ms perda=0.0% amostras=350 capacidade=- custo=1.67 ms
+17:12:32.108 [O3] INFO Candidatos de O3: 5
+  O1 10.0.24.10 grau 2 indicado por O2 há 0s
+  O2 10.0.24.1 grau 3 indicado por O1 há 0s
+  O4 10.0.22.1 grau 4 indicado por O2, O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 5s
+  O9 10.0.23.11 grau 1 indicado por O5 há 5s
+17:12:42.107 [O3] INFO Estado de O3: 3 vizinhos (3 up), 3 estáticos
+  O1 10.0.24.10 up estático iniciada por mim há 80s fila=0
+  O2 10.0.24.1 up estático iniciada por mim há 80s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 80s fila=0
+17:12:42.109 [O3] INFO Métricas de O3: 3 vizinhos
+  O1 srtt=1.28 ms rttvar=0.46 ms perda=0.0% amostras=400 capacidade=- custo=2.10 ms
+  O2 srtt=1.04 ms rttvar=0.38 ms perda=0.0% amostras=400 capacidade=- custo=1.90 ms
+  O5 srtt=1.03 ms rttvar=0.39 ms perda=0.0% amostras=400 capacidade=- custo=1.90 ms
+17:12:42.109 [O3] INFO Candidatos de O3: 5
+  O1 10.0.24.10 grau 2 indicado por O2 há 0s
+  O2 10.0.24.1 grau 3 indicado por O1 há 0s
+  O4 10.0.22.1 grau 4 indicado por O2, O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 5s
+  O9 10.0.23.11 grau 1 indicado por O5 há 5s
+17:12:52.107 [O3] INFO Estado de O3: 3 vizinhos (3 up), 3 estáticos
+  O1 10.0.24.10 up estático iniciada por mim há 90s fila=0
+  O2 10.0.24.1 up estático iniciada por mim há 90s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 90s fila=0
+17:12:52.109 [O3] INFO Métricas de O3: 3 vizinhos
+  O1 srtt=0.95 ms rttvar=0.29 ms perda=0.0% amostras=450 capacidade=- custo=1.76 ms
+  O2 srtt=0.72 ms rttvar=0.21 ms perda=0.0% amostras=450 capacidade=- custo=1.57 ms
+  O5 srtt=0.82 ms rttvar=0.19 ms perda=0.0% amostras=450 capacidade=- custo=1.59 ms
+17:12:52.110 [O3] INFO Candidatos de O3: 5
+  O1 10.0.24.10 grau 2 indicado por O2 há 0s
+  O2 10.0.24.1 grau 3 indicado por O1 há 0s
+  O4 10.0.22.1 grau 4 indicado por O2, O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 5s
+  O9 10.0.23.11 grau 1 indicado por O5 há 5s
+17:13:02.107 [O3] INFO Estado de O3: 3 vizinhos (3 up), 3 estáticos
+  O1 10.0.24.10 up estático iniciada por mim há 100s fila=0
+  O2 10.0.24.1 up estático iniciada por mim há 100s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 100s fila=0
+17:13:02.109 [O3] INFO Métricas de O3: 3 vizinhos
+  O1 srtt=1.12 ms rttvar=0.20 ms perda=0.0% amostras=500 capacidade=- custo=1.76 ms
+  O2 srtt=0.76 ms rttvar=0.21 ms perda=0.0% amostras=500 capacidade=- custo=1.59 ms
+  O5 srtt=0.86 ms rttvar=0.17 ms perda=0.0% amostras=500 capacidade=- custo=1.59 ms
+17:13:02.110 [O3] INFO Candidatos de O3: 5
+  O1 10.0.24.10 grau 2 indicado por O2 há 0s
+  O2 10.0.24.1 grau 3 indicado por O1 há 0s
+  O4 10.0.22.1 grau 4 indicado por O2, O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 5s
+  O9 10.0.23.11 grau 1 indicado por O5 há 5s
+17:13:12.107 [O3] INFO Estado de O3: 3 vizinhos (3 up), 3 estáticos
+  O1 10.0.24.10 up estático iniciada por mim há 110s fila=0
+  O2 10.0.24.1 up estático iniciada por mim há 110s fila=0
+  O5 10.0.23.1 up estático iniciada pelo vizinho há 110s fila=0
+17:13:12.109 [O3] INFO Métricas de O3: 3 vizinhos
+  O1 srtt=1.09 ms rttvar=0.26 ms perda=0.0% amostras=550 capacidade=- custo=1.80 ms
+  O2 srtt=0.80 ms rttvar=0.13 ms perda=0.0% amostras=550 capacidade=- custo=1.53 ms
+  O5 srtt=1.11 ms rttvar=0.62 ms perda=0.0% amostras=550 capacidade=- custo=2.18 ms
+17:13:12.110 [O3] INFO Candidatos de O3: 5
+  O1 10.0.24.10 grau 2 indicado por O2 há 0s
+  O2 10.0.24.1 grau 3 indicado por O1 há 0s
+  O4 10.0.22.1 grau 4 indicado por O2, O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 5s
+  O9 10.0.23.11 grau 1 indicado por O5 há 5s

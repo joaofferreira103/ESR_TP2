@@ -40,7 +40,7 @@ class LinkMetrics:
         # Últimos LOSS_WINDOW probes, do mais antigo para o mais recente: seq -> [instante de envio, respondido]
         self._probes = {}
         self._pair_start = None         # (pair_id, instante de chegada do idx 0)
-        self._capacities = collections.deque(maxlen=config.PAIR_HISTORY)    # estimativas em bits/s
+        self._dispersions = collections.deque(maxlen=config.PAIR_HISTORY)   # intervalos t1 - t0 dos pares, em s
         self._data = collections.deque()    # (instante, bytes) dos dados recebidos, nos últimos BW_WINDOW s
 
     def on_probe_sent(self, seq, ts):
@@ -109,9 +109,8 @@ class LinkMetrics:
         Um par é descartado se faltar um dos pacotes ou se chegarem trocados: o idx 1 sem o idx 0 do
         mesmo pair_id não conta, e um idx 0 sem par é substituído pelo do par seguinte.
 
-        Também se descarta quando a dispersão (t1 - t0) é menor que PAIR_RTTVAR_FACTOR × RTTVAR: com
-        jitter, o intervalo entre os dois pacotes passa a ser ruído de alguns ms, o que dava capacidades
-        falsas de poucos Mbit/s em links sem limite. Sem RTTVAR ainda medido, o par é aceite.
+        Guarda-se a dispersão (t1 - t0) de todos os pares completos, sem filtro: a decisão sobre o
+        jitter é tomada em capacity(), sobre o conjunto (ver lá porquê).
         """
         if idx == 0:
             self._pair_start = (pair_id, now)
@@ -123,17 +122,27 @@ class LinkMetrics:
         interval = now - start[1]
         if interval <= 0:
             return
-        if self.rttvar is not None and interval < config.PAIR_RTTVAR_FACTOR * self.rttvar:
-            return
-        self._capacities.append(config.PAIR_SIZE * BITS_PER_BYTE / interval)
+        self._dispersions.append(interval)
 
     def capacity(self):
         """Capacidade estimada em bits/s, ou None se ainda não for conhecida.
 
-        O método é ruidoso (qualquer atraso num dos pacotes muda muito o intervalo): a mediana das
-        últimas estimativas ignora os valores extremos, ao contrário da média.
+        O método é ruidoso (qualquer atraso num dos pacotes muda muito o intervalo): usa-se a mediana
+        das últimas dispersões, que ignora os valores extremos, ao contrário da média.
+
+        Jitter (erro 5): se a mediana das dispersões for menor que PAIR_RTTVAR_FACTOR × RTTVAR, o
+        intervalo entre os dois pacotes é dominado pelo jitter e não pela capacidade, e esta fica
+        desconhecida (None: o termo de largura de banda vale 0). A decisão é sobre o conjunto, e não
+        par a par: descartar cada par com dispersão pequena deixava só os pares mais atrasados pelo
+        jitter, e dava sempre uma capacidade baixa e falsa (R2 no CORE: 1,2 a 1,3 Mbit/s num link sem
+        limite, com 5 ms de jitter). Sem RTTVAR ainda medido, a mediana é aceite.
         """
-        return statistics.median(self._capacities) if self._capacities else None
+        if not self._dispersions:
+            return None
+        dispersion = statistics.median(self._dispersions)
+        if self.rttvar is not None and dispersion < config.PAIR_RTTVAR_FACTOR * self.rttvar:
+            return None
+        return config.PAIR_SIZE * BITS_PER_BYTE / dispersion
 
     def record_data_bytes(self, n, now):
         """Gancho para a Fase 4: regista n bytes de dados recebidos deste vizinho."""

@@ -103,7 +103,7 @@ Testada com `python3 -m unittest discover -s tests`, com o cenário 2 em local e
 | 3 | As arestas dinâmicas ocupavam as vagas dos vizinhos estáticos | Quem criou a aresta fecha-a quando um estático volta; um nó cheio cede-a a um estático | `d7bb43d` |
 | 2 | Tempestade de ligações quando um nó parado volta | Handshake em 3 passos (`HELLO_CONFIRM`); `listen()` com backlog 8 | `d54c608` |
 | 4 | Reparação falsa cancelada sem nada no log | Consequência do erro 2; agora escreve "reparação cancelada: X voltou" | `d54c608` |
-| 5 | Com jitter, o packet pair media capacidade falsa | Descarta pares com dispersão < 2 × RTTVAR | `be09655` |
+| 5 | Com jitter, o packet pair media capacidade falsa | Capacidade desconhecida se a mediana das dispersões < 2 × RTTVAR (a primeira versão, par a par, falhou no reteste R2) | `be09655` e seguinte |
 | 6 | A estimativa da perda oscilava e era enviesada | Só conta probes com mais de 1 s; janela de 100 | `36a98a7` |
 | 7 | O custo disparava com o RTTVAR quando a VM parava | Termo de jitter limitado a 20 ms | `9242567` |
 
