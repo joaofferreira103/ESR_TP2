@@ -66,6 +66,12 @@ class NeighborManager:
         self.logger.debug(f"evento: vizinho {neighbor_id} down ({reason})")
         for func in self._down_listeners:
             self._call_listener(func, neighbor_id, reason)
+        # Erro 8: a saída de um vizinho pode ter libertado a vaga que um vizinho estático em falta
+        # precisava (ex.: uma aresta dinâmica fechada porque o estático voltou). Tentar já, em vez de
+        # esperar até RECONNECT_INTERVAL: senão o estático e quem dependia dele ficavam numa ilha.
+        # Não se tenta o próprio vizinho que acabou de cair: o ciclo periódico trata dele.
+        if not self._stopping:
+            self.reconnect_static(exclude=neighbor_id)
 
     def _call_listener(self, func, *args):
         try:
@@ -167,13 +173,16 @@ class NeighborManager:
             threading.Thread(target=self._handshake, args=(neighbor,),
                              name=f"connect-{neighbor_id}", daemon=True).start()
 
-    def reconnect_static(self):
-        """Tarefa periódica: nova tentativa de ligação aos vizinhos estáticos sem ligação."""
+    def reconnect_static(self, exclude=None):
+        """Nova tentativa de ligação aos vizinhos estáticos sem ligação (menos exclude). Não bloqueia.
+
+        Corre periodicamente (RECONNECT_INTERVAL) e também logo que um vizinho sai (on_neighbor_down).
+        """
         with self.state.lock:
-            if self.state.count_up() >= config.X_MAX:
+            if self._stopping or self.state.count_up() >= config.X_MAX:
                 return
             missing = {nid: ip for nid, ip in self.state.static_neighbors.items()
-                       if nid not in self.state.neighbors}
+                       if nid not in self.state.neighbors and nid != exclude}
         for neighbor_id, ip in missing.items():
             self.logger.info(f"nova tentativa de ligação a {neighbor_id} ({ip})")
             self.connect_async(neighbor_id, ip)

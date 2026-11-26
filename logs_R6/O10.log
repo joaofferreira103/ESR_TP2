@@ -1,0 +1,92 @@
+14:12:10.112 [O10] INFO vizinhos estáticos: O6 (10.0.20.1)
+14:12:10.113 [O10] INFO probes à escuta em 0.0.0.0:5002
+14:12:10.114 [O10] INFO controlo à escuta em 0.0.0.0:5000
+14:12:10.114 [O10] INFO a ligar a O6 (10.0.20.1)
+14:12:10.120 [O10] INFO ligação a O6 (10.0.20.1) estabelecida, iniciada por mim
+14:12:10.120 [O10] DEBUG evento: vizinho O6 up
+14:12:20.116 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 10s fila=0
+14:12:20.117 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=0.29 ms rttvar=0.19 ms perda=0.0% amostras=50 capacidade=9.4 Mbit/s custo=3.46 ms
+14:12:20.117 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 grau 4 indicado por O6 há 0s
+  O5 10.0.23.1 grau 4 indicado por O6 há 0s
+  O7 10.0.20.10 grau 1 indicado por O6 há 0s
+14:12:30.097 [O10] WARNING ligação a O6 perdida (ligação fechada)
+14:12:30.104 [O10] DEBUG evento: vizinho O6 down (ligação fechada)
+14:12:30.107 [O10] WARNING nó isolado: a iniciar a reparação
+14:12:30.111 [O10] INFO reparação: 3 candidatos a medir (O4, O5, O7)
+14:12:30.117 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+14:12:30.125 [O10] INFO Estado de O10: 1 vizinhos (0 up), 1 estáticos
+  O6 10.0.20.1 connecting estático iniciada por mim há - fila=0
+14:12:30.127 [O10] INFO reparação: O7 fica para o fim (grau <= 1, indicado só por vizinhos que morreram: ligar-se a ele podia formar uma ilha)
+14:12:30.127 [O10] WARNING ligação a O6 (10.0.20.1) falhou: [Errno 111] Connection refused
+14:12:30.127 [O10] INFO Métricas de O10: 0 vizinhos
+14:12:30.128 [O10] INFO reparação: HELLO a O5 (10.0.23.1), RTT 0.32 ms
+14:12:30.129 [O10] INFO Candidatos de O10: 3
+  O4 10.0.22.1 grau 4 indicado por O6 há 0s
+  O5 10.0.23.1 grau 4 indicado por O6 há 0s
+  O7 10.0.20.10 grau 1 indicado por O6 há 0s
+14:12:30.136 [O10] INFO ligação a O5 (10.0.23.1) estabelecida, iniciada por mim
+14:12:30.138 [O10] DEBUG evento: vizinho O5 up
+14:12:30.139 [O10] INFO reparação concluída: ligado a O5
+14:12:35.116 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+14:12:35.117 [O10] WARNING ligação a O6 (10.0.20.1) falhou: [Errno 111] Connection refused
+14:12:40.117 [O10] INFO nova tentativa de ligação a O6 (10.0.20.1)
+14:12:40.119 [O10] WARNING ligação a O6 (10.0.20.1) falhou: [Errno 111] Connection refused
+14:12:40.119 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up dinâmico iniciada por mim há 10s fila=0
+  estáticos sem ligação: O6
+14:12:40.120 [O10] INFO Métricas de O10: 1 vizinhos
+  O5 srtt=0.51 ms rttvar=0.61 ms perda=0.0% amostras=50 capacidade=- custo=1.86 ms
+14:12:40.120 [O10] INFO Candidatos de O10: 5
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5, O6 há 0s
+  O5 10.0.23.1 grau 4 indicado por O6 há 10s
+  O7 10.0.20.10 grau 1 indicado por O6 há 10s
+  O9 10.0.23.11 grau 1 indicado por O5 há 0s
+14:12:41.424 [O10] INFO ligação a O6 (10.0.20.1) estabelecida, iniciada por O6
+14:12:41.424 [O10] DEBUG evento: vizinho O6 up
+14:12:41.425 [O10] INFO ligação a O5 fechada (aresta dinâmica já não é precisa: vizinho estático de volta)
+14:12:41.426 [O10] DEBUG evento: vizinho O5 down (aresta dinâmica já não é precisa: vizinho estático de volta)
+14:12:41.427 [O10] INFO perdi O5; vizinhos restantes: 1; sem aresta nova
+14:12:50.116 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 9s fila=0
+14:12:50.117 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=0.57 ms rttvar=0.40 ms perda=0.0% amostras=44 capacidade=- custo=1.69 ms
+14:12:50.117 [O10] INFO Candidatos de O10: 5
+  O3 10.0.15.1 grau 3 indicado por O5 há 10s
+  O4 10.0.22.1 grau 4 indicado por O5, O6 há 4s
+  O5 10.0.23.1 grau 4 indicado por O6 há 4s
+  O7 10.0.20.10 grau 1 indicado por O6 há 4s
+  O9 10.0.23.11 grau 1 indicado por O5 há 10s
+14:13:00.116 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 19s fila=0
+14:13:00.117 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=0.68 ms rttvar=0.79 ms perda=0.0% amostras=94 capacidade=- custo=2.13 ms
+14:13:00.117 [O10] INFO Candidatos de O10: 5
+  O3 10.0.15.1 grau 3 indicado por O5 há 20s
+  O4 10.0.22.1 grau 4 indicado por O5, O6 há 4s
+  O5 10.0.23.1 grau 4 indicado por O6 há 4s
+  O7 10.0.20.10 grau 1 indicado por O6 há 4s
+  O9 10.0.23.11 grau 1 indicado por O5 há 20s
+14:13:10.116 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 29s fila=0
+14:13:10.117 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=0.44 ms rttvar=0.36 ms perda=0.0% amostras=144 capacidade=- custo=1.58 ms
+14:13:10.117 [O10] INFO Candidatos de O10: 5
+  O3 10.0.15.1 grau 3 indicado por O5 há 30s
+  O4 10.0.22.1 grau 4 indicado por O5, O6 há 4s
+  O5 10.0.23.1 grau 4 indicado por O6 há 4s
+  O7 10.0.20.10 grau 1 indicado por O6 há 4s
+  O9 10.0.23.11 grau 1 indicado por O5 há 30s
+14:13:20.116 [O10] INFO Estado de O10: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 39s fila=0
+14:13:20.117 [O10] INFO Métricas de O10: 1 vizinhos
+  O6 srtt=0.72 ms rttvar=0.44 ms perda=0.0% amostras=194 capacidade=- custo=1.80 ms
+14:13:20.117 [O10] INFO Candidatos de O10: 5
+  O3 10.0.15.1 grau 3 indicado por O5 há 40s
+  O4 10.0.22.1 grau 4 indicado por O5, O6 há 4s
+  O5 10.0.23.1 grau 4 indicado por O6 há 4s
+  O7 10.0.20.10 grau 1 indicado por O6 há 4s
+  O9 10.0.23.11 grau 1 indicado por O5 há 40s

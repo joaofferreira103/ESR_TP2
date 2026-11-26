@@ -75,6 +75,15 @@ Depois de o O6 voltar, a aresta **dinâmica** O7–O10 continua ativa (O7 e O10 
   O6 10.0.20.1 up estático iniciada pelo vizinho há 46s fila=0
 ```
 
+
+### Reteste R6 no CORE (2026-11-25, `logs_R6/`)
+`crash O6`, seguido de `start O6` 11 s depois. O O7 e o O10 ficam isolados ao mesmo tempo (8 ms de diferença):
+- O7: `O10 fica para o fim (grau <= 1…)` → HELLO a O4 → **ligado ao O4 em 15 ms**.
+- O10: `O7 fica para o fim (grau <= 1…)` → HELLO a O5 → **ligado ao O5 em 32 ms**.
+- **Não se formou ilha** (no T8, o O10 escolheu o O7). Nenhum voltou ao bootstrapper.
+- Quando o O6 volta, o O4 e o O5 estão cheios e rejeitam-no (`full`); o O7 e o O10 fecham as arestas dinâmicas logo a seguir; O6–O4 e O6–O5 voltam **3,3 s** depois, na nova tentativa periódica. Topologia final igual à do ficheiro.
+- Ver o erro 8: durante esses 3,3 s, {O6, O7, O10} ficaram desligados do resto.
+
 ---
 
 ## Erro 2: tempestade de ligações quando um nó parado volta
@@ -173,6 +182,15 @@ Nas duas primeiras vezes, o bloqueio só acabou porque outra falha libertou uma 
 2. **Fechar as arestas dinâmicas quando deixam de ser precisas:** um nó com uma aresta dinâmica fecha-a quando um vizinho estático seu volta a estar `up`.
 3. Em alternativa, dar `X_MAX` só aos estáticos e um limite à parte para as dinâmicas (por exemplo +1). É mais simples, mas o grau dos nós cresce.
 
+
+### Reteste R5 no CORE (2026-11-24, `logs_R5/`)
+`crash O4`, seguido de `start O4` 11 s depois:
+- **Reparação:** 17:40:34.958, O8 isolado; mede O2, O5 e O6 e liga-se ao O5 (aresta dinâmica) em **7 ms**. O O5 fica cheio (O3, O6, O9, O8).
+- **O O4 volta:** 17:40:45.806, `HELLO de O4 rejeitado (full)` no O5 (esperado: a aresta dinâmica é do O8, que tem grau 1, por isso não pode ser cedida). 10 ms depois, o O8 fica com o O4 `up` e fecha a aresta com `aresta dinâmica já não é precisa: vizinho estático de volta`; o O5 regista `O8 saiu`.
+- **O5–O4** volta às 17:40:49.484, **3,7 s** depois da rejeição, por iniciativa do O5 (nova tentativa periódica).
+- **Topologia final igual à do ficheiro**; antes, no T9, o O4 ficava bloqueado sem limite de tempo.
+- Houve 3 pausas reais da VM durante o teste (2,4 a 2,6 s, 1,1 s e 1,3 s), todas detetadas como `pausa local`, sem `down` falsos.
+
 ---
 
 ## Erro 4: reparação falsa durante a tempestade, abandonada sem nada no log
@@ -219,6 +237,7 @@ No `unfreeze`, a contagem de vizinhos do O6 chegou a 0 a meio da tempestade. O O
 - **Causa:** a janela tem 50 probes, mas os dos últimos 3 s (`DEAD_TIMEOUT`) não contam, o que deixa cerca de 35. Isso dá um desvio padrão de cerca de ±7 pontos.
 - **Correção:** uma janela maior (por exemplo 150 probes, cerca de 30 s) ou uma média móvel da perda, como no SRTT. Na Fase 3, usar histerese na troca de rota.
 - **Corrigido em `36a98a7`:** só entram na perda os probes com mais de `LOSS_EVAL_DELAY` (1 s), respondidos ou não (antes os respondidos recentes contavam e os perdidos recentes não, o que subestimava a perda); `LOSS_WINDOW` passou de 50 para 100. Com 20% de perda uniforme simulada, a estimativa fica em 20% ± 5 pontos em todas as janelas. A histerese fica para a Fase 3.
+- **Reteste R3 no CORE (2026-11-24, 10% em n12–n19, `logs_R3/`):** o enviesamento desapareceu. Média de **19,3%** (O10, 24 leituras) e **18,2%** (O6, 12 leituras), igual ao esperado (1 − 0,9² = 19%); no T5 as médias eram de 13 a 16%. A oscilação mantém-se: de 11,6 a 26,3%, com desvio padrão de 3,3 a 4,1 pontos, e o custo varia entre 13 e 28 ms. É o limite estatístico de uma janela de cerca de 95 probes (desvio binomial de 4,0 pontos), não um erro de cálculo. Para a reduzir: uma janela maior (`LOSS_WINDOW` de 250, cerca de 50 s, dá cerca de 2,5 pontos, mas reage mais devagar) ou a histerese da Fase 3.
 
 ---
 
@@ -230,3 +249,18 @@ No `unfreeze`, a contagem de vizinhos do O6 chegou a 0 a meio da tempestade. O O
 - **Causa:** `K_JITTER = 1` soma o RTTVAR inteiro ao custo, e um único RTT muito alto faz o RTTVAR disparar.
 - **Correção:** limitar o termo do jitter (por exemplo, no máximo igual ao SRTT), suavizar o custo e usar histerese na troca de rota.
 - **Corrigido em `9242567`:** o termo do jitter passa a ser `min(K_JITTER × RTTVAR, JITTER_CAP_MS)`, com `JITTER_CAP_MS = 20`. O caso do CORE (SRTT 0,5 ms, RTTVAR 72 ms) passa de 73 para 21 ms. A histerese fica para a Fase 3.
+- **Reteste R4 no CORE (2026-11-24, os 10 nós congelados em paralelo durante 5 s, `logs_R4/`):** todos detetaram `pausa local de 5,1 a 5,3 s`, sem nenhuma ligação perdida, nenhuma reparação e nenhuma religação; a topologia ficou igual à do ficheiro. O custo máximo foi de 29,5 ms (O4–O2: SRTT de 17 ms e RTTVAR de 33 ms, limitado a 20), contra 91 ms no T1, e voltou ao normal (cerca de 2 a 5 ms) nos 10 s seguintes. O SRTT ainda sobe com as amostras logo a seguir à pausa: fica para a Fase 3 (histerese) ou para descartar as amostras de RTT de uma pausa local.
+
+---
+
+## Erro 8: ilha temporária quando as arestas dinâmicas fecham antes de o vizinho estático estar ligado ao resto
+
+**Gravidade:** média. Na Fase 5, os clientes da ilha ficam sem vídeo até `RECONNECT_INTERVAL` (5 s).
+
+**Corrigido (2026-11-25) e confirmado no CORE (reteste R6b, `logs_R6b/`):** quando o O6 volta (14:24:42.176, `full` no O4 e no O5), o O7 e o O10 fecham as arestas dinâmicas às 42.181 e 42.183, e o O4 e o O5 ligam-se ao O6 às **42.186 e 42.188**. A ilha durou **7 ms** (antes, 3,3 s). Topologia final igual à do ficheiro. Correção: `on_neighbor_down` chama logo `reconnect_static(exclude=<vizinho que saiu>)`. Quem perde um vizinho, e tem uma vaga livre, tenta de imediato os vizinhos estáticos em falta. O vizinho que acabou de cair não é tentado logo: num crash isso daria só um `Connection refused`, e num nó congelado acrescentava ligações velhas à fila do `listen()` (erro 2); para esse continua o ciclo de 5 s. Testes: `ReconnectOnDownTest` (sem rede) e `test_r6_full_node_reconnects_to_static_as_soon_as_dynamic_edge_leaves` (na VM).
+
+- **Condição (R6):** `crash O6`; o O7 liga-se ao O4 e o O10 ao O5 (arestas dinâmicas, que enchem o O4 e o O5); depois `start O6`.
+- **Observado:** às 14:12:41.42, o O6 é rejeitado (`full`) pelo O4 e pelo O5, mas liga-se ao O7 e ao O10. Estes veem um vizinho estático `up` e fecham logo as arestas dinâmicas. Durante **3,3 s** (até às 14:12:44.69), {O6, O7, O10} ficam desligados do resto do overlay, até a nova tentativa periódica do O4 e do O5 ao O6.
+- **Causa:** `release_dynamic_edges()` fecha a aresta dinâmica assim que há **qualquer** vizinho estático `up`, mesmo que esse vizinho ainda não esteja ligado ao resto. E quem perde a aresta dinâmica (O4, O5) só volta a tentar os estáticos em falta no ciclo seguinte de 5 s.
+- **Correção proposta:** quando um vizinho sai (LEAVE ou queda) e há vizinhos estáticos sem ligação, tentar ligar-lhes **de imediato**, sem esperar pelo `RECONNECT_INTERVAL`. Aqui, o O4 recebe `O7 saiu` e liga-se logo ao O6 (a vaga acabou de ficar livre): a ilha passa de 3,3 s para alguns ms. Na Fase 3, a deteção de partições pela ausência de `ANNOUNCE` serve de segunda proteção.
+

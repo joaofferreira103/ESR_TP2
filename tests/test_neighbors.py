@@ -290,3 +290,37 @@ class NeighborManagerTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ReconnectOnDownTest(unittest.TestCase):
+    """Erro 8: quando um vizinho sai, tenta-se logo ligar aos vizinhos estáticos em falta (sem rede)."""
+
+    def make_manager(self, static, connected):
+        logger = logging.getLogger(f"ott.test.{self.id()}")
+        logger.propagate = False
+        state = NodeState("O4")
+        state.static_neighbors = static
+        manager = NeighborManager(state, logger, lambda on_message, on_closed: None)
+        for neighbor_id in connected:
+            neighbor = mock.Mock(status="up")
+            state.neighbors[neighbor_id] = neighbor
+        manager.connect_async = mock.Mock()
+        return manager
+
+    def test_down_triggers_reconnect_to_missing_static(self):
+        # R6: O4 (cheio com O2, O5, O8 e O7 dinâmico) perde O7; O6, estático, está em falta
+        m = self.make_manager({"O2": "ip2", "O5": "ip5", "O6": "ip6", "O8": "ip8"}, ["O2", "O5", "O8"])
+        m.on_neighbor_down("O7", "saiu")
+        m.connect_async.assert_called_once_with("O6", "ip6")
+
+    def test_neighbor_that_just_went_down_is_not_retried_at_once(self):
+        m = self.make_manager({"O2": "ip2", "O6": "ip6"}, ["O2"])
+        m.on_neighbor_down("O6", "ligação fechada")
+        m.connect_async.assert_not_called()
+
+    def test_no_reconnect_while_stopping(self):
+        m = self.make_manager({"O2": "ip2", "O6": "ip6"}, ["O2"])
+        m._stopping = True
+        m.on_neighbor_down("O7", "saiu")
+        m.connect_async.assert_not_called()
+
