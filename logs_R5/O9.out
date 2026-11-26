@@ -1,0 +1,322 @@
+--- 2026-11-24 17:40:14 arranque de O9 no n23
+17:40:14.837 [O9] INFO vizinhos estáticos: O5 (10.0.23.1)
+17:40:14.839 [O9] INFO probes à escuta em 0.0.0.0:5002
+17:40:14.840 [O9] INFO controlo à escuta em 0.0.0.0:5000
+17:40:14.840 [O9] INFO a ligar a O5 (10.0.23.1)
+17:40:14.843 [O9] INFO ligação a O5 (10.0.23.1) estabelecida, iniciada por mim
+17:40:14.843 [O9] DEBUG evento: vizinho O5 up
+17:40:24.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 10s fila=1
+17:40:24.843 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=1.24 ms rttvar=0.58 ms perda=0.0% amostras=50 capacidade=- custo=2.20 ms
+17:40:24.844 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:40:34.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 20s fila=0
+17:40:34.842 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=1.16 ms rttvar=0.26 ms perda=0.0% amostras=100 capacidade=- custo=1.84 ms
+17:40:34.843 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:40:43.450 [O9] WARNING pausa local de 2.4 s detetada: verificação de vizinhos adiada
+17:40:44.856 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 30s fila=1
+17:40:44.859 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=4.77 ms rttvar=6.19 ms perda=0.0% amostras=138 capacidade=- custo=9.58 ms
+17:40:44.860 [O9] INFO Candidatos de O9: 4
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 10s
+  O6 10.0.20.1 grau 3 indicado por O5 há 0s
+  O8 10.0.22.11 grau 1 indicado por O5 há 0s
+17:40:54.842 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 40s fila=0
+17:40:54.844 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=1.26 ms rttvar=1.17 ms perda=0.0% amostras=187 capacidade=- custo=2.80 ms
+17:40:54.845 [O9] INFO Candidatos de O9: 4
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+  O8 10.0.22.11 grau 2 indicado por O5 há 9s
+17:41:04.964 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 50s fila=1
+17:41:05.038 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=13.78 ms rttvar=20.03 ms perda=0.0% amostras=238 capacidade=- custo=27.89 ms
+17:41:05.048 [O9] INFO Candidatos de O9: 4
+  O3 10.0.15.1 grau 3 indicado por O5 há 1s
+  O4 10.0.22.1 grau 4 indicado por O5 há 1s
+  O6 10.0.20.1 grau 4 indicado por O5 há 1s
+  O8 10.0.22.11 grau 2 indicado por O5 há 19s
+Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 52s fila=0
+17:41:14.842 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 60s fila=0
+17:41:14.844 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.97 ms rttvar=0.56 ms perda=0.0% amostras=287 capacidade=- custo=2.04 ms
+17:41:14.845 [O9] INFO Candidatos de O9: 4
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+  O8 10.0.22.11 grau 2 indicado por O5 há 29s
+17:41:24.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 70s fila=0
+17:41:24.853 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=1.20 ms rttvar=0.54 ms perda=0.0% amostras=337 capacidade=- custo=2.14 ms
+17:41:24.855 [O9] INFO Candidatos de O9: 4
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+  O8 10.0.22.11 grau 2 indicado por O5 há 39s
+17:41:34.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 80s fila=0
+17:41:34.844 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=15.63 ms rttvar=29.57 ms perda=0.0% amostras=383 capacidade=- custo=28.82 ms
+17:41:34.844 [O9] INFO Candidatos de O9: 4
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+  O8 10.0.22.11 grau 2 indicado por O5 há 49s
+17:41:44.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 90s fila=0
+17:41:44.843 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.59 ms rttvar=0.15 ms perda=0.0% amostras=433 capacidade=- custo=1.45 ms
+17:41:44.843 [O9] INFO Candidatos de O9: 4
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+  O8 10.0.22.11 grau 2 indicado por O5 há 59s
+17:41:54.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 100s fila=0
+17:41:54.843 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.51 ms rttvar=0.18 ms perda=0.0% amostras=483 capacidade=- custo=1.43 ms
+17:41:54.843 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:42:04.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 110s fila=0
+17:42:04.843 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.56 ms rttvar=0.13 ms perda=0.0% amostras=533 capacidade=- custo=1.41 ms
+17:42:04.843 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:42:14.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 120s fila=0
+17:42:14.845 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.53 ms rttvar=0.08 ms perda=0.0% amostras=583 capacidade=- custo=1.34 ms
+17:42:14.845 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:42:24.842 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 130s fila=0
+17:42:24.844 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.54 ms rttvar=0.12 ms perda=0.0% amostras=633 capacidade=- custo=1.39 ms
+17:42:24.845 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:42:34.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 140s fila=0
+17:42:34.842 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.49 ms rttvar=0.16 ms perda=0.0% amostras=683 capacidade=- custo=1.40 ms
+17:42:34.843 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:42:44.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 150s fila=1
+17:42:44.842 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.47 ms rttvar=0.11 ms perda=0.0% amostras=733 capacidade=- custo=1.34 ms
+17:42:44.843 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:42:54.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 160s fila=0
+17:42:54.842 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.51 ms rttvar=0.14 ms perda=0.0% amostras=783 capacidade=- custo=1.40 ms
+17:42:54.843 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:43:04.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 170s fila=0
+17:43:04.842 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.49 ms rttvar=0.09 ms perda=0.0% amostras=833 capacidade=- custo=1.33 ms
+17:43:04.842 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:43:14.845 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 180s fila=1
+17:43:14.848 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=3.09 ms rttvar=3.60 ms perda=0.0% amostras=883 capacidade=- custo=6.15 ms
+17:43:14.849 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:43:24.842 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 190s fila=1
+17:43:24.845 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.67 ms rttvar=0.13 ms perda=0.0% amostras=933 capacidade=- custo=1.46 ms
+17:43:24.845 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:43:34.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 200s fila=0
+17:43:34.842 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.63 ms rttvar=0.07 ms perda=0.0% amostras=983 capacidade=55.1 Mbit/s custo=1.75 ms
+17:43:34.843 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:43:44.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 210s fila=1
+17:43:44.843 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.63 ms rttvar=0.08 ms perda=0.0% amostras=1033 capacidade=54.1 Mbit/s custo=1.77 ms
+17:43:44.844 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:43:54.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 220s fila=0
+17:43:54.843 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.65 ms rttvar=0.14 ms perda=0.0% amostras=1083 capacidade=- custo=1.46 ms
+17:43:54.843 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:44:04.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 230s fila=0
+17:44:04.842 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.89 ms rttvar=0.51 ms perda=0.0% amostras=1133 capacidade=- custo=1.95 ms
+17:44:04.843 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:44:14.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 240s fila=0
+17:44:14.844 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.64 ms rttvar=0.08 ms perda=0.0% amostras=1183 capacidade=51.9 Mbit/s custo=1.78 ms
+17:44:14.845 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:44:24.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 250s fila=0
+17:44:24.843 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.59 ms rttvar=0.13 ms perda=0.0% amostras=1233 capacidade=- custo=1.42 ms
+17:44:24.844 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:44:34.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 260s fila=0
+17:44:34.843 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.95 ms rttvar=0.59 ms perda=0.0% amostras=1283 capacidade=- custo=2.06 ms
+17:44:34.843 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:44:44.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 270s fila=0
+17:44:44.843 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.67 ms rttvar=0.14 ms perda=0.0% amostras=1333 capacidade=- custo=1.47 ms
+17:44:44.843 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:44:54.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 280s fila=1
+17:44:54.843 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.61 ms rttvar=0.10 ms perda=0.0% amostras=1383 capacidade=47.6 Mbit/s custo=1.82 ms
+17:44:54.845 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:45:04.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 290s fila=1
+17:45:04.843 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.81 ms rttvar=0.42 ms perda=0.0% amostras=1433 capacidade=- custo=1.82 ms
+17:45:04.844 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:45:14.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 300s fila=0
+17:45:14.842 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.57 ms rttvar=0.21 ms perda=0.0% amostras=1483 capacidade=- custo=1.50 ms
+17:45:14.843 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:45:24.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 310s fila=0
+17:45:24.843 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.59 ms rttvar=0.15 ms perda=0.0% amostras=1533 capacidade=- custo=1.44 ms
+17:45:24.844 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:45:34.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 320s fila=0
+17:45:34.844 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.55 ms rttvar=0.11 ms perda=0.0% amostras=1583 capacidade=- custo=1.38 ms
+17:45:34.845 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:45:44.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 330s fila=0
+17:45:44.843 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.55 ms rttvar=0.15 ms perda=0.0% amostras=1633 capacidade=- custo=1.43 ms
+17:45:44.844 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:45:54.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 340s fila=0
+17:45:54.846 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.62 ms rttvar=0.19 ms perda=0.0% amostras=1683 capacidade=- custo=1.50 ms
+17:45:54.847 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:46:04.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 350s fila=0
+17:46:04.844 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.62 ms rttvar=0.12 ms perda=0.0% amostras=1733 capacidade=- custo=1.43 ms
+17:46:04.845 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:46:12.726 [O9] WARNING pausa local de 1.3 s detetada: verificação de vizinhos adiada
+17:46:14.843 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 360s fila=1
+17:46:14.848 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=12.46 ms rttvar=15.65 ms perda=0.0% amostras=1776 capacidade=- custo=22.88 ms
+17:46:14.848 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:46:24.841 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 370s fila=1
+17:46:24.843 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=2.98 ms rttvar=2.40 ms perda=0.0% amostras=1826 capacidade=- custo=4.90 ms
+17:46:24.844 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+17:46:34.842 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 380s fila=1
+17:46:34.844 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=1.61 ms rttvar=1.16 ms perda=0.0% amostras=1876 capacidade=- custo=2.96 ms
+17:46:34.845 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s

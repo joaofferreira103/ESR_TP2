@@ -1,0 +1,12 @@
+14:24:09.824 [bootstrapper] INFO bootstrapper à escuta em 0.0.0.0:4999, 10 nós na topologia
+14:24:10.078 [bootstrapper] INFO REGISTER de O1 (10.0.24.10) -> NEIGHBORS [O2, O3]
+14:24:10.120 [bootstrapper] INFO REGISTER de O2 (10.0.24.1) -> NEIGHBORS [O1, O3, O4]
+14:24:10.157 [bootstrapper] INFO REGISTER de O3 (10.0.15.1) -> NEIGHBORS [O1, O2, O5]
+14:24:10.197 [bootstrapper] INFO REGISTER de O4 (10.0.13.1) -> NEIGHBORS [O2, O5, O6, O8]
+14:24:10.344 [bootstrapper] INFO REGISTER de O5 (10.0.9.1) -> NEIGHBORS [O3, O4, O6, O9]
+14:24:10.428 [bootstrapper] INFO REGISTER de O6 (10.0.4.1) -> NEIGHBORS [O4, O5, O7, O10]
+14:24:10.469 [bootstrapper] INFO REGISTER de O7 (10.0.20.10) -> NEIGHBORS [O6]
+14:24:10.489 [bootstrapper] INFO REGISTER de O8 (10.0.22.11) -> NEIGHBORS [O4]
+14:24:10.612 [bootstrapper] INFO REGISTER de O9 (10.0.23.11) -> NEIGHBORS [O5]
+14:24:10.645 [bootstrapper] INFO REGISTER de O10 (10.0.21.10) -> NEIGHBORS [O6]
+14:24:42.173 [bootstrapper] INFO REGISTER de O6 (10.0.4.1) -> NEIGHBORS [O4, O5, O7, O10]

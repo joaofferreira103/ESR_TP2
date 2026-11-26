@@ -1,0 +1,115 @@
+--- 2026-11-24 17:23:45 arranque de O1 no n16
+17:23:46.127 [O1] INFO vizinhos estáticos: O2 (10.0.24.1), O3 (10.0.15.1)
+17:23:46.131 [O1] INFO probes à escuta em 0.0.0.0:5002
+17:23:46.133 [O1] INFO controlo à escuta em 0.0.0.0:5000
+17:23:46.134 [O1] INFO a ligar a O2 (10.0.24.1)
+17:23:46.137 [O1] WARNING ligação a O2 (10.0.24.1) falhou: [Errno 111] Connection refused
+17:23:46.137 [O1] INFO a ligar a O3 (10.0.15.1)
+17:23:46.140 [O1] WARNING ligação a O3 (10.0.15.1) falhou: [Errno 111] Connection refused
+17:23:46.558 [O1] INFO ligação a O2 (10.0.24.1) estabelecida, iniciada por O2
+17:23:46.561 [O1] DEBUG evento: vizinho O2 up
+17:23:47.010 [O1] INFO ligação a O3 (10.0.15.1) estabelecida, iniciada por O3
+17:23:47.013 [O1] DEBUG evento: vizinho O3 up
+17:23:56.142 [O1] INFO Estado de O1: 2 vizinhos (2 up), 2 estáticos
+  O2 10.0.24.1 up estático iniciada pelo vizinho há 10s fila=0
+  O3 10.0.15.1 up estático iniciada pelo vizinho há 9s fila=0
+17:23:56.145 [O1] INFO Métricas de O1: 2 vizinhos
+  O2 srtt=1.06 ms rttvar=0.33 ms perda=0.0% amostras=48 capacidade=- custo=1.86 ms
+  O3 srtt=0.86 ms rttvar=0.19 ms perda=0.0% amostras=46 capacidade=21.1 Mbit/s custo=2.57 ms
+17:23:56.147 [O1] INFO Candidatos de O1: 4
+  O2 10.0.24.1 grau 3 indicado por O3 há 4s
+  O3 10.0.15.1 grau 3 indicado por O2 há 5s
+  O4 10.0.22.1 grau 4 indicado por O2 há 5s
+  O5 10.0.23.1 grau 4 indicado por O3 há 4s
+17:24:06.141 [O1] INFO Estado de O1: 2 vizinhos (2 up), 2 estáticos
+  O2 10.0.24.1 up estático iniciada pelo vizinho há 20s fila=0
+  O3 10.0.15.1 up estático iniciada pelo vizinho há 19s fila=0
+17:24:06.144 [O1] INFO Métricas de O1: 2 vizinhos
+  O2 srtt=0.92 ms rttvar=0.15 ms perda=0.0% amostras=98 capacidade=- custo=1.61 ms
+  O3 srtt=0.89 ms rttvar=0.30 ms perda=0.0% amostras=96 capacidade=- custo=1.75 ms
+17:24:06.146 [O1] INFO Candidatos de O1: 4
+  O2 10.0.24.1 grau 3 indicado por O3 há 4s
+  O3 10.0.15.1 grau 3 indicado por O2 há 5s
+  O4 10.0.22.1 grau 4 indicado por O2 há 5s
+  O5 10.0.23.1 grau 4 indicado por O3 há 4s
+17:24:16.141 [O1] INFO Estado de O1: 2 vizinhos (2 up), 2 estáticos
+  O2 10.0.24.1 up estático iniciada pelo vizinho há 30s fila=0
+  O3 10.0.15.1 up estático iniciada pelo vizinho há 29s fila=0
+17:24:16.143 [O1] INFO Métricas de O1: 2 vizinhos
+  O2 srtt=1.23 ms rttvar=0.80 ms perda=0.0% amostras=148 capacidade=- custo=2.42 ms
+  O3 srtt=1.03 ms rttvar=0.69 ms perda=0.0% amostras=146 capacidade=- custo=2.21 ms
+17:24:16.144 [O1] INFO Candidatos de O1: 4
+  O2 10.0.24.1 grau 3 indicado por O3 há 4s
+  O3 10.0.15.1 grau 3 indicado por O2 há 5s
+  O4 10.0.22.1 grau 4 indicado por O2 há 5s
+  O5 10.0.23.1 grau 4 indicado por O3 há 4s
+17:24:23.313 [O1] WARNING pausa local de 5.2 s detetada: verificação de vizinhos adiada
+17:24:26.142 [O1] INFO Estado de O1: 2 vizinhos (2 up), 2 estáticos
+  O2 10.0.24.1 up estático iniciada pelo vizinho há 40s fila=0
+  O3 10.0.15.1 up estático iniciada pelo vizinho há 39s fila=0
+17:24:26.144 [O1] INFO Métricas de O1: 2 vizinhos
+  O2 srtt=1.25 ms rttvar=0.58 ms perda=0.0% amostras=172 capacidade=- custo=2.20 ms
+  O3 srtt=1.40 ms rttvar=1.03 ms perda=0.0% amostras=170 capacidade=- custo=2.72 ms
+17:24:26.144 [O1] INFO Candidatos de O1: 4
+  O2 10.0.24.1 grau 3 indicado por O3 há 3s
+  O3 10.0.15.1 grau 3 indicado por O2 há 3s
+  O4 10.0.22.1 grau 4 indicado por O2 há 3s
+  O5 10.0.23.1 grau 4 indicado por O3 há 3s
+Estado de O1: 2 vizinhos (2 up), 2 estáticos
+  O2 10.0.24.1 up estático iniciada pelo vizinho há 48s fila=0
+  O3 10.0.15.1 up estático iniciada pelo vizinho há 47s fila=0
+17:24:36.143 [O1] INFO Estado de O1: 2 vizinhos (2 up), 2 estáticos
+  O2 10.0.24.1 up estático iniciada pelo vizinho há 50s fila=1
+  O3 10.0.15.1 up estático iniciada pelo vizinho há 49s fila=1
+17:24:36.146 [O1] INFO Métricas de O1: 2 vizinhos
+  O2 srtt=0.99 ms rttvar=0.42 ms perda=0.0% amostras=222 capacidade=- custo=1.91 ms
+  O3 srtt=0.68 ms rttvar=0.40 ms perda=0.0% amostras=220 capacidade=- custo=1.74 ms
+17:24:36.147 [O1] INFO Candidatos de O1: 4
+  O2 10.0.24.1 grau 3 indicado por O3 há 4s
+  O3 10.0.15.1 grau 3 indicado por O2 há 5s
+  O4 10.0.22.1 grau 4 indicado por O2 há 5s
+  O5 10.0.23.1 grau 4 indicado por O3 há 4s
+17:24:46.142 [O1] INFO Estado de O1: 2 vizinhos (2 up), 2 estáticos
+  O2 10.0.24.1 up estático iniciada pelo vizinho há 60s fila=0
+  O3 10.0.15.1 up estático iniciada pelo vizinho há 59s fila=0
+17:24:46.144 [O1] INFO Métricas de O1: 2 vizinhos
+  O2 srtt=0.95 ms rttvar=0.18 ms perda=0.0% amostras=272 capacidade=- custo=1.66 ms
+  O3 srtt=0.73 ms rttvar=0.21 ms perda=0.0% amostras=270 capacidade=- custo=1.57 ms
+17:24:46.145 [O1] INFO Candidatos de O1: 4
+  O2 10.0.24.1 grau 3 indicado por O3 há 4s
+  O3 10.0.15.1 grau 3 indicado por O2 há 5s
+  O4 10.0.22.1 grau 4 indicado por O2 há 5s
+  O5 10.0.23.1 grau 4 indicado por O3 há 4s
+17:24:56.143 [O1] INFO Estado de O1: 2 vizinhos (2 up), 2 estáticos
+  O2 10.0.24.1 up estático iniciada pelo vizinho há 70s fila=0
+  O3 10.0.15.1 up estático iniciada pelo vizinho há 69s fila=0
+17:24:56.147 [O1] INFO Métricas de O1: 2 vizinhos
+  O2 srtt=0.90 ms rttvar=0.21 ms perda=0.0% amostras=322 capacidade=- custo=1.66 ms
+  O3 srtt=0.65 ms rttvar=0.18 ms perda=0.0% amostras=320 capacidade=- custo=1.51 ms
+17:24:56.148 [O1] INFO Candidatos de O1: 4
+  O2 10.0.24.1 grau 3 indicado por O3 há 4s
+  O3 10.0.15.1 grau 3 indicado por O2 há 5s
+  O4 10.0.22.1 grau 4 indicado por O2 há 5s
+  O5 10.0.23.1 grau 4 indicado por O3 há 4s
+17:25:06.142 [O1] INFO Estado de O1: 2 vizinhos (2 up), 2 estáticos
+  O2 10.0.24.1 up estático iniciada pelo vizinho há 80s fila=0
+  O3 10.0.15.1 up estático iniciada pelo vizinho há 79s fila=0
+17:25:06.145 [O1] INFO Métricas de O1: 2 vizinhos
+  O2 srtt=1.16 ms rttvar=0.52 ms perda=0.0% amostras=372 capacidade=- custo=2.10 ms
+  O3 srtt=0.70 ms rttvar=0.22 ms perda=0.0% amostras=370 capacidade=- custo=1.57 ms
+17:25:06.146 [O1] INFO Candidatos de O1: 4
+  O2 10.0.24.1 grau 3 indicado por O3 há 4s
+  O3 10.0.15.1 grau 3 indicado por O2 há 5s
+  O4 10.0.22.1 grau 4 indicado por O2 há 5s
+  O5 10.0.23.1 grau 4 indicado por O3 há 4s
+17:25:16.142 [O1] INFO Estado de O1: 2 vizinhos (2 up), 2 estáticos
+  O2 10.0.24.1 up estático iniciada pelo vizinho há 90s fila=0
+  O3 10.0.15.1 up estático iniciada pelo vizinho há 89s fila=0
+17:25:16.146 [O1] INFO Métricas de O1: 2 vizinhos
+  O2 srtt=0.94 ms rttvar=0.29 ms perda=0.0% amostras=422 capacidade=- custo=1.76 ms
+  O3 srtt=0.59 ms rttvar=0.15 ms perda=0.0% amostras=420 capacidade=- custo=1.44 ms
+17:25:16.146 [O1] INFO Candidatos de O1: 4
+  O2 10.0.24.1 grau 3 indicado por O3 há 4s
+  O3 10.0.15.1 grau 3 indicado por O2 há 5s
+  O4 10.0.22.1 grau 4 indicado por O2 há 5s
+  O5 10.0.23.1 grau 4 indicado por O3 há 4s

@@ -1,0 +1,107 @@
+--- 2026-11-25 14:24:10 arranque de O7 no n17
+14:24:10.469 [O7] INFO vizinhos estáticos: O6 (10.0.20.1)
+14:24:10.470 [O7] INFO probes à escuta em 0.0.0.0:5002
+14:24:10.470 [O7] INFO controlo à escuta em 0.0.0.0:5000
+14:24:10.471 [O7] INFO a ligar a O6 (10.0.20.1)
+14:24:10.475 [O7] INFO ligação a O6 (10.0.20.1) estabelecida, iniciada por mim
+14:24:10.475 [O7] DEBUG evento: vizinho O6 up
+14:24:20.474 [O7] INFO Estado de O7: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 10s fila=1
+14:24:20.476 [O7] INFO Métricas de O7: 1 vizinhos
+  O6 srtt=1.56 ms rttvar=0.86 ms perda=0.0% amostras=50 capacidade=- custo=2.64 ms
+14:24:20.476 [O7] INFO Candidatos de O7: 3
+  O10 10.0.21.10 grau 1 indicado por O6 há 0s
+  O4 10.0.22.1 grau 4 indicado por O6 há 0s
+  O5 10.0.23.1 grau 4 indicado por O6 há 0s
+14:24:30.473 [O7] INFO Estado de O7: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada por mim há 20s fila=0
+14:24:30.475 [O7] INFO Métricas de O7: 1 vizinhos
+  O6 srtt=1.89 ms rttvar=1.17 ms perda=0.0% amostras=100 capacidade=- custo=3.11 ms
+14:24:30.475 [O7] INFO Candidatos de O7: 3
+  O10 10.0.21.10 grau 1 indicado por O6 há 0s
+  O4 10.0.22.1 grau 4 indicado por O6 há 0s
+  O5 10.0.23.1 grau 4 indicado por O6 há 0s
+14:24:30.801 [O7] WARNING ligação a O6 perdida (ligação fechada)
+14:24:30.802 [O7] DEBUG evento: vizinho O6 down (ligação fechada)
+14:24:30.804 [O7] WARNING nó isolado: a iniciar a reparação
+14:24:30.804 [O7] INFO reparação: 3 candidatos a medir (O10, O4, O5)
+14:24:30.808 [O7] INFO reparação: O10 fica para o fim (grau <= 1, indicado só por vizinhos que morreram: ligar-se a ele podia formar uma ilha)
+14:24:30.808 [O7] INFO reparação: HELLO a O5 (10.0.23.1), RTT 0.57 ms
+14:24:30.810 [O7] INFO ligação a O5 (10.0.23.1) estabelecida, iniciada por mim
+14:24:30.810 [O7] DEBUG evento: vizinho O5 up
+14:24:30.810 [O7] INFO reparação concluída: ligado a O5
+14:24:35.472 [O7] INFO nova tentativa de ligação a O6 (10.0.20.1)
+14:24:35.474 [O7] WARNING ligação a O6 (10.0.20.1) falhou: [Errno 111] Connection refused
+14:24:40.473 [O7] INFO nova tentativa de ligação a O6 (10.0.20.1)
+14:24:40.475 [O7] INFO Estado de O7: 2 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up dinâmico iniciada por mim há 10s fila=0
+  O6 10.0.20.1 connecting estático iniciada por mim há - fila=0
+14:24:40.476 [O7] WARNING ligação a O6 (10.0.20.1) falhou: [Errno 111] Connection refused
+14:24:40.477 [O7] INFO Métricas de O7: 1 vizinhos
+  O5 srtt=1.30 ms rttvar=0.23 ms perda=0.0% amostras=49 capacidade=- custo=1.88 ms
+14:24:40.479 [O7] INFO Candidatos de O7: 5
+  O10 10.0.21.10 grau 1 indicado por O6 há 10s
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5, O6 há 0s
+  O5 10.0.23.1 grau 4 indicado por O6 há 10s
+  O9 10.0.23.11 grau 1 indicado por O5 há 0s
+Estado de O7: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up dinâmico iniciada por mim há 10s fila=0
+  estáticos sem ligação: O6
+14:24:42.179 [O7] INFO ligação a O6 (10.0.20.1) estabelecida, iniciada por O6
+14:24:42.180 [O7] DEBUG evento: vizinho O6 up
+14:24:42.181 [O7] INFO ligação a O5 fechada (aresta dinâmica já não é precisa: vizinho estático de volta)
+14:24:42.182 [O7] DEBUG evento: vizinho O5 down (aresta dinâmica já não é precisa: vizinho estático de volta)
+14:24:42.184 [O7] INFO perdi O5; vizinhos restantes: 1; sem aresta nova
+14:24:50.473 [O7] INFO Estado de O7: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 8s fila=0
+14:24:50.476 [O7] INFO Métricas de O7: 1 vizinhos
+  O6 srtt=1.18 ms rttvar=0.26 ms perda=0.0% amostras=42 capacidade=14.3 Mbit/s custo=3.25 ms
+14:24:50.477 [O7] INFO Candidatos de O7: 5
+  O10 10.0.21.10 grau 1 indicado por O6 há 3s
+  O3 10.0.15.1 grau 3 indicado por O5 há 10s
+  O4 10.0.22.1 grau 4 indicado por O5, O6 há 3s
+  O5 10.0.23.1 grau 4 indicado por O6 há 3s
+  O9 10.0.23.11 grau 1 indicado por O5 há 10s
+14:25:00.473 [O7] INFO Estado de O7: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 18s fila=0
+14:25:00.475 [O7] INFO Métricas de O7: 1 vizinhos
+  O6 srtt=1.92 ms rttvar=2.30 ms perda=0.0% amostras=92 capacidade=- custo=4.26 ms
+14:25:00.475 [O7] INFO Candidatos de O7: 5
+  O10 10.0.21.10 grau 1 indicado por O6 há 3s
+  O3 10.0.15.1 grau 3 indicado por O5 há 20s
+  O4 10.0.22.1 grau 4 indicado por O5, O6 há 3s
+  O5 10.0.23.1 grau 4 indicado por O6 há 3s
+  O9 10.0.23.11 grau 1 indicado por O5 há 20s
+Estado de O7: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 19s fila=0
+14:25:10.474 [O7] INFO Estado de O7: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 28s fila=1
+14:25:10.478 [O7] INFO Métricas de O7: 1 vizinhos
+  O6 srtt=1.22 ms rttvar=0.34 ms perda=0.0% amostras=142 capacidade=- custo=1.95 ms
+14:25:10.478 [O7] INFO Candidatos de O7: 5
+  O10 10.0.21.10 grau 1 indicado por O6 há 3s
+  O3 10.0.15.1 grau 3 indicado por O5 há 30s
+  O4 10.0.22.1 grau 4 indicado por O5, O6 há 3s
+  O5 10.0.23.1 grau 4 indicado por O6 há 3s
+  O9 10.0.23.11 grau 1 indicado por O5 há 30s
+14:25:20.474 [O7] INFO Estado de O7: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 38s fila=0
+14:25:20.476 [O7] INFO Métricas de O7: 1 vizinhos
+  O6 srtt=1.14 ms rttvar=0.32 ms perda=0.0% amostras=192 capacidade=- custo=1.88 ms
+14:25:20.478 [O7] INFO Candidatos de O7: 5
+  O10 10.0.21.10 grau 1 indicado por O6 há 3s
+  O3 10.0.15.1 grau 3 indicado por O5 há 40s
+  O4 10.0.22.1 grau 4 indicado por O5, O6 há 3s
+  O5 10.0.23.1 grau 4 indicado por O6 há 3s
+  O9 10.0.23.11 grau 1 indicado por O5 há 40s
+14:25:30.472 [O7] INFO Estado de O7: 1 vizinhos (1 up), 1 estáticos
+  O6 10.0.20.1 up estático iniciada pelo vizinho há 48s fila=0
+14:25:30.475 [O7] INFO Métricas de O7: 1 vizinhos
+  O6 srtt=1.01 ms rttvar=0.41 ms perda=0.0% amostras=242 capacidade=- custo=1.91 ms
+14:25:30.476 [O7] INFO Candidatos de O7: 5
+  O10 10.0.21.10 grau 1 indicado por O6 há 3s
+  O3 10.0.15.1 grau 3 indicado por O5 há 50s
+  O4 10.0.22.1 grau 4 indicado por O5, O6 há 3s
+  O5 10.0.23.1 grau 4 indicado por O6 há 3s
+  O9 10.0.23.11 grau 1 indicado por O5 há 50s

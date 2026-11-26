@@ -1,0 +1,79 @@
+--- 2026-11-25 14:24:10 arranque de O9 no n23
+14:24:10.612 [O9] INFO vizinhos estáticos: O5 (10.0.23.1)
+14:24:10.614 [O9] INFO probes à escuta em 0.0.0.0:5002
+14:24:10.614 [O9] INFO controlo à escuta em 0.0.0.0:5000
+14:24:10.615 [O9] INFO a ligar a O5 (10.0.23.1)
+14:24:10.619 [O9] INFO ligação a O5 (10.0.23.1) estabelecida, iniciada por mim
+14:24:10.619 [O9] DEBUG evento: vizinho O5 up
+14:24:20.617 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 10s fila=0
+14:24:20.619 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.97 ms rttvar=0.11 ms perda=0.0% amostras=50 capacidade=- custo=1.59 ms
+14:24:20.620 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+14:24:30.617 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 20s fila=0
+14:24:30.619 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.91 ms rttvar=0.12 ms perda=0.0% amostras=100 capacidade=- custo=1.58 ms
+14:24:30.620 [O9] INFO Candidatos de O9: 3
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+14:24:40.617 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 30s fila=0
+14:24:40.619 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=1.05 ms rttvar=0.28 ms perda=0.0% amostras=150 capacidade=- custo=1.81 ms
+14:24:40.620 [O9] INFO Candidatos de O9: 4
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 10s
+  O7 10.0.20.10 grau 1 indicado por O5 há 0s
+14:24:50.616 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 40s fila=0
+14:24:50.618 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=1.17 ms rttvar=0.43 ms perda=0.0% amostras=200 capacidade=- custo=2.02 ms
+14:24:50.619 [O9] INFO Candidatos de O9: 4
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+  O7 10.0.20.10 grau 2 indicado por O5 há 8s
+14:25:00.617 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 50s fila=0
+14:25:00.619 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=1.12 ms rttvar=1.34 ms perda=0.0% amostras=250 capacidade=- custo=2.90 ms
+14:25:00.619 [O9] INFO Candidatos de O9: 4
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+  O7 10.0.20.10 grau 2 indicado por O5 há 18s
+Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 52s fila=0
+14:25:10.617 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 60s fila=0
+14:25:10.619 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.75 ms rttvar=0.20 ms perda=0.0% amostras=300 capacidade=- custo=1.57 ms
+14:25:10.619 [O9] INFO Candidatos de O9: 4
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+  O7 10.0.20.10 grau 2 indicado por O5 há 28s
+14:25:20.617 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 70s fila=0
+14:25:20.618 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=0.72 ms rttvar=0.24 ms perda=0.0% amostras=350 capacidade=- custo=1.60 ms
+14:25:20.619 [O9] INFO Candidatos de O9: 4
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+  O7 10.0.20.10 grau 2 indicado por O5 há 38s
+14:25:30.634 [O9] INFO Estado de O9: 1 vizinhos (1 up), 1 estáticos
+  O5 10.0.23.1 up estático iniciada por mim há 80s fila=1
+14:25:30.644 [O9] INFO Métricas de O9: 1 vizinhos
+  O5 srtt=6.43 ms rttvar=9.64 ms perda=0.0% amostras=400 capacidade=- custo=13.86 ms
+14:25:30.646 [O9] INFO Candidatos de O9: 4
+  O3 10.0.15.1 grau 3 indicado por O5 há 0s
+  O4 10.0.22.1 grau 4 indicado por O5 há 0s
+  O6 10.0.20.1 grau 4 indicado por O5 há 0s
+  O7 10.0.20.10 grau 2 indicado por O5 há 48s

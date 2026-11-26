@@ -107,7 +107,11 @@ Testada com `python3 -m unittest discover -s tests`, com o cenário 2 em local e
 | 6 | A estimativa da perda oscilava e era enviesada | Só conta probes com mais de 1 s; janela de 100 | `36a98a7` |
 | 7 | O custo disparava com o RTTVAR quando a VM parava | Termo de jitter limitado a 20 ms | `9242567` |
 
+**Erro 8** (encontrado no reteste R6): quando o O6 voltou, o O7 e o O10 fecharam as arestas dinâmicas antes de o O4 e o O5 se religarem ao O6, e {O6, O7, O10} ficaram 3,3 s numa ilha. Corrigido: a saída de um vizinho dispara logo uma nova tentativa aos vizinhos estáticos em falta. Confirmado no CORE (R6b): a ilha passou de 3,3 s para 7 ms.
+
 Fica para a Fase 3: histerese na troca de rota (erros 6 e 7) e a deteção de partições pela ausência de `ANNOUNCE` (erro 1).
+
+**Sugestão em aberto (a decidir na Fase 3):** no reteste R3, a perda acertou na média (19%), mas oscila ±4 pontos, por isso o custo de um link com perda varia entre 13 e 28 ms. Quando houver rotas, ver se a histerese chega para isto. Se não chegar, aumentar `LOSS_WINDOW` de 100 para 250 probes (cerca de 50 s, ±2,5 pontos, mas reage mais devagar) ou suavizar o custo com uma média móvel. Detalhes em `docs/erros_testes.md`, no erro 6.
 
 O que foi feito antes destes testes:
 - Probes UDP com SRTT, RTTVAR e perda por link; capacidade por packet pair; função de custo com os modos `full`, `latency` e `hops`.
