@@ -224,6 +224,17 @@ class RepairIntegrationTest(unittest.TestCase):
         with node.state.lock:
             return candidate_id in node.state.overlay_candidates
 
+    @staticmethod
+    def diagnose(*nodes):
+        """Texto para a mensagem de um assert que falhou: o estado e o log de cada nó."""
+        parts = []
+        for node in nodes:
+            with node.state.lock:
+                neighbors = [(n.id, n.status, "dinâmico" if n.dynamic else "", "saída" if n.initiated_by_me
+                              else "entrada") for n in node.state.neighbors.values()]
+            parts.append(f"--- {node.id}: {neighbors}\n" + "\n".join(node.log_capture.lines[-40:]))
+        return "\n" + "\n".join(parts)
+
     def crash(self, node):
         node.stop()
         self.nodes.remove(node)
@@ -299,9 +310,14 @@ class RepairIntegrationTest(unittest.TestCase):
 
     def test_t8_dynamic_edge_closed_when_static_neighbor_returns(self):
         """Caso do T8 (erro 3, regra a): O10 só tem O6. O6 cai, O10 liga-se a O4 (aresta dinâmica).
-        Quando O6 volta, O10 fecha a aresta O10-O4 com LEAVE e a topologia volta à do ficheiro."""
-        o4, o6, o10 = self.make_node(4), self.make_node(6), self.make_node(10)
+        Quando O6 volta, O10 fecha a aresta O10-O4 com LEAVE e a topologia volta à do ficheiro.
+
+        O4 tem também O5, como no CORE (O2, O5, O8): sem isso, O4 também ficava isolado quando O6
+        cai e, se a reparação dele ganhasse a corrida, a aresta era iniciada por O4, que não tem
+        nenhum estático a voltar, e não fechava (falha intermitente na VM, cerca de 1 em 10)."""
+        o4, o5, o6, o10 = self.make_node(4), self.make_node(5), self.make_node(6), self.make_node(10)
         o10.state.static_neighbors = {"O6": o6.ip}
+        self.link(o4, o5)
         self.link(o6, o4)
         self.link(o6, o10)
         self.gossip(o6)
@@ -317,9 +333,70 @@ class RepairIntegrationTest(unittest.TestCase):
         o6 = self.make_node(6)
         o6.state.static_neighbors = {"O4": o4.ip, "O10": o10.ip}
         self.assertTrue(o6.manager.connect_to("O10", o10.ip))
-        self.assertTrue(wait_until(lambda: [n.id for n in o10.state.up_neighbors()] == ["O6"]))
+        # Se falhar, a mensagem mostra o estado e o log de cada nó
+        self.assertTrue(wait_until(lambda: [n.id for n in o10.state.up_neighbors()] == ["O6"]),
+                        self.diagnose(o10, o4, o6))
         self.assertTrue(wait_until(lambda: o4.state.get_neighbor("O10") is None))
         self.assertTrue(wait_until(lambda: logged_in(o4, "O10 saiu")))
+
+    def test_r6_full_node_reconnects_to_static_as_soon_as_dynamic_edge_leaves(self):
+        """Caso do R6 (erro 8), com X_MAX = 2: O4 está cheio com O2 (estático) e O7 (dinâmico,
+        grau 1). O6 volta: O4 rejeita-o (full), O6 liga-se a O7 e O7 fecha a aresta dinâmica.
+        O4 tem de se ligar logo a O6, sem esperar por RECONNECT_INTERVAL (aqui nem há ciclo
+        periódico): senão {O6, O7} ficavam numa ilha."""
+        with mock.patch.object(config, "X_MAX", 2):
+            o2, o4, o7 = self.make_node(2), self.make_node(4), self.make_node(7)
+            self.link(o4, o2)
+            self.assertTrue(o7.manager.connect_to("O4", o4.ip, dynamic=True))
+            self.assertTrue(wait_until(lambda: o4.state.count_up() == 2))
+
+            o6 = self.make_node(6)
+            o4.state.static_neighbors = {"O2": o2.ip, "O6": o6.ip}
+            o7.state.static_neighbors = {"O6": o6.ip}
+            o6.state.static_neighbors = {"O4": o4.ip, "O7": o7.ip}
+            self.assertFalse(o6.manager.connect_to("O4", o4.ip))          # full
+            self.assertTrue(o6.manager.connect_to("O7", o7.ip))
+            self.assertTrue(wait_until(lambda: o4.state.get_neighbor("O7") is None))
+            self.assertTrue(wait_until(lambda: o4.state.get_neighbor("O6") is not None
+                                       and o4.state.get_neighbor("O6").status == "up", timeout=2.0))
+            self.assertEqual(sorted(n.id for n in o6.state.up_neighbors()), ["O4", "O7"])
+
+    def _two_isolated_nodes_edge_closes_when_shared_static_returns(self, winner_index):
+        """O4 e O10 só têm O6 (estático dos dois). O6 cai: ficam os dois isolados e ligam-se um ao
+        outro (único candidato). Quando O6 volta e se liga aos dois, a aresta O4-O10 tem de fechar,
+        seja qual for o nó que a criou. Para a ordem da corrida ser determinística, só o nó
+        winner_index repara; o outro continua a aceitar HELLO."""
+        o4, o6, o10 = self.make_node(4), self.make_node(6), self.make_node(10)
+        o4.state.static_neighbors = {"O6": o6.ip}
+        o10.state.static_neighbors = {"O6": o6.ip}
+        self.link(o6, o4)
+        self.link(o6, o10)
+        self.gossip(o6)
+        self.assertTrue(wait_until(lambda: self.has_candidate(o4, "O10") and self.has_candidate(o10, "O4")))
+        winner, loser = (o4, o10) if winner_index == 4 else (o10, o4)
+        loser.repair.stop()     # não repara, mas aceita o HELLO do outro
+
+        self.crash(o6)
+        self.assertTrue(wait_until(lambda: winner.state.get_neighbor(loser.id) is not None
+                                   and winner.state.get_neighbor(loser.id).status == "up"),
+                        self.diagnose(o4, o10))
+        self.assertTrue(wait_until(lambda: loser.state.get_neighbor(winner.id) is not None))
+        self.assertTrue(winner.state.get_neighbor(loser.id).initiated_by_me)
+        self.assertTrue(winner.state.get_neighbor(loser.id).dynamic)
+
+        o6 = self.make_node(6)
+        o6.state.static_neighbors = {"O4": o4.ip, "O10": o10.ip}
+        self.assertTrue(o6.manager.connect_to("O4", o4.ip))
+        self.assertTrue(o6.manager.connect_to("O10", o10.ip))
+        for node in (o4, o10):
+            self.assertTrue(wait_until(lambda: [n.id for n in node.state.up_neighbors()] == ["O6"]),
+                            self.diagnose(o4, o10, o6))
+
+    def test_two_isolated_nodes_edge_closes_when_creator_is_the_first(self):
+        self._two_isolated_nodes_edge_closes_when_shared_static_returns(winner_index=4)
+
+    def test_two_isolated_nodes_edge_closes_when_creator_is_the_second(self):
+        self._two_isolated_nodes_edge_closes_when_shared_static_returns(winner_index=10)
 
     def test_t9_full_node_gives_static_neighbor_the_place_of_a_dynamic_edge(self):
         """Caso do T9 (erro 3, regra b), com X_MAX = 2: O5 está cheio com O3 (estático) e O8
